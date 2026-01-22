@@ -92,11 +92,21 @@ function StickySection({
 // ============================================
 // MAIN APP COMPONENT
 // ============================================
+// API URL
+const API_URL = import.meta.env.VITE_API_URL || 'https://api-g3xwwspyla-an.a.run.app';
+
 function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // 申し込みモーダル用state
+  const [showSignupModal, setShowSignupModal] = useState(false);
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupLoading, setSignupLoading] = useState(false);
+  const [signupError, setSignupError] = useState<string | null>(null);
+  const [isStudentEmail, setIsStudentEmail] = useState(false);
 
   const { scrollYProgress } = useScroll();
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
@@ -114,12 +124,54 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // メールアドレスの学生判定
+  useEffect(() => {
+    const studentDomains = ['.ac.jp', '.edu', '.ed.jp'];
+    const lower = signupEmail.toLowerCase();
+    setIsStudentEmail(studentDomains.some(d => lower.endsWith(d)));
+  }, [signupEmail]);
+
   const handleDemoClick = () => {
     window.location.href = 'https://compass-demo.web.app/';
   };
 
   const handleTrialClick = () => {
-    window.location.href = 'https://compass-demo.web.app/signup';
+    setShowSignupModal(true);
+    setSignupEmail('');
+    setSignupError(null);
+  };
+
+  const handleSignupSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!signupEmail) return;
+
+    setSignupLoading(true);
+    setSignupError(null);
+
+    try {
+      const response = await fetch(`${API_URL}/api/public/checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: signupEmail }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || '申し込み処理に失敗しました');
+      }
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('決済ページのURLを取得できませんでした');
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '申し込み処理に失敗しました';
+      setSignupError(message);
+    } finally {
+      setSignupLoading(false);
+    }
   };
 
   return (
@@ -1096,6 +1148,128 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {/* ============================================ */}
+      {/* SIGNUP MODAL */}
+      {/* ============================================ */}
+      <AnimatePresence>
+        {showSignupModal && (
+          <motion.div
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {/* Backdrop */}
+            <motion.div
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowSignupModal(false)}
+            />
+
+            {/* Modal */}
+            <motion.div
+              className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-8"
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setShowSignupModal(false)}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-100 transition"
+              >
+                <X size={20} className="text-slate-400" />
+              </button>
+
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold text-[#1e3a5f] mb-2">
+                  Compassを始める
+                </h3>
+                <p className="text-[#64748b] text-sm">
+                  メールアドレスを入力してください
+                </p>
+              </div>
+
+              <form onSubmit={handleSignupSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="signup-email" className="block text-sm font-medium text-[#1e3a5f] mb-2">
+                    メールアドレス
+                  </label>
+                  <input
+                    id="signup-email"
+                    type="email"
+                    value={signupEmail}
+                    onChange={(e) => setSignupEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    required
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition"
+                  />
+                </div>
+
+                {/* 学生判定表示 */}
+                {signupEmail && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className={`p-3 rounded-xl text-sm ${
+                      isStudentEmail
+                        ? 'bg-green-50 text-green-700 border border-green-200'
+                        : 'bg-blue-50 text-blue-700 border border-blue-200'
+                    }`}
+                  >
+                    {isStudentEmail ? (
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 size={16} />
+                        <span><strong>学生プラン適用</strong> - 永久無料でご利用いただけます</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <Clock size={16} />
+                        <span><strong>14日間無料トライアル</strong> - その後 ¥1,000/月/席</span>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+
+                {signupError && (
+                  <div className="p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">
+                    {signupError}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={signupLoading || !signupEmail}
+                  className="w-full py-4 rounded-xl font-semibold text-lg bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {signupLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      処理中...
+                    </span>
+                  ) : isStudentEmail ? (
+                    '無料で始める'
+                  ) : (
+                    '14日間無料で始める'
+                  )}
+                </button>
+
+                <p className="text-xs text-center text-[#94a3b8]">
+                  続行することで、<a href="/terms" className="underline hover:text-[#00b4d8]">利用規約</a>と
+                  <a href="/privacy" className="underline hover:text-[#00b4d8]">プライバシーポリシー</a>に同意したものとみなされます。
+                </p>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
