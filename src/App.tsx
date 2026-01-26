@@ -1046,8 +1046,7 @@ function App() {
               導入の流れ
             </motion.span>
             <h2 className="text-2xl sm:text-4xl lg:text-6xl font-bold text-[#1e3a5f]">
-              <span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent">2ステップ</span>
-              <TextReveal delay={0.2}>で始められる</TextReveal>
+              <span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent inline">2ステップ</span>で始められる
             </h2>
           </StickySection>
 
