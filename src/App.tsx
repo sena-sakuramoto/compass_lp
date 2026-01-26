@@ -1270,7 +1270,7 @@ function App() {
           <div className="border-t border-slate-200 pt-8 flex flex-col items-center gap-4">
             <div className="flex items-center gap-3 text-sm text-[#64748b]">
               <span>Developed by</span>
-              <img src="/archiprisma_dev logo.png" alt="ARCHI-PRISMA" className="h-8 w-auto" />
+              <img src="/archiprisma_dev logo.png" alt="ARCHI-PRISMA" className="h-12 w-auto" />
             </div>
             <p className="text-sm text-[#94a3b8]">
               © {new Date().getFullYear()} APDW Inc. All rights reserved.
