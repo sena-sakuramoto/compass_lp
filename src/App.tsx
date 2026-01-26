@@ -393,16 +393,26 @@ function App() {
               exit={{ opacity: 0, height: 0 }}
             >
               <div className="px-6 py-6 space-y-4">
-                {['機能', '料金', '導入', 'サークル'].map((item) => (
-                  <a key={item} href={`#${item}`} className="block py-2 text-[#1e293b] font-medium">
-                    {item}
+                {[
+                  { label: '機能', href: '#features' },
+                  { label: '料金', href: '#pricing' },
+                  { label: '導入', href: '#flow' },
+                  { label: 'サークル', href: '#circle' },
+                ].map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block py-2 text-[#1e293b] font-medium"
+                  >
+                    {item.label}
                   </a>
                 ))}
                 <div className="pt-4 space-y-3">
-                  <button onClick={handleDemoClick} className="w-full py-3 text-[#1e3a5f] font-medium border border-slate-200 rounded-xl">
+                  <button onClick={() => { handleDemoClick(); setMobileMenuOpen(false); }} className="w-full py-3 text-[#1e3a5f] font-medium border border-slate-200 rounded-xl">
                     デモを試す
                   </button>
-                  <button onClick={handleTrialClick} className="w-full py-3 bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white font-semibold rounded-xl">
+                  <button onClick={() => { handleTrialClick(); setMobileMenuOpen(false); }} className="w-full py-3 bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white font-semibold rounded-xl">
                     無料で始める
                   </button>
                 </div>
