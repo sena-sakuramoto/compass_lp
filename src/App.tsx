@@ -404,12 +404,12 @@ function App() {
 
             {/* Main copy */}
             <motion.h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-8 tracking-tight text-[#1e3a5f] whitespace-nowrap flex items-center justify-center gap-2 sm:gap-4"
+              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-8 tracking-tight text-[#1e3a5f] whitespace-nowrap"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              すべての現場に、<img src="/compass-logo.png" alt="Compass" className="h-10 sm:h-14 lg:h-16 w-auto inline-block" draggable="false" onContextMenu={(e) => e.preventDefault()} />を。
+              すべての現場に、<span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent">Compass</span>を。
             </motion.h1>
 
             <motion.p
