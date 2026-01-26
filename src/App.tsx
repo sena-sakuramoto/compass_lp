@@ -453,7 +453,7 @@ function App() {
                 whileTap={{ scale: 0.98 }}
               >
                 <Play size={20} className="text-[#00b4d8]" />
-                デモを見る
+                デモを試す
               </motion.button>
             </motion.div>
 
@@ -897,10 +897,10 @@ function App() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <div className="bg-white rounded-3xl p-10 relative overflow-hidden shadow-2xl">
+            <div className="bg-white rounded-3xl p-10 relative overflow-hidden shadow-2xl flex flex-col">
               <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#00b4d8]/10 to-[#0077b6]/10 rounded-full blur-3xl" />
 
-              <div className="relative text-center">
+              <div className="relative text-center flex flex-col flex-grow">
                 <p className="text-[#64748b] mb-2 font-medium">1ユーザーあたり</p>
                 <div className="flex items-end justify-center gap-1 mb-2">
                   <span className="text-6xl sm:text-7xl font-extrabold text-[#1e3a5f]">
@@ -939,7 +939,7 @@ function App() {
               </div>
             </div>
 
-            <div className="bg-white/90 rounded-3xl p-10 border border-white/50 shadow-xl">
+            <div className="bg-white/90 rounded-3xl p-10 border border-white/50 shadow-xl flex flex-col">
               <div className="text-center">
                 <p className="text-[#64748b] mb-2 font-medium">学生プラン</p>
                 <div className="flex items-end justify-center gap-1 mb-2">
@@ -965,6 +965,7 @@ function App() {
                   </motion.li>
                 ))}
               </ul>
+              <div className="flex-grow" />
               <motion.button
                 onClick={handleTrialClick}
                 className="w-full py-4 rounded-xl font-semibold text-lg border border-[#00b4d8]/40 text-[#0077b6] bg-white hover:bg-[#00b4d8]/10 transition-all"
@@ -1232,7 +1233,7 @@ function App() {
                 whileTap={{ scale: 0.98 }}
               >
                 <Play size={20} className="text-[#00b4d8]" />
-                まずはデモを見る
+                まずはデモを試す
               </motion.button>
             </motion.div>
           </StickySection>
@@ -1266,8 +1267,14 @@ function App() {
               ))}
             </nav>
           </motion.div>
-          <div className="border-t border-slate-200 pt-8 text-center text-sm text-[#94a3b8]">
-            © {new Date().getFullYear()} APDW Inc. All rights reserved.
+          <div className="border-t border-slate-200 pt-8 flex flex-col items-center gap-4">
+            <div className="flex items-center gap-2 text-sm text-[#64748b]">
+              <span>Developed by</span>
+              <img src="/archiprisma_dev logo.png" alt="ARCHI-PRISMA" className="h-5 w-auto" />
+            </div>
+            <p className="text-sm text-[#94a3b8]">
+              © {new Date().getFullYear()} APDW Inc. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
