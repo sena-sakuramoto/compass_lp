@@ -19,6 +19,55 @@ import {
 } from 'lucide-react';
 import './index.css';
 
+type Plan = {
+  name: string;
+  pricePerSeat: number;
+  currency?: string;
+  interval?: string;
+  trialDays?: number;
+  features: string[];
+  eligibleDomains?: string[];
+};
+
+type CheckoutPlans = {
+  standard: Plan;
+  student: Plan;
+};
+
+const DEFAULT_PLANS: CheckoutPlans = {
+  standard: {
+    name: 'Compass Pro',
+    pricePerSeat: 1000,
+    currency: 'JPY',
+    interval: 'month',
+    trialDays: 14,
+    features: [
+      '全機能が使える',
+      '席数に上限なし - 必要に応じて追加',
+      '14日間の無料トライアル',
+    ],
+  },
+  student: {
+    name: 'Compass 学生プラン',
+    pricePerSeat: 0,
+    currency: 'JPY',
+    interval: 'month',
+    trialDays: 0,
+    features: [
+      '全機能が使える',
+      '学生は永久無料',
+      '.ac.jp / .edu / .ed.jp ドメインが対象',
+    ],
+    eligibleDomains: ['.ac.jp', '.edu', '.ed.jp'],
+  },
+};
+
+const formatPrice = (price: number, currency = 'JPY') => {
+  if (price === 0) return '無料';
+  if (currency === 'JPY') return `¥${price.toLocaleString()}`;
+  return `${price.toLocaleString()} ${currency}`;
+};
+
 // ============================================
 // ANIMATED TEXT REVEAL
 // ============================================
@@ -104,12 +153,19 @@ function App() {
   // 申し込みモーダル用state
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [signupEmail, setSignupEmail] = useState('');
+  const [seatCount, setSeatCount] = useState(3);
   const [signupLoading, setSignupLoading] = useState(false);
   const [signupError, setSignupError] = useState<string | null>(null);
   const [isStudentEmail, setIsStudentEmail] = useState(false);
+  const [plans, setPlans] = useState<CheckoutPlans>(DEFAULT_PLANS);
+  const [planError, setPlanError] = useState<string | null>(null);
 
   const { scrollYProgress } = useScroll();
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+  const standardPrice = formatPrice(plans.standard.pricePerSeat, plans.standard.currency);
+  const studentPrice = formatPrice(plans.student.pricePerSeat, plans.student.currency);
+  const studentDomainsLabel = (plans.student.eligibleDomains ?? DEFAULT_PLANS.student.eligibleDomains ?? []).join(' / ');
+  const normalizedSeats = Math.min(100, Math.max(1, Number.isFinite(seatCount) ? seatCount : 1));
 
   const toggleMute = () => {
     if (videoRef.current) {
@@ -124,12 +180,39 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    let active = true;
+    fetch(`${API_URL}/api/public/checkout/plans`)
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error('プラン取得に失敗しました');
+        }
+        const data = await res.json();
+        return data as CheckoutPlans;
+      })
+      .then((data) => {
+        if (active) {
+          setPlans(data);
+        }
+      })
+      .catch((err) => {
+        console.warn('[lp] Failed to load plans:', err);
+        if (active) {
+          setPlanError('プラン情報の取得に失敗しました（表示は参考値です）');
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   // メールアドレスの学生判定
   useEffect(() => {
-    const studentDomains = ['.ac.jp', '.edu', '.ed.jp'];
+    const domains = plans.student.eligibleDomains ?? ['.ac.jp', '.edu', '.ed.jp'];
     const lower = signupEmail.toLowerCase();
-    setIsStudentEmail(studentDomains.some(d => lower.endsWith(d)));
-  }, [signupEmail]);
+    setIsStudentEmail(domains.some(d => lower.endsWith(d)));
+  }, [signupEmail, plans.student.eligibleDomains]);
 
   const handleDemoClick = () => {
     window.location.href = 'https://compass-demo.web.app/';
@@ -139,11 +222,13 @@ function App() {
     setShowSignupModal(true);
     setSignupEmail('');
     setSignupError(null);
+    setSeatCount(3);
   };
 
   const handleSignupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!signupEmail) return;
+    const quantity = Math.min(100, Math.max(1, Math.floor(normalizedSeats || 1)));
 
     setSignupLoading(true);
     setSignupError(null);
@@ -152,7 +237,7 @@ function App() {
       const response = await fetch(`${API_URL}/api/public/checkout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: signupEmail }),
+        body: JSON.stringify({ email: signupEmail, quantity }),
       });
 
       const data = await response.json();
@@ -799,8 +884,14 @@ function App() {
             </p>
           </StickySection>
 
+          {planError ? (
+            <div className="mx-auto mb-8 max-w-3xl rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-700">
+              {planError}
+            </div>
+          ) : null}
+
           <motion.div
-            className="max-w-lg mx-auto"
+            className="grid gap-6 lg:grid-cols-2 max-w-5xl mx-auto"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -813,26 +904,22 @@ function App() {
                 <p className="text-[#64748b] mb-2 font-medium">1ユーザーあたり</p>
                 <div className="flex items-end justify-center gap-1 mb-2">
                   <span className="text-6xl sm:text-7xl font-extrabold text-[#1e3a5f]">
-                    ¥1,000
+                    {standardPrice}
                   </span>
                   <span className="text-[#64748b] mb-3 text-xl">/月</span>
                 </div>
-                <p className="text-sm text-[#64748b] mb-10">（税抜）</p>
+                <p className="text-sm text-[#64748b] mb-10">
+                  {plans.standard.trialDays ? `${plans.standard.trialDays}日間無料トライアル` : 'すぐに利用開始'}
+                </p>
 
                 <ul className="text-left space-y-4 mb-10">
-                  {[
-                    '全機能が使える',
-                    '席数に上限なし - 必要に応じて追加',
-                    '14日間の無料トライアル',
-                    '法人・個人どちらもOK',
-                    'カードが難しい場合は請求書対応可',
-                  ].map((item, i) => (
+                  {[...plans.standard.features, '法人・個人どちらもOK', 'カードが難しい場合は請求書対応可'].map((item, i) => (
                     <motion.li
                       key={i}
                       className="flex items-start gap-3"
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.1 }}
+                      transition={{ delay: i * 0.08 }}
                       viewport={{ once: true }}
                     >
                       <CheckCircle2 className="w-5 h-5 text-[#00b4d8] flex-shrink-0 mt-0.5" />
@@ -847,9 +934,45 @@ function App() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  14日間無料で始める
+                  {plans.standard.trialDays ? `${plans.standard.trialDays}日間無料で始める` : '今すぐ始める'}
                 </motion.button>
               </div>
+            </div>
+
+            <div className="bg-white/90 rounded-3xl p-10 border border-white/50 shadow-xl">
+              <div className="text-center">
+                <p className="text-[#64748b] mb-2 font-medium">学生プラン</p>
+                <div className="flex items-end justify-center gap-1 mb-2">
+                  <span className="text-5xl sm:text-6xl font-bold text-[#1e3a5f]">
+                    {studentPrice}
+                  </span>
+                  <span className="text-[#64748b] mb-3 text-lg">/月</span>
+                </div>
+                <p className="text-sm text-[#64748b] mb-8">対象ドメイン: {studentDomainsLabel}</p>
+              </div>
+              <ul className="text-left space-y-4 mb-10">
+                {plans.student.features.map((item, i) => (
+                  <motion.li
+                    key={i}
+                    className="flex items-start gap-3"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.08 }}
+                    viewport={{ once: true }}
+                  >
+                    <CheckCircle2 className="w-5 h-5 text-[#00b4d8] flex-shrink-0 mt-0.5" />
+                    <span className="text-[#1e293b]">{item}</span>
+                  </motion.li>
+                ))}
+              </ul>
+              <motion.button
+                onClick={handleTrialClick}
+                className="w-full py-4 rounded-xl font-semibold text-lg border border-[#00b4d8]/40 text-[#0077b6] bg-white hover:bg-[#00b4d8]/10 transition-all"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                学生プランで始める
+              </motion.button>
             </div>
           </motion.div>
         </div>
@@ -1210,6 +1333,32 @@ function App() {
                   />
                 </div>
 
+                <div>
+                  <label htmlFor="signup-seats" className="block text-sm font-medium text-[#1e3a5f] mb-2">
+                    席数
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      id="signup-seats"
+                      type="number"
+                      min={1}
+                      max={100}
+                      value={seatCount}
+                      onChange={(e) => {
+                        const next = Number(e.target.value);
+                        setSeatCount(Number.isFinite(next) && next > 0 ? next : 1);
+                      }}
+                      className="w-28 px-3 py-2 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition"
+                    />
+                    <span className="text-sm text-[#64748b]">席</span>
+                  </div>
+                  <p className="mt-2 text-xs text-[#94a3b8]">
+                    {isStudentEmail
+                      ? '学生プラン適用時は無料です'
+                      : `合計: ${formatPrice((plans.standard.pricePerSeat || 0) * normalizedSeats, plans.standard.currency)} / 月`}
+                  </p>
+                </div>
+
                 {/* 学生判定表示 */}
                 {signupEmail && (
                   <motion.div
@@ -1229,7 +1378,10 @@ function App() {
                     ) : (
                       <div className="flex items-center gap-2">
                         <Clock size={16} />
-                        <span><strong>14日間無料トライアル</strong> - その後 ¥1,000/月/席</span>
+                        <span>
+                          <strong>{plans.standard.trialDays ?? 0}日間無料トライアル</strong>
+                          {' '}- その後 {standardPrice}/月/席
+                        </span>
                       </div>
                     )}
                   </motion.div>
@@ -1257,7 +1409,7 @@ function App() {
                   ) : isStudentEmail ? (
                     '無料で始める'
                   ) : (
-                    '14日間無料で始める'
+                    `${plans.standard.trialDays ?? 0}日間無料で始める`
                   )}
                 </button>
 
