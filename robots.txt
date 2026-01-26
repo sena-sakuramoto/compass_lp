@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://compass.archi-prisma.co.jp/sitemap.xml
