@@ -7,7 +7,6 @@ import {
   BarChart3,
   ArrowRight,
   Play,
-  Building2,
   Clock,
   Bell,
   FileSpreadsheet,
