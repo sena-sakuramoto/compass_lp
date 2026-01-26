@@ -1255,14 +1255,21 @@ function App() {
               <img src="/compass-logo.png" alt="Compass" className="h-8 w-auto" />
             </div>
             <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-[#64748b]">
-              {['利用規約', 'プライバシーポリシー', '特定商取引法', 'ヘルプ'].map((item) => (
+              {[
+                { label: '利用規約', href: 'https://compass-31e9e.web.app/terms' },
+                { label: 'プライバシーポリシー', href: 'https://compass-31e9e.web.app/privacy' },
+                { label: '特定商取引法', href: 'https://compass-31e9e.web.app/legal' },
+                { label: 'ヘルプ', href: 'https://compass-31e9e.web.app/help' },
+              ].map((item) => (
                 <motion.a
-                  key={item}
-                  href={`/${item}`}
+                  key={item.label}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="hover:text-[#1e3a5f] transition"
                   whileHover={{ y: -2 }}
                 >
-                  {item}
+                  {item.label}
                 </motion.a>
               ))}
             </nav>
