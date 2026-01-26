@@ -319,15 +319,15 @@ function App() {
         animate={{ y: 0 }}
         transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }}
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
             <motion.div
               className="flex items-center"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <img src="/compass-logo.png" alt="Compass" className="h-8 w-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
+              <img src="/compass-logo.png" alt="Compass" className="h-6 sm:h-7 md:h-8 w-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
             </motion.div>
 
             <nav className="hidden md:flex items-center gap-1">
@@ -376,10 +376,10 @@ function App() {
             </motion.div>
 
             <button
-              className="md:hidden p-2 rounded-lg hover:bg-slate-100 transition"
+              className="md:hidden p-1.5 sm:p-2 rounded-lg hover:bg-slate-100 transition"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X size={24} className="text-[#1e3a5f]" /> : <Menu size={24} className="text-[#1e3a5f]" />}
+              {mobileMenuOpen ? <X size={20} className="text-[#1e3a5f] sm:w-6 sm:h-6" /> : <Menu size={20} className="text-[#1e3a5f] sm:w-6 sm:h-6" />}
             </button>
           </div>
         </div>
