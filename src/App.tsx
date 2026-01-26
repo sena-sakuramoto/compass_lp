@@ -431,10 +431,10 @@ function App() {
         {/* Grid pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(30,58,95,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(30,58,95,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />
 
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-20 lg:pt-32 pb-8">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-20 lg:pt-32 pb-8">
           {/* Hero Visual - Video (Top) */}
           <motion.div
-            className="relative max-w-5xl mx-auto mb-12"
+            className="relative max-w-5xl mx-auto mb-8 sm:mb-12"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -473,16 +473,17 @@ function App() {
           <div className="text-center max-w-4xl mx-auto">
             {/* Main copy */}
             <motion.h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight text-[#1e3a5f] whitespace-nowrap"
+              className="text-2xl sm:text-4xl lg:text-6xl font-extrabold leading-[1.2] sm:leading-[1.1] mb-4 sm:mb-6 tracking-tight text-[#1e3a5f]"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              すべての現場に、<span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent">Compass</span>を。
+              <span className="block sm:inline">すべての現場に、</span>
+              <span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent">Compass</span>を。
             </motion.h1>
 
             <motion.p
-              className="text-lg sm:text-xl text-[#64748b] mb-8 leading-relaxed max-w-2xl mx-auto"
+              className="text-base sm:text-lg lg:text-xl text-[#64748b] mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto px-2 sm:px-0"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.7 }}
@@ -494,46 +495,46 @@ function App() {
 
             {/* CTAs */}
             <motion.div
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6"
+              className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-4 sm:mb-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.9 }}
             >
               <motion.button
                 onClick={handleTrialClick}
-                className="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-lg bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/30 transition-all"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/30 transition-all"
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <span className="flex items-center justify-center gap-2">
                   14日間無料で試す
-                  <ArrowRight size={20} />
+                  <ArrowRight size={18} className="sm:w-5 sm:h-5" />
                 </span>
               </motion.button>
 
               <motion.button
                 onClick={handleDemoClick}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg bg-white text-[#1e3a5f] border border-slate-200 hover:border-[#00b4d8]/50 hover:shadow-lg transition-all"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg bg-white text-[#1e3a5f] border border-slate-200 hover:border-[#00b4d8]/50 hover:shadow-lg transition-all"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <Play size={20} className="text-[#00b4d8]" />
+                <Play size={18} className="text-[#00b4d8] sm:w-5 sm:h-5" />
                 デモを試す
               </motion.button>
             </motion.div>
 
             <motion.div
-              className="flex items-center justify-center gap-6 text-sm text-[#64748b]"
+              className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs sm:text-sm text-[#64748b]"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 1 }}
             >
               <span className="flex items-center gap-2">
-                <CheckCircle2 size={16} className="text-[#00b4d8]" />
+                <CheckCircle2 size={14} className="text-[#00b4d8] sm:w-4 sm:h-4" />
                 クレジットカード不要
               </span>
               <span className="flex items-center gap-2">
-                <CheckCircle2 size={16} className="text-[#00b4d8]" />
+                <CheckCircle2 size={14} className="text-[#00b4d8] sm:w-4 sm:h-4" />
                 いつでもキャンセル可
               </span>
             </motion.div>
@@ -560,21 +561,21 @@ function App() {
       {/* ============================================ */}
       {/* STATS - RESULTS */}
       {/* ============================================ */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <StickySection className="text-center mb-16">
+      <section className="py-12 sm:py-16 lg:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <StickySection className="text-center mb-8 sm:mb-12 lg:mb-16">
             <motion.span
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-4 py-2 rounded-full border border-[#00b4d8]/20 mb-6"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#00b4d8]/20 mb-4 sm:mb-6"
               whileHover={{ scale: 1.05 }}
             >
               導入効果
             </motion.span>
-            <h2 className="text-4xl sm:text-5xl font-bold text-[#1e3a5f]">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-[#1e3a5f]">
               数字で見る<span className="text-[#00b4d8]">Compass</span>
             </h2>
           </StickySection>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
             {[
               { value: 30, unit: '%', label: '工数削減', sub: '平均' },
               { value: 85, unit: '%', label: '情報共有の改善', sub: '利用者調査' },
@@ -583,21 +584,21 @@ function App() {
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
-                className="text-center p-8 rounded-2xl bg-[#f8fafc] border border-slate-100"
+                className="text-center p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl bg-[#f8fafc] border border-slate-100"
                 initial={{ opacity: 0, y: 40, scale: 0.95 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: i * 0.15, duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
                 viewport={{ once: true, margin: '-50px' }}
                 whileHover={{ y: -8, boxShadow: '0 20px 40px -12px rgba(0, 180, 216, 0.15)' }}
               >
-                <div className="flex items-end justify-center gap-1 mb-2">
-                  <span className="text-5xl lg:text-6xl font-extrabold text-[#1e3a5f]">
+                <div className="flex items-end justify-center gap-0.5 sm:gap-1 mb-1 sm:mb-2">
+                  <span className="text-3xl sm:text-4xl lg:text-6xl font-extrabold text-[#1e3a5f]">
                     <AnimatedCounter value={stat.value} duration={2} />
                   </span>
-                  <span className="text-2xl font-bold text-[#00b4d8] mb-2">{stat.unit}</span>
+                  <span className="text-lg sm:text-xl lg:text-2xl font-bold text-[#00b4d8] mb-1 sm:mb-2">{stat.unit}</span>
                 </div>
-                <p className="text-[#1e3a5f] font-semibold mb-1">{stat.label}</p>
-                <p className="text-sm text-[#64748b]">{stat.sub}</p>
+                <p className="text-xs sm:text-sm lg:text-base text-[#1e3a5f] font-semibold mb-0.5 sm:mb-1">{stat.label}</p>
+                <p className="text-xs sm:text-sm text-[#64748b]">{stat.sub}</p>
               </motion.div>
             ))}
           </div>
@@ -607,26 +608,26 @@ function App() {
       {/* ============================================ */}
       {/* WHY COMPASS - DIFFERENTIATOR */}
       {/* ============================================ */}
-      <section className="py-32 relative overflow-hidden bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <StickySection className="text-center mb-16">
+      <section className="py-16 sm:py-24 lg:py-32 relative overflow-hidden bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <StickySection className="text-center mb-8 sm:mb-12 lg:mb-16">
             <motion.span
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-4 py-2 rounded-full border border-[#00b4d8]/20 mb-6"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#00b4d8]/20 mb-4 sm:mb-6"
               whileHover={{ scale: 1.05 }}
             >
               なぜCompassか
             </motion.span>
-            <h2 className="text-4xl sm:text-5xl font-bold text-[#1e3a5f] mb-6">
+            <h2 className="text-xl sm:text-3xl lg:text-5xl font-bold text-[#1e3a5f] mb-4 sm:mb-6 px-2">
               羅針盤のように、<span className="text-[#00b4d8]">進むべき道</span>を示す
             </h2>
-            <p className="text-[#64748b] text-lg max-w-2xl mx-auto">
+            <p className="text-[#64748b] text-sm sm:text-base lg:text-lg max-w-2xl mx-auto px-2">
               現在地と目的地が一目でわかるから、迷わない。
               <br className="hidden sm:block" />
               見ればわかる、触ればできる。だから<strong className="text-[#1e3a5f]">現場に定着する</strong>。
             </p>
           </StickySection>
 
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
             {/* Comparison */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -634,9 +635,9 @@ function App() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <div className="bg-[#f8fafc] rounded-2xl p-8 border border-slate-100">
-                <h3 className="text-lg font-bold text-[#64748b] mb-6">他ツールでよくある悩み</h3>
-                <ul className="space-y-4">
+              <div className="bg-[#f8fafc] rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 border border-slate-100">
+                <h3 className="text-base sm:text-lg font-bold text-[#64748b] mb-4 sm:mb-6">他ツールでよくある悩み</h3>
+                <ul className="space-y-3 sm:space-y-4">
                   {[
                     '画面が複雑で何をすればいいかわからない',
                     '設定項目が多すぎて挫折する',
@@ -646,13 +647,13 @@ function App() {
                   ].map((item, i) => (
                     <motion.li
                       key={i}
-                      className="flex items-start gap-3 text-[#64748b]"
+                      className="flex items-start gap-2 sm:gap-3 text-sm sm:text-base text-[#64748b]"
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.3 + i * 0.1, duration: 0.4 }}
                       viewport={{ once: true }}
                     >
-                      <X className="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5" />
+                      <X className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 flex-shrink-0 mt-0.5" />
                       {item}
                     </motion.li>
                   ))}
@@ -667,9 +668,9 @@ function App() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <div className="bg-gradient-to-br from-[#00b4d8] to-[#0077b6] rounded-2xl p-8 text-white">
-                <h3 className="text-lg font-bold text-cyan-100 mb-6">Compassなら</h3>
-                <ul className="space-y-4">
+              <div className="bg-gradient-to-br from-[#00b4d8] to-[#0077b6] rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 text-white">
+                <h3 className="text-base sm:text-lg font-bold text-cyan-100 mb-4 sm:mb-6">Compassなら</h3>
+                <ul className="space-y-3 sm:space-y-4">
                   {[
                     '開いた瞬間、何をすべきかわかる',
                     'ボタンは最小限、迷う要素がない',
@@ -679,13 +680,13 @@ function App() {
                   ].map((item, i) => (
                     <motion.li
                       key={i}
-                      className="flex items-start gap-3"
+                      className="flex items-start gap-2 sm:gap-3 text-sm sm:text-base"
                       initial={{ opacity: 0, x: 20 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.3 + i * 0.1, duration: 0.4 }}
                       viewport={{ once: true }}
                     >
-                      <CheckCircle2 className="w-5 h-5 text-cyan-200 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-200 flex-shrink-0 mt-0.5" />
                       {item}
                     </motion.li>
                   ))}
@@ -695,7 +696,7 @@ function App() {
           </div>
 
           {/* Key differentiators */}
-          <div className="mt-16 grid md:grid-cols-3 gap-6">
+          <div className="mt-10 sm:mt-12 lg:mt-16 grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             {[
               {
                 title: '3秒で理解できるUI',
@@ -712,14 +713,14 @@ function App() {
             ].map((item, i) => (
               <motion.div
                 key={i}
-                className="text-center p-6"
+                className="text-center p-4 sm:p-6"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
                 viewport={{ once: true }}
               >
-                <h4 className="text-xl font-bold text-[#1e3a5f] mb-3">{item.title}</h4>
-                <p className="text-[#64748b]">{item.description}</p>
+                <h4 className="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-2 sm:mb-3">{item.title}</h4>
+                <p className="text-sm sm:text-base text-[#64748b]">{item.description}</p>
               </motion.div>
             ))}
           </div>
@@ -729,23 +730,23 @@ function App() {
       {/* ============================================ */}
       {/* PAIN POINTS SECTION */}
       {/* ============================================ */}
-      <section className="py-32 relative overflow-hidden bg-[#f8fafc]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
-          <StickySection className="text-center mb-20">
+      <section className="py-16 sm:py-24 lg:py-32 relative overflow-hidden bg-[#f8fafc]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <StickySection className="text-center mb-10 sm:mb-16 lg:mb-20">
             <motion.span
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#1e3a5f] bg-[#1e3a5f]/10 px-4 py-2 rounded-full border border-[#1e3a5f]/20 mb-6"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#1e3a5f] bg-[#1e3a5f]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#1e3a5f]/20 mb-4 sm:mb-6"
               whileHover={{ scale: 1.05 }}
             >
               よくある課題
             </motion.span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-[#1e3a5f]">
+            <h2 className="text-2xl sm:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6 text-[#1e3a5f]">
               <TextReveal>こんな課題、</TextReveal>
               <br />
               <TextReveal delay={0.2}>ありませんか？</TextReveal>
             </h2>
           </StickySection>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             {[
               {
                 icon: FileSpreadsheet,
@@ -774,18 +775,18 @@ function App() {
                 viewport={{ once: true, margin: '-100px' }}
               >
                 <motion.div
-                  className="h-full bg-white rounded-2xl p-8 border border-slate-100 shadow-sm"
+                  className="h-full bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 border border-slate-100 shadow-sm"
                   whileHover={{ y: -4, boxShadow: '0 12px 40px rgba(30, 58, 95, 0.08)' }}
                   transition={{ duration: 0.3 }}
                 >
                   <div
-                    className="w-14 h-14 rounded-xl flex items-center justify-center mb-6"
+                    className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-lg sm:rounded-xl flex items-center justify-center mb-4 sm:mb-6"
                     style={{ backgroundColor: `${item.color}15` }}
                   >
-                    <item.icon className="w-7 h-7" style={{ color: item.color }} />
+                    <item.icon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" style={{ color: item.color }} />
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-[#1e3a5f]">{item.title}</h3>
-                  <p className="text-[#64748b] leading-relaxed">{item.description}</p>
+                  <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-[#1e3a5f]">{item.title}</h3>
+                  <p className="text-sm sm:text-base text-[#64748b] leading-relaxed">{item.description}</p>
                 </motion.div>
               </motion.div>
             ))}
@@ -796,26 +797,26 @@ function App() {
       {/* ============================================ */}
       {/* FEATURES SECTION */}
       {/* ============================================ */}
-      <section id="features" className="py-32 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
-          <StickySection className="text-center mb-20">
+      <section id="features" className="py-16 sm:py-24 lg:py-32 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <StickySection className="text-center mb-10 sm:mb-16 lg:mb-20">
             <motion.span
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-4 py-2 rounded-full border border-[#00b4d8]/20 mb-6"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#00b4d8]/20 mb-4 sm:mb-6"
               whileHover={{ scale: 1.05 }}
             >
               主な機能
             </motion.span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-[#1e3a5f]">
+            <h2 className="text-2xl sm:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6 text-[#1e3a5f]">
               <TextReveal>Compassで</TextReveal>
               <br />
               <span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent">できること</span>
             </h2>
-            <p className="text-[#64748b] text-lg max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base lg:text-lg text-[#64748b] max-w-2xl mx-auto px-2">
               プロジェクトの全体像を把握し、日々の進捗を確実に回すための機能を完備
             </p>
           </StickySection>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {[
               { icon: BarChart3, title: 'ガントチャート', description: '工程を視覚的に管理。依存関係や進捗状況が一目でわかり、計画の見直しも簡単。', color: '#00b4d8' },
               { icon: CheckCircle2, title: 'タスク管理', description: '担当・締切・進捗を一元化。ステータス管理で抜け漏れなく、確実に完了へ。', color: '#00b4d8' },
@@ -832,18 +833,18 @@ function App() {
                 viewport={{ once: true, margin: '-50px' }}
               >
                 <motion.div
-                  className="h-full bg-white rounded-2xl p-8 border border-slate-100 shadow-sm"
+                  className="h-full bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 border border-slate-100 shadow-sm"
                   whileHover={{ y: -4, boxShadow: '0 12px 40px rgba(30, 58, 95, 0.08)' }}
                   transition={{ duration: 0.3 }}
                 >
                   <div
-                    className="w-14 h-14 rounded-xl flex items-center justify-center mb-6"
+                    className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-lg sm:rounded-xl flex items-center justify-center mb-4 sm:mb-6"
                     style={{ backgroundColor: `${feature.color}15` }}
                   >
-                    <feature.icon className="w-7 h-7" style={{ color: feature.color }} />
+                    <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" style={{ color: feature.color }} />
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-[#1e3a5f]">{feature.title}</h3>
-                  <p className="text-[#64748b] leading-relaxed">{feature.description}</p>
+                  <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-[#1e3a5f]">{feature.title}</h3>
+                  <p className="text-sm sm:text-base text-[#64748b] leading-relaxed">{feature.description}</p>
                 </motion.div>
               </motion.div>
             ))}
@@ -854,21 +855,21 @@ function App() {
       {/* ============================================ */}
       {/* SCREENSHOT GALLERY */}
       {/* ============================================ */}
-      <section className="py-32 relative overflow-hidden bg-[#f8fafc]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <StickySection className="text-center mb-16">
+      <section className="py-16 sm:py-24 lg:py-32 relative overflow-hidden bg-[#f8fafc]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <StickySection className="text-center mb-8 sm:mb-12 lg:mb-16">
             <motion.span
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-4 py-2 rounded-full border border-[#00b4d8]/20 mb-6"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#00b4d8]/20 mb-4 sm:mb-6"
               whileHover={{ scale: 1.05 }}
             >
               画面イメージ
             </motion.span>
-            <h2 className="text-4xl sm:text-5xl font-bold text-[#1e3a5f]">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-[#1e3a5f]">
               <span className="text-[#00b4d8]">実際の画面</span>をご覧ください
             </h2>
           </StickySection>
 
-          <div className="space-y-16">
+          <div className="space-y-10 sm:space-y-12 lg:space-y-16">
             {[
               {
                 title: 'ガントチャート',
@@ -888,22 +889,22 @@ function App() {
             ].map((item, i) => (
               <motion.div
                 key={i}
-                className={`flex flex-col ${i % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-8 lg:gap-16 items-center`}
+                className={`flex flex-col ${i % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-4 sm:gap-6 lg:gap-16 items-center`}
                 initial={{ opacity: 0, y: 60, scale: 0.98 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] }}
                 viewport={{ once: true, margin: '-100px' }}
               >
                 <div className="lg:w-1/3 text-center lg:text-left">
-                  <h3 className="text-2xl font-bold text-[#1e3a5f] mb-4">{item.title}</h3>
-                  <p className="text-[#64748b] text-lg">{item.description}</p>
+                  <h3 className="text-xl sm:text-2xl font-bold text-[#1e3a5f] mb-2 sm:mb-4">{item.title}</h3>
+                  <p className="text-sm sm:text-base lg:text-lg text-[#64748b]">{item.description}</p>
                 </div>
                 <motion.div
-                  className="lg:w-2/3"
+                  className="w-full lg:w-2/3"
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <div className="rounded-2xl overflow-hidden shadow-xl border border-slate-200 hover:shadow-2xl transition-shadow duration-300">
+                  <div className="rounded-xl sm:rounded-2xl overflow-hidden shadow-xl border border-slate-200 hover:shadow-2xl transition-shadow duration-300">
                     <img src={item.image} alt={item.title} className="w-full h-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
                   </div>
                 </motion.div>
@@ -916,23 +917,23 @@ function App() {
       {/* ============================================ */}
       {/* PRICING SECTION */}
       {/* ============================================ */}
-      <section id="pricing" className="py-32 relative overflow-hidden bg-gradient-to-br from-[#1e3a5f] via-[#2a4a73] to-[#1e3a5f]">
+      <section id="pricing" className="py-16 sm:py-24 lg:py-32 relative overflow-hidden bg-gradient-to-br from-[#1e3a5f] via-[#2a4a73] to-[#1e3a5f]">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />
 
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
-          <StickySection className="text-center mb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <StickySection className="text-center mb-8 sm:mb-12 lg:mb-16">
             <motion.span
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/20 px-4 py-2 rounded-full border border-[#00b4d8]/30 mb-6"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/20 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#00b4d8]/30 mb-4 sm:mb-6"
               whileHover={{ scale: 1.05 }}
             >
               料金プラン
             </motion.span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
+            <h2 className="text-2xl sm:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6 text-white">
               <TextReveal>シンプルな</TextReveal>
               <br />
               <TextReveal delay={0.2}>料金体系</TextReveal>
             </h2>
-            <p className="text-slate-300 text-lg">
+            <p className="text-sm sm:text-base lg:text-lg text-slate-300">
               必要な分だけ。人数が増えたら席を追加するだけ。
             </p>
           </StickySection>
@@ -944,46 +945,46 @@ function App() {
           ) : null}
 
           <motion.div
-            className="grid gap-6 lg:grid-cols-2 max-w-5xl mx-auto"
+            className="grid gap-4 sm:gap-6 lg:grid-cols-2 max-w-5xl mx-auto"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <div className="bg-white rounded-3xl p-10 relative overflow-hidden shadow-2xl flex flex-col">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 relative overflow-hidden shadow-2xl flex flex-col">
               <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#00b4d8]/10 to-[#0077b6]/10 rounded-full blur-3xl" />
 
               <div className="relative text-center flex flex-col flex-grow">
-                <p className="text-[#64748b] mb-2 font-medium">1ユーザーあたり</p>
+                <p className="text-sm sm:text-base text-[#64748b] mb-2 font-medium">1ユーザーあたり</p>
                 <div className="flex items-end justify-center gap-1 mb-2">
-                  <span className="text-6xl sm:text-7xl font-extrabold text-[#1e3a5f]">
+                  <span className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-[#1e3a5f]">
                     {standardPrice}
                   </span>
-                  <span className="text-[#64748b] mb-3 text-xl">/月</span>
+                  <span className="text-[#64748b] mb-2 sm:mb-3 text-lg sm:text-xl">/月</span>
                 </div>
-                <p className="text-sm text-[#64748b] mb-10">
+                <p className="text-xs sm:text-sm text-[#64748b] mb-6 sm:mb-10">
                   {plans.standard.trialDays ? `${plans.standard.trialDays}日間無料トライアル` : 'すぐに利用開始'}
                 </p>
 
-                <ul className="text-left space-y-4 mb-10">
+                <ul className="text-left space-y-3 sm:space-y-4 mb-6 sm:mb-10">
                   {[...plans.standard.features, '法人・個人どちらもOK', 'カードが難しい場合は請求書対応可'].map((item, i) => (
                     <motion.li
                       key={i}
-                      className="flex items-start gap-3"
+                      className="flex items-start gap-2 sm:gap-3"
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.08 }}
                       viewport={{ once: true }}
                     >
-                      <CheckCircle2 className="w-5 h-5 text-[#00b4d8] flex-shrink-0 mt-0.5" />
-                      <span className="text-[#1e293b]">{item}</span>
+                      <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#00b4d8] flex-shrink-0 mt-0.5" />
+                      <span className="text-sm sm:text-base text-[#1e293b]">{item}</span>
                     </motion.li>
                   ))}
                 </ul>
 
                 <motion.button
                   onClick={handleTrialClick}
-                  className="w-full py-4 rounded-xl font-semibold text-lg bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/30 transition-all"
+                  className="w-full py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/30 transition-all"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -992,36 +993,36 @@ function App() {
               </div>
             </div>
 
-            <div className="bg-white/90 rounded-3xl p-10 border border-white/50 shadow-xl flex flex-col">
+            <div className="bg-white/90 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 border border-white/50 shadow-xl flex flex-col">
               <div className="text-center">
-                <p className="text-[#64748b] mb-2 font-medium">学生プラン</p>
+                <p className="text-sm sm:text-base text-[#64748b] mb-2 font-medium">学生プラン</p>
                 <div className="flex items-end justify-center gap-1 mb-2">
-                  <span className="text-5xl sm:text-6xl font-bold text-[#1e3a5f]">
+                  <span className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#1e3a5f]">
                     {studentPrice}
                   </span>
-                  <span className="text-[#64748b] mb-3 text-lg">/月</span>
+                  <span className="text-[#64748b] mb-2 sm:mb-3 text-base sm:text-lg">/月</span>
                 </div>
-                <p className="text-sm text-[#64748b] mb-8">対象ドメイン: {studentDomainsLabel}</p>
+                <p className="text-xs sm:text-sm text-[#64748b] mb-6 sm:mb-8">対象ドメイン: {studentDomainsLabel}</p>
               </div>
-              <ul className="text-left space-y-4 mb-10">
+              <ul className="text-left space-y-3 sm:space-y-4 mb-6 sm:mb-10">
                 {plans.student.features.map((item, i) => (
                   <motion.li
                     key={i}
-                    className="flex items-start gap-3"
+                    className="flex items-start gap-2 sm:gap-3"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.08 }}
                     viewport={{ once: true }}
                   >
-                    <CheckCircle2 className="w-5 h-5 text-[#00b4d8] flex-shrink-0 mt-0.5" />
-                    <span className="text-[#1e293b]">{item}</span>
+                    <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#00b4d8] flex-shrink-0 mt-0.5" />
+                    <span className="text-sm sm:text-base text-[#1e293b]">{item}</span>
                   </motion.li>
                 ))}
               </ul>
               <div className="flex-grow" />
               <motion.button
                 onClick={handleTrialClick}
-                className="w-full py-4 rounded-xl font-semibold text-lg border border-[#00b4d8]/40 text-[#0077b6] bg-white hover:bg-[#00b4d8]/10 transition-all"
+                className="w-full py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg border border-[#00b4d8]/40 text-[#0077b6] bg-white hover:bg-[#00b4d8]/10 transition-all"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -1035,22 +1036,22 @@ function App() {
       {/* ============================================ */}
       {/* FLOW SECTION */}
       {/* ============================================ */}
-      <section id="flow" className="py-32 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
-          <StickySection className="text-center mb-20">
+      <section id="flow" className="py-16 sm:py-24 lg:py-32 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <StickySection className="text-center mb-10 sm:mb-16 lg:mb-20">
             <motion.span
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-4 py-2 rounded-full border border-[#00b4d8]/20 mb-6"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#00b4d8]/20 mb-4 sm:mb-6"
               whileHover={{ scale: 1.05 }}
             >
               導入の流れ
             </motion.span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#1e3a5f]">
+            <h2 className="text-2xl sm:text-4xl lg:text-6xl font-bold text-[#1e3a5f]">
               <span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent">2ステップ</span>
               <TextReveal delay={0.2}>で始められる</TextReveal>
             </h2>
           </StickySection>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-4xl mx-auto">
             {[
               {
                 step: '01',
@@ -1075,7 +1076,7 @@ function App() {
                 viewport={{ once: true }}
               >
                 <motion.div
-                  className={`h-full rounded-3xl p-8 ${
+                  className={`h-full rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-8 ${
                     item.primary
                       ? 'bg-gradient-to-br from-[#00b4d8] to-[#0077b6] text-white'
                       : 'bg-white border border-slate-200 shadow-sm'
@@ -1083,22 +1084,22 @@ function App() {
                   whileHover={{ y: -4, boxShadow: item.primary ? '0 20px 50px rgba(0, 180, 216, 0.3)' : '0 12px 40px rgba(30, 58, 95, 0.08)' }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className={`text-6xl font-bold mb-6 ${item.primary ? 'text-white/30' : 'text-slate-100'}`}>
+                  <div className={`text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 ${item.primary ? 'text-white/30' : 'text-slate-100'}`}>
                     {item.step}
                   </div>
-                  <h3 className={`text-2xl font-bold mb-4 ${item.primary ? 'text-white' : 'text-[#1e3a5f]'}`}>{item.title}</h3>
-                  <p className={`mb-8 leading-relaxed ${item.primary ? 'text-cyan-100' : 'text-[#64748b]'}`}>
+                  <h3 className={`text-xl sm:text-2xl font-bold mb-3 sm:mb-4 ${item.primary ? 'text-white' : 'text-[#1e3a5f]'}`}>{item.title}</h3>
+                  <p className={`mb-6 sm:mb-8 text-sm sm:text-base leading-relaxed ${item.primary ? 'text-cyan-100' : 'text-[#64748b]'}`}>
                     {item.description}
                   </p>
                   <button
                     onClick={item.action.onClick}
-                    className={`inline-flex items-center gap-2 font-semibold transition group ${
+                    className={`inline-flex items-center gap-2 text-sm sm:text-base font-semibold transition group ${
                       item.primary ? 'text-white hover:text-cyan-100' : 'text-[#00b4d8] hover:text-[#0096b8]'
                     }`}
                   >
-                    <item.action.icon size={18} />
+                    <item.action.icon size={16} className="sm:w-[18px] sm:h-[18px]" />
                     {item.action.label}
-                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight size={14} className="sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </motion.div>
               </motion.div>
@@ -1110,21 +1111,21 @@ function App() {
       {/* ============================================ */}
       {/* FAQ SECTION */}
       {/* ============================================ */}
-      <section className="py-32 relative overflow-hidden bg-[#f8fafc]">
-        <div className="max-w-3xl mx-auto px-6 lg:px-8">
-          <StickySection className="text-center mb-16">
+      <section className="py-16 sm:py-24 lg:py-32 relative overflow-hidden bg-[#f8fafc]">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <StickySection className="text-center mb-8 sm:mb-12 lg:mb-16">
             <motion.span
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#1e3a5f] bg-[#1e3a5f]/10 px-4 py-2 rounded-full border border-[#1e3a5f]/20 mb-6"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#1e3a5f] bg-[#1e3a5f]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#1e3a5f]/20 mb-4 sm:mb-6"
               whileHover={{ scale: 1.05 }}
             >
               よくある質問
             </motion.span>
-            <h2 className="text-4xl sm:text-5xl font-bold text-[#1e3a5f]">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-[#1e3a5f]">
               FAQ
             </h2>
           </StickySection>
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {[
               {
                 q: '導入にどれくらい時間がかかりますか？',
@@ -1153,17 +1154,17 @@ function App() {
             ].map((faq, i) => (
               <motion.details
                 key={i}
-                className="group bg-white rounded-2xl border border-slate-100 shadow-sm"
+                className="group bg-white rounded-xl sm:rounded-2xl border border-slate-100 shadow-sm"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 viewport={{ once: true }}
               >
-                <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                  <span className="font-semibold text-[#1e3a5f] pr-4">{faq.q}</span>
-                  <ChevronDown className="w-5 h-5 text-[#64748b] flex-shrink-0 transition-transform group-open:rotate-180" />
+                <summary className="flex items-center justify-between p-4 sm:p-6 cursor-pointer list-none">
+                  <span className="font-semibold text-sm sm:text-base text-[#1e3a5f] pr-3 sm:pr-4">{faq.q}</span>
+                  <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-[#64748b] flex-shrink-0 transition-transform group-open:rotate-180" />
                 </summary>
-                <div className="px-6 pb-6 text-[#64748b] leading-relaxed">
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-sm sm:text-base text-[#64748b] leading-relaxed">
                   {faq.a}
                 </div>
               </motion.details>
@@ -1175,55 +1176,55 @@ function App() {
       {/* ============================================ */}
       {/* CIRCLE SECTION */}
       {/* ============================================ */}
-      <section id="circle" className="py-24 relative overflow-hidden bg-white border-t border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
+      <section id="circle" className="py-12 sm:py-16 lg:py-24 relative overflow-hidden bg-white border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <StickySection className="max-w-3xl mx-auto text-center">
             <motion.span
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#1e3a5f] bg-[#1e3a5f]/10 px-4 py-2 rounded-full border border-[#1e3a5f]/20 mb-6"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#1e3a5f] bg-[#1e3a5f]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#1e3a5f]/20 mb-4 sm:mb-6"
               whileHover={{ scale: 1.05 }}
             >
               もっと学びたい方へ
             </motion.span>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-[#1e3a5f]">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 text-[#1e3a5f]">
               AI×建築サークル
             </h2>
-            <p className="text-[#64748b] mb-8 leading-relaxed text-lg">
+            <p className="text-sm sm:text-base lg:text-lg text-[#64748b] mb-6 sm:mb-8 leading-relaxed px-2">
               建築業界に特化したAI活用を学ぶ会員制コミュニティ。
               <br className="hidden sm:block" />
               ChatGPT・画像生成AI・業務自動化など、実践的な勉強会やセミナーを毎月開催。
               <br className="hidden sm:block" />
               メンバー同士の情報交換や、最新AI事例の共有も活発です。
             </p>
-            <div className="bg-slate-50 rounded-xl p-6 mb-8 text-left max-w-lg mx-auto">
-              <p className="text-sm font-semibold text-[#1e3a5f] mb-4">サークル会員特典</p>
-              <ul className="space-y-2 text-sm text-[#64748b] mb-4">
+            <div className="bg-slate-50 rounded-lg sm:rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 text-left max-w-lg mx-auto">
+              <p className="text-xs sm:text-sm font-semibold text-[#1e3a5f] mb-3 sm:mb-4">サークル会員特典</p>
+              <ul className="space-y-2 text-xs sm:text-sm text-[#64748b] mb-3 sm:mb-4">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 size={16} className="text-[#00b4d8] flex-shrink-0" />
+                  <CheckCircle2 size={14} className="text-[#00b4d8] flex-shrink-0 sm:w-4 sm:h-4" />
                   <span><strong className="text-[#1e3a5f]">Compass 3席分</strong>が無料で付属</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 size={16} className="text-[#00b4d8] flex-shrink-0" />
+                  <CheckCircle2 size={14} className="text-[#00b4d8] flex-shrink-0 sm:w-4 sm:h-4" />
                   <span>4席目以降は¥1,000/席で追加可能</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 size={16} className="text-[#00b4d8] flex-shrink-0" />
+                  <CheckCircle2 size={14} className="text-[#00b4d8] flex-shrink-0 sm:w-4 sm:h-4" />
                   <span>AI学習コンテンツ・勉強会すべて利用可</span>
                 </li>
               </ul>
-              <div className="border-t border-slate-200 pt-4">
+              <div className="border-t border-slate-200 pt-3 sm:pt-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm text-[#64748b]">月額料金</p>
-                  <p className="text-xl font-bold text-[#1e3a5f]">¥5,000<span className="text-sm font-normal text-[#64748b]">/月</span></p>
+                  <p className="text-xs sm:text-sm text-[#64748b]">月額料金</p>
+                  <p className="text-lg sm:text-xl font-bold text-[#1e3a5f]">¥5,000<span className="text-xs sm:text-sm font-normal text-[#64748b]">/月</span></p>
                 </div>
               </div>
             </div>
             <motion.a
               href="/circle"
-              className="inline-flex items-center gap-2 text-[#00b4d8] font-semibold hover:text-[#0096b8] transition group"
+              className="inline-flex items-center gap-2 text-sm sm:text-base text-[#00b4d8] font-semibold hover:text-[#0096b8] transition group"
               whileHover={{ x: 5 }}
             >
               サークルについて詳しく
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px] group-hover:translate-x-1 transition-transform" />
             </motion.a>
           </StickySection>
         </div>
@@ -1232,15 +1233,15 @@ function App() {
       {/* ============================================ */}
       {/* FINAL CTA SECTION */}
       {/* ============================================ */}
-      <section className="py-32 relative overflow-hidden">
+      <section className="py-16 sm:py-24 lg:py-32 relative overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#00b4d8]/5 rounded-full blur-[150px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[600px] lg:w-[800px] h-[400px] sm:h-[600px] lg:h-[800px] bg-[#00b4d8]/5 rounded-full blur-[100px] sm:blur-[150px]" />
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <StickySection className="text-center">
             <motion.h2
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-8 text-[#1e3a5f]"
+              className="text-2xl sm:text-4xl lg:text-6xl font-bold mb-6 sm:mb-8 text-[#1e3a5f]"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -1250,7 +1251,7 @@ function App() {
               <span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent">Compassを始めよう</span>
             </motion.h2>
             <motion.p
-              className="text-[#64748b] text-lg mb-12 max-w-xl mx-auto"
+              className="text-sm sm:text-base lg:text-lg text-[#64748b] mb-8 sm:mb-12 max-w-xl mx-auto px-2"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
@@ -1261,7 +1262,7 @@ function App() {
               クレジットカード不要。いつでもキャンセル可能。
             </motion.p>
             <motion.div
-              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+              className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
@@ -1269,23 +1270,23 @@ function App() {
             >
               <motion.button
                 onClick={handleTrialClick}
-                className="w-full sm:w-auto px-10 py-5 rounded-xl font-semibold text-lg bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/30 transition-all"
+                className="w-full sm:w-auto px-6 sm:px-10 py-4 sm:py-5 rounded-xl font-semibold text-base sm:text-lg bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/30 transition-all"
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <span className="flex items-center justify-center gap-2">
                   無料トライアルを開始
-                  <ArrowRight size={20} />
+                  <ArrowRight size={18} className="sm:w-5 sm:h-5" />
                 </span>
               </motion.button>
 
               <motion.button
                 onClick={handleDemoClick}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-10 py-5 rounded-xl font-semibold text-lg bg-white text-[#1e3a5f] border border-slate-200 hover:border-[#00b4d8]/50 hover:shadow-lg transition-all"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-10 py-4 sm:py-5 rounded-xl font-semibold text-base sm:text-lg bg-white text-[#1e3a5f] border border-slate-200 hover:border-[#00b4d8]/50 hover:shadow-lg transition-all"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <Play size={20} className="text-[#00b4d8]" />
+                <Play size={18} className="text-[#00b4d8] sm:w-5 sm:h-5" />
                 まずはデモを試す
               </motion.button>
             </motion.div>
@@ -1296,18 +1297,18 @@ function App() {
       {/* ============================================ */}
       {/* FOOTER */}
       {/* ============================================ */}
-      <footer className="py-16 border-t border-slate-100 bg-[#f8fafc]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <footer className="py-10 sm:py-12 lg:py-16 border-t border-slate-100 bg-[#f8fafc]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12"
+            className="flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8 mb-8 sm:mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
             <div className="flex items-center">
-              <img src="/compass-logo.png" alt="Compass" className="h-8 w-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
+              <img src="/compass-logo.png" alt="Compass" className="h-6 sm:h-8 w-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
             </div>
-            <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-[#64748b]">
+            <nav className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-[#64748b]">
               {[
                 { label: '利用規約', href: '/terms' },
                 { label: 'プライバシーポリシー', href: '/privacy' },
@@ -1325,12 +1326,12 @@ function App() {
               ))}
             </nav>
           </motion.div>
-          <div className="border-t border-slate-200 pt-8 flex flex-col items-center gap-4">
-            <div className="flex items-center gap-3 text-sm text-[#64748b]">
+          <div className="border-t border-slate-200 pt-6 sm:pt-8 flex flex-col items-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-[#64748b]">
               <span>Developed by</span>
-              <img src="/archiprisma_dev logo.png" alt="ARCHI-PRISMA" className="h-12 w-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
+              <img src="/archiprisma_dev logo.png" alt="ARCHI-PRISMA" className="h-8 sm:h-10 lg:h-12 w-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
             </div>
-            <p className="text-sm text-[#94a3b8]">
+            <p className="text-xs sm:text-sm text-[#94a3b8]">
               © {new Date().getFullYear()} APDW Inc. All rights reserved.
             </p>
           </div>
@@ -1343,7 +1344,7 @@ function App() {
       <AnimatePresence>
         {showSignupModal && (
           <motion.div
-            className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+            className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -1359,7 +1360,7 @@ function App() {
 
             {/* Modal */}
             <motion.div
-              className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-8"
+              className="relative bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-md w-full p-5 sm:p-8"
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -1368,23 +1369,23 @@ function App() {
               {/* Close button */}
               <button
                 onClick={() => setShowSignupModal(false)}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-100 transition"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 p-1.5 sm:p-2 rounded-full hover:bg-slate-100 transition"
               >
-                <X size={20} className="text-slate-400" />
+                <X size={18} className="text-slate-400 sm:w-5 sm:h-5" />
               </button>
 
-              <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-[#1e3a5f] mb-2">
+              <div className="text-center mb-4 sm:mb-6">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#1e3a5f] mb-1 sm:mb-2">
                   Compassを始める
                 </h3>
-                <p className="text-[#64748b] text-sm">
+                <p className="text-[#64748b] text-xs sm:text-sm">
                   メールアドレスを入力してください
                 </p>
               </div>
 
-              <form onSubmit={handleSignupSubmit} className="space-y-4">
+              <form onSubmit={handleSignupSubmit} className="space-y-3 sm:space-y-4">
                 <div>
-                  <label htmlFor="signup-email" className="block text-sm font-medium text-[#1e3a5f] mb-2">
+                  <label htmlFor="signup-email" className="block text-xs sm:text-sm font-medium text-[#1e3a5f] mb-1.5 sm:mb-2">
                     メールアドレス
                   </label>
                   <input
@@ -1394,15 +1395,15 @@ function App() {
                     onChange={(e) => setSignupEmail(e.target.value)}
                     placeholder="you@example.com"
                     required
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg sm:rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="signup-seats" className="block text-sm font-medium text-[#1e3a5f] mb-2">
+                  <label htmlFor="signup-seats" className="block text-xs sm:text-sm font-medium text-[#1e3a5f] mb-1.5 sm:mb-2">
                     席数
                   </label>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <input
                       id="signup-seats"
                       type="number"
@@ -1413,11 +1414,11 @@ function App() {
                         const next = Number(e.target.value);
                         setSeatCount(Number.isFinite(next) && next > 0 ? next : 1);
                       }}
-                      className="w-28 px-3 py-2 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition"
+                      className="w-24 sm:w-28 px-2.5 sm:px-3 py-2 text-sm sm:text-base rounded-lg sm:rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition"
                     />
-                    <span className="text-sm text-[#64748b]">席</span>
+                    <span className="text-xs sm:text-sm text-[#64748b]">席</span>
                   </div>
-                  <p className="mt-2 text-xs text-[#94a3b8]">
+                  <p className="mt-1.5 sm:mt-2 text-xs text-[#94a3b8]">
                     {isStudentEmail
                       ? '学生プラン適用時は無料です'
                       : `合計: ${formatPrice((plans.standard.pricePerSeat || 0) * normalizedSeats, plans.standard.currency)} / 月`}
@@ -1429,20 +1430,20 @@ function App() {
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
-                    className={`p-3 rounded-xl text-sm ${
+                    className={`p-2.5 sm:p-3 rounded-lg sm:rounded-xl text-xs sm:text-sm ${
                       isStudentEmail
                         ? 'bg-green-50 text-green-700 border border-green-200'
                         : 'bg-blue-50 text-blue-700 border border-blue-200'
                     }`}
                   >
                     {isStudentEmail ? (
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 size={16} />
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <CheckCircle2 size={14} className="sm:w-4 sm:h-4" />
                         <span><strong>学生プラン適用</strong> - 永久無料でご利用いただけます</span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-2">
-                        <Clock size={16} />
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <Clock size={14} className="sm:w-4 sm:h-4" />
                         <span>
                           <strong>{plans.standard.trialDays ?? 0}日間無料トライアル</strong>
                           {' '}- その後 {standardPrice}/月/席
@@ -1453,7 +1454,7 @@ function App() {
                 )}
 
                 {signupError && (
-                  <div className="p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">
+                  <div className="p-2.5 sm:p-3 rounded-lg sm:rounded-xl bg-red-50 text-red-700 text-xs sm:text-sm border border-red-200">
                     {signupError}
                   </div>
                 )}
@@ -1461,11 +1462,11 @@ function App() {
                 <button
                   type="submit"
                   disabled={signupLoading || !signupEmail}
-                  className="w-full py-4 rounded-xl font-semibold text-lg bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 sm:py-4 rounded-lg sm:rounded-xl font-semibold text-base sm:text-lg bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {signupLoading ? (
                     <span className="flex items-center justify-center gap-2">
-                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                      <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
@@ -1478,7 +1479,7 @@ function App() {
                   )}
                 </button>
 
-                <p className="text-xs text-center text-[#94a3b8]">
+                <p className="text-[10px] sm:text-xs text-center text-[#94a3b8]">
                   続行することで、<a href="/terms" className="underline hover:text-[#00b4d8]">利用規約</a>と
                   <a href="/privacy" className="underline hover:text-[#00b4d8]">プライバシーポリシー</a>に同意したものとみなされます。
                 </p>
