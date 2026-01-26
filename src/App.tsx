@@ -409,10 +409,10 @@ function App() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <TextReveal delay={0.5}>現場が迷わない。</TextReveal>
+              <TextReveal delay={0.5}>すべての現場に、</TextReveal>
               <br />
               <span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent">
-                プロジェクトが進む。
+                Compassを。
               </span>
             </motion.h1>
 
