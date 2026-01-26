@@ -288,7 +288,7 @@ function App() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <img src="/compass-logo.png" alt="Compass" className="h-8 w-auto" />
+              <img src="/compass-logo.png" alt="Compass" className="h-8 w-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
             </motion.div>
 
             <nav className="hidden md:flex items-center gap-1">
@@ -404,12 +404,12 @@ function App() {
 
             {/* Main copy */}
             <motion.h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-8 tracking-tight text-[#1e3a5f] whitespace-nowrap"
+              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-8 tracking-tight text-[#1e3a5f] whitespace-nowrap flex items-center justify-center gap-2 sm:gap-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              すべての現場に、<span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent">Compass</span>を。
+              すべての現場に、<img src="/compass-logo.png" alt="Compass" className="h-10 sm:h-14 lg:h-16 w-auto inline-block" draggable="false" onContextMenu={(e) => e.preventDefault()} />を。
             </motion.h1>
 
             <motion.p
@@ -489,6 +489,8 @@ function App() {
                 muted
                 playsInline
                 className="w-full h-auto"
+                controlsList="nodownload"
+                onContextMenu={(e) => e.preventDefault()}
               >
                 <source src="/compass-intro.mp4" type="video/mp4" />
               </video>
@@ -847,7 +849,7 @@ function App() {
                 </div>
                 <div className="lg:w-2/3">
                   <div className="rounded-2xl overflow-hidden shadow-xl border border-slate-200">
-                    <img src={item.image} alt={item.title} className="w-full h-auto" />
+                    <img src={item.image} alt={item.title} className="w-full h-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
                   </div>
                 </div>
               </motion.div>
@@ -1248,7 +1250,7 @@ function App() {
             viewport={{ once: true }}
           >
             <div className="flex items-center">
-              <img src="/compass-logo.png" alt="Compass" className="h-8 w-auto" />
+              <img src="/compass-logo.png" alt="Compass" className="h-8 w-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
             </div>
             <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-[#64748b]">
               {[
@@ -1271,7 +1273,7 @@ function App() {
           <div className="border-t border-slate-200 pt-8 flex flex-col items-center gap-4">
             <div className="flex items-center gap-3 text-sm text-[#64748b]">
               <span>Developed by</span>
-              <img src="/archiprisma_dev logo.png" alt="ARCHI-PRISMA" className="h-12 w-auto" />
+              <img src="/archiprisma_dev logo.png" alt="ARCHI-PRISMA" className="h-12 w-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
             </div>
             <p className="text-sm text-[#94a3b8]">
               © {new Date().getFullYear()} APDW Inc. All rights reserved.
