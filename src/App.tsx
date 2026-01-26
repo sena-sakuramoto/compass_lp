@@ -387,36 +387,60 @@ function App() {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(30,58,95,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(30,58,95,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />
 
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-20 lg:pt-32 pb-8">
-          {/* Text Content - Centered */}
-          <div className="text-center max-w-4xl mx-auto mb-16">
-            {/* Badge */}
-            <motion.div
-              className="mb-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <span className="inline-flex items-center gap-2 text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-4 py-2 rounded-full border border-[#00b4d8]/20">
-                <Building2 size={16} />
-                建築・施工チームのための工程管理
-              </span>
-            </motion.div>
+          {/* Hero Visual - Video (Top) */}
+          <motion.div
+            className="relative max-w-5xl mx-auto mb-12"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            {/* Glow effect behind */}
+            <div className="absolute -inset-4 bg-gradient-to-r from-[#00b4d8]/20 via-[#0077b6]/20 to-[#1e3a5f]/20 rounded-3xl blur-2xl" />
 
+            {/* Video */}
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/50 bg-white">
+              <video
+                ref={videoRef}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-auto"
+                controlsList="nodownload"
+                onContextMenu={(e) => e.preventDefault()}
+              >
+                <source src="/compass-intro.mp4" type="video/mp4" />
+              </video>
+
+              {/* Mute toggle button */}
+              <motion.button
+                onClick={toggleMute}
+                className="absolute bottom-4 right-4 p-3 rounded-full bg-[#1e3a5f]/80 text-white hover:bg-[#1e3a5f] transition-colors backdrop-blur-sm"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+              </motion.button>
+            </div>
+          </motion.div>
+
+          {/* Text Content - Centered */}
+          <div className="text-center max-w-4xl mx-auto">
             {/* Main copy */}
             <motion.h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-8 tracking-tight text-[#1e3a5f] whitespace-nowrap"
+              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight text-[#1e3a5f] whitespace-nowrap"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
             >
               すべての現場に、<span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent">Compass</span>を。
             </motion.h1>
 
             <motion.p
-              className="text-lg sm:text-xl text-[#64748b] mb-10 leading-relaxed max-w-2xl mx-auto"
+              className="text-lg sm:text-xl text-[#64748b] mb-8 leading-relaxed max-w-2xl mx-auto"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
             >
               今どこにいて、次に何をすべきかが一目でわかる。
               <br className="hidden sm:block" />
@@ -469,43 +493,6 @@ function App() {
               </span>
             </motion.div>
           </div>
-
-          {/* Hero Visual - Video */}
-          <motion.div
-            className="relative max-w-6xl mx-auto"
-            initial={{ opacity: 0, y: 60 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.6 }}
-          >
-            {/* Glow effect behind */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-[#00b4d8]/20 via-[#0077b6]/20 to-[#1e3a5f]/20 rounded-3xl blur-2xl" />
-
-            {/* Video */}
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/50 bg-white">
-              <video
-                ref={videoRef}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-auto"
-                controlsList="nodownload"
-                onContextMenu={(e) => e.preventDefault()}
-              >
-                <source src="/compass-intro.mp4" type="video/mp4" />
-              </video>
-
-              {/* Mute toggle button */}
-              <motion.button
-                onClick={toggleMute}
-                className="absolute bottom-4 right-4 p-3 rounded-full bg-[#1e3a5f]/80 text-white hover:bg-[#1e3a5f] transition-colors backdrop-blur-sm"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-              </motion.button>
-            </div>
-          </motion.div>
         </div>
 
         {/* Scroll indicator */}
