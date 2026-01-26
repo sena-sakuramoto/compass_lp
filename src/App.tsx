@@ -1256,16 +1256,14 @@ function App() {
             </div>
             <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-[#64748b]">
               {[
-                { label: '利用規約', href: 'https://compass-31e9e.web.app/terms' },
-                { label: 'プライバシーポリシー', href: 'https://compass-31e9e.web.app/privacy' },
-                { label: '特定商取引法', href: 'https://compass-31e9e.web.app/legal' },
-                { label: 'ヘルプ', href: 'https://compass-31e9e.web.app/help' },
+                { label: '利用規約', href: '/terms' },
+                { label: 'プライバシーポリシー', href: '/privacy' },
+                { label: '特定商取引法', href: '/legal' },
+                { label: 'ヘルプ', href: '/help' },
               ].map((item) => (
                 <motion.a
                   key={item.label}
                   href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="hover:text-[#1e3a5f] transition"
                   whileHover={{ y: -2 }}
                 >
