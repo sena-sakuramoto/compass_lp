@@ -109,6 +109,46 @@ function TextReveal({
 }
 
 // ============================================
+// ANIMATED COUNTER
+// ============================================
+function AnimatedCounter({
+  value,
+  duration = 2
+}: {
+  value: number;
+  duration?: number;
+}) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    let startTime: number;
+    let animationFrame: number;
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
+
+      // Easing function for smooth deceleration
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      setDisplayValue(Math.floor(easeOut * value));
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [isInView, value, duration]);
+
+  return <span ref={ref}>{displayValue}</span>;
+}
+
+// ============================================
 // SCROLL PROGRESS SECTION
 // ============================================
 function StickySection({
@@ -377,10 +417,16 @@ function App() {
       {/* HERO SECTION */}
       {/* ============================================ */}
       <section className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-gradient-to-b from-white via-[#f8fafc] to-white">
-        {/* Background decorations */}
+        {/* Background decorations with parallax */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-0 w-[600px] h-[600px] bg-[#00b4d8]/5 rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#1e3a5f]/5 rounded-full blur-[100px]" />
+          <motion.div
+            className="absolute top-20 left-0 w-[600px] h-[600px] bg-[#00b4d8]/5 rounded-full blur-[100px]"
+            style={{ y: useTransform(scrollYProgress, [0, 1], [0, 150]) }}
+          />
+          <motion.div
+            className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#1e3a5f]/5 rounded-full blur-[100px]"
+            style={{ y: useTransform(scrollYProgress, [0, 1], [0, -100]) }}
+          />
         </div>
 
         {/* Grid pattern */}
@@ -531,21 +577,24 @@ function App() {
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { value: '30', unit: '%', label: '工数削減', sub: '平均' },
-              { value: '85', unit: '%', label: '情報共有の改善', sub: '利用者調査' },
-              { value: '2', unit: '時間', label: '週あたりの会議削減', sub: '平均' },
-              { value: '98', unit: '%', label: '継続利用率', sub: 'トライアル後' },
+              { value: 30, unit: '%', label: '工数削減', sub: '平均' },
+              { value: 85, unit: '%', label: '情報共有の改善', sub: '利用者調査' },
+              { value: 2, unit: '時間', label: '週あたりの会議削減', sub: '平均' },
+              { value: 98, unit: '%', label: '継続利用率', sub: 'トライアル後' },
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
                 className="text-center p-8 rounded-2xl bg-[#f8fafc] border border-slate-100"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                viewport={{ once: true }}
+                initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: i * 0.15, duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
+                viewport={{ once: true, margin: '-50px' }}
+                whileHover={{ y: -8, boxShadow: '0 20px 40px -12px rgba(0, 180, 216, 0.15)' }}
               >
                 <div className="flex items-end justify-center gap-1 mb-2">
-                  <span className="text-5xl lg:text-6xl font-extrabold text-[#1e3a5f]">{stat.value}</span>
+                  <span className="text-5xl lg:text-6xl font-extrabold text-[#1e3a5f]">
+                    <AnimatedCounter value={stat.value} duration={2} />
+                  </span>
                   <span className="text-2xl font-bold text-[#00b4d8] mb-2">{stat.unit}</span>
                 </div>
                 <p className="text-[#1e3a5f] font-semibold mb-1">{stat.label}</p>
@@ -583,6 +632,7 @@ function App() {
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
               <div className="bg-[#f8fafc] rounded-2xl p-8 border border-slate-100">
@@ -595,10 +645,17 @@ function App() {
                     'ベテラン社員が使ってくれない',
                     '結局Excelに戻ってしまう',
                   ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-3 text-[#64748b]">
+                    <motion.li
+                      key={i}
+                      className="flex items-start gap-3 text-[#64748b]"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 + i * 0.1, duration: 0.4 }}
+                      viewport={{ once: true }}
+                    >
                       <X className="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5" />
                       {item}
-                    </li>
+                    </motion.li>
                   ))}
                 </ul>
               </div>
@@ -608,6 +665,7 @@ function App() {
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
               <div className="bg-gradient-to-br from-[#00b4d8] to-[#0077b6] rounded-2xl p-8 text-white">
@@ -620,10 +678,17 @@ function App() {
                     '60代の職人さんも初日から活用',
                     'スマホで3タップ、進捗報告完了',
                   ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-3">
+                    <motion.li
+                      key={i}
+                      className="flex items-start gap-3"
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 + i * 0.1, duration: 0.4 }}
+                      viewport={{ once: true }}
+                    >
                       <CheckCircle2 className="w-5 h-5 text-cyan-200 flex-shrink-0 mt-0.5" />
                       {item}
-                    </li>
+                    </motion.li>
                   ))}
                 </ul>
               </div>
@@ -825,20 +890,24 @@ function App() {
               <motion.div
                 key={i}
                 className={`flex flex-col ${i % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-8 lg:gap-16 items-center`}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
+                initial={{ opacity: 0, y: 60, scale: 0.98 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] }}
                 viewport={{ once: true, margin: '-100px' }}
               >
                 <div className="lg:w-1/3 text-center lg:text-left">
                   <h3 className="text-2xl font-bold text-[#1e3a5f] mb-4">{item.title}</h3>
                   <p className="text-[#64748b] text-lg">{item.description}</p>
                 </div>
-                <div className="lg:w-2/3">
-                  <div className="rounded-2xl overflow-hidden shadow-xl border border-slate-200">
+                <motion.div
+                  className="lg:w-2/3"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className="rounded-2xl overflow-hidden shadow-xl border border-slate-200 hover:shadow-2xl transition-shadow duration-300">
                     <img src={item.image} alt={item.title} className="w-full h-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
                   </div>
-                </div>
+                </motion.div>
               </motion.div>
             ))}
           </div>
