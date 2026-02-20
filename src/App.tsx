@@ -464,6 +464,7 @@ function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // 申し込みモーダル用state
@@ -546,6 +547,25 @@ function App() {
     const lower = signupEmail.toLowerCase();
     setIsStudentEmail(domains.some(d => lower.endsWith(d)));
   }, [signupEmail, studentPlan.eligibleDomains]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !isMobile) return;
+
+    video.muted = true;
+    setIsMuted(true);
+
+    const tryAutoplay = async () => {
+      try {
+        await video.play();
+        setIsVideoPlaying(true);
+      } catch {
+        setIsVideoPlaying(false);
+      }
+    };
+
+    void tryAutoplay();
+  }, [isMobile]);
 
   const handleDemoClick = () => {
     window.location.href = 'https://compass-demo.web.app/';
@@ -791,18 +811,39 @@ function App() {
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/50 bg-white">
               <video
                 ref={videoRef}
-                autoPlay={!isMobile}
+                autoPlay
                 loop
                 muted
                 playsInline
-                preload={isMobile ? 'none' : 'auto'}
+                preload={isMobile ? 'metadata' : 'auto'}
                 poster={isMobile ? '/dashboard.png' : undefined}
                 className="w-full h-auto"
                 controlsList="nodownload"
                 onContextMenu={(e) => e.preventDefault()}
+                onPlay={() => setIsVideoPlaying(true)}
+                onPause={() => setIsVideoPlaying(false)}
               >
                 <source src="/compass-intro.mp4" type="video/mp4" />
               </video>
+
+              {/* Mobile play fallback when autoplay is blocked */}
+              {isMobile && !isVideoPlaying && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!videoRef.current) return;
+                    try {
+                      await videoRef.current.play();
+                      setIsVideoPlaying(true);
+                    } catch {
+                      setIsVideoPlaying(false);
+                    }
+                  }}
+                  className="absolute inset-0 m-auto h-12 w-28 rounded-full bg-[#1e3a5f]/80 text-white text-sm font-semibold backdrop-blur-sm hover:bg-[#1e3a5f] transition-colors"
+                >
+                  再生
+                </button>
+              )}
 
               {/* Mute toggle button */}
               <motion.button
