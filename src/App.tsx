@@ -1525,7 +1525,7 @@ function App() {
                 <div className="rounded-xl border border-slate-200 bg-[#f8fafc] p-4 mb-6">
                   <h3 className="text-sm font-bold text-[#1e3a5f] mb-3">Enterpriseでできること</h3>
                   <ul className="space-y-2 text-sm text-[#334155]">
-                    {['16名以上の組織に合わせた運用設計', '導入オンボーディング・定着支援', '請求書払いなどの法人契約オプション', '料金は利用規模に応じた個別見積'].map((item) => (
+                    {['41名以上の組織に合わせた運用設計', '導入オンボーディング・定着支援', '請求書払いなどの法人契約オプション', '料金は利用規模に応じた個別見積'].map((item) => (
                       <li key={item} className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-[#00b4d8] flex-shrink-0 mt-0.5" />
                         <span>{item}</span>
@@ -1534,25 +1534,42 @@ function App() {
                   </ul>
                 </div>
 
-                <form onSubmit={handleEnterpriseSubmit} className="space-y-4">
-                  <h3 className="text-sm font-bold text-[#1e3a5f]">相談フォーム</h3>
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    <input type="text" required placeholder="会社名" value={enterpriseForm.companyName} onChange={(e) => handleEnterpriseFieldChange('companyName', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
-                    <input type="text" required placeholder="担当者名" value={enterpriseForm.contactName} onChange={(e) => handleEnterpriseFieldChange('contactName', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
+                {enterpriseSubmitted ? (
+                  <div className="text-center py-8 space-y-4">
+                    <div className="mx-auto w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center">
+                      <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+                    </div>
+                    <h3 className="text-lg font-bold text-[#1e3a5f]">送信完了しました</h3>
+                    <p className="text-sm text-[#64748b]">担当者より折り返しご連絡いたします。</p>
+                    <p className="text-xs text-[#94a3b8]">メールが届かない場合はアドレスの入力間違いの可能性があります。<br />お手数ですが再度お問い合わせください。</p>
+                    <button
+                      type="button"
+                      onClick={() => { setShowEnterpriseModal(false); setEnterpriseSubmitted(false); setEnterpriseForm({ companyName: '', contactName: '', email: '', teamSize: '', phone: '', message: '' }); }}
+                      className="inline-flex items-center gap-2 rounded-xl bg-[#1e3a5f] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition"
+                    >
+                      閉じる
+                    </button>
                   </div>
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    <input type="email" required placeholder="メールアドレス" value={enterpriseForm.email} onChange={(e) => handleEnterpriseFieldChange('email', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
-                    <input type="tel" placeholder="電話番号（任意）" value={enterpriseForm.phone} onChange={(e) => handleEnterpriseFieldChange('phone', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
-                  </div>
-                  <input type="number" min={16} required placeholder="想定利用人数（16以上）" value={enterpriseForm.teamSize} onChange={(e) => handleEnterpriseFieldChange('teamSize', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
-                  <textarea rows={3} required placeholder="相談内容（導入時期、運用課題など）" value={enterpriseForm.message} onChange={(e) => handleEnterpriseFieldChange('message', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm resize-y" />
-                  <button type="submit" disabled={enterpriseLoading || enterpriseSubmitted} className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1e3a5f] to-[#2a4a73] px-4 py-3 text-sm font-semibold text-white hover:opacity-95 transition disabled:opacity-60 disabled:cursor-not-allowed">
-                    {enterpriseLoading ? '送信中...' : enterpriseSubmitted ? '送信済み' : '相談内容を送信する'}
-                    {!enterpriseLoading && !enterpriseSubmitted && <ArrowRight size={14} />}
-                  </button>
-                  {enterpriseSubmitted && <p className="text-xs text-emerald-700">送信完了しました。担当者より折り返しご連絡いたします。</p>}
-                  {enterpriseError && <p className="text-xs text-red-600">{enterpriseError}</p>}
-                </form>
+                ) : (
+                  <form onSubmit={handleEnterpriseSubmit} className="space-y-4">
+                    <h3 className="text-sm font-bold text-[#1e3a5f]">相談フォーム</h3>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <input type="text" required placeholder="会社名" value={enterpriseForm.companyName} onChange={(e) => handleEnterpriseFieldChange('companyName', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
+                      <input type="text" required placeholder="担当者名" value={enterpriseForm.contactName} onChange={(e) => handleEnterpriseFieldChange('contactName', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
+                    </div>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <input type="email" required placeholder="メールアドレス" value={enterpriseForm.email} onChange={(e) => handleEnterpriseFieldChange('email', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
+                      <input type="tel" placeholder="電話番号（任意）" value={enterpriseForm.phone} onChange={(e) => handleEnterpriseFieldChange('phone', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
+                    </div>
+                    <input type="number" min={41} required placeholder="想定利用人数（41以上）" value={enterpriseForm.teamSize} onChange={(e) => handleEnterpriseFieldChange('teamSize', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
+                    <textarea rows={3} required placeholder="相談内容（導入時期、運用課題など）" value={enterpriseForm.message} onChange={(e) => handleEnterpriseFieldChange('message', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm resize-y" />
+                    <button type="submit" disabled={enterpriseLoading} className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1e3a5f] to-[#2a4a73] px-4 py-3 text-sm font-semibold text-white hover:opacity-95 transition disabled:opacity-60 disabled:cursor-not-allowed">
+                      {enterpriseLoading ? '送信中...' : '相談内容を送信する'}
+                      {!enterpriseLoading && <ArrowRight size={14} />}
+                    </button>
+                    {enterpriseError && <p className="text-xs text-red-600">{enterpriseError}</p>}
+                  </form>
+                )}
               </div>
             </motion.div>
           </motion.div>
