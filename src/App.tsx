@@ -71,6 +71,7 @@ type Plan = {
 type CheckoutPlans = {
   small: Plan;
   standard: Plan;
+  business: Plan;
   student: Plan;
 };
 
@@ -98,6 +99,19 @@ const DEFAULT_PLANS: CheckoutPlans = {
     features: [
       '全機能が使える',
       '最大15名まで',
+      '14日間の無料トライアル',
+    ],
+  },
+  business: {
+    name: 'Compass Business',
+    price: 35000,
+    maxMembers: 40,
+    currency: 'JPY',
+    interval: 'month',
+    trialDays: 14,
+    features: [
+      '全機能が使える',
+      '最大40名まで',
       '14日間の無料トライアル',
     ],
   },
@@ -159,6 +173,7 @@ const normalizePlans = (value: unknown): CheckoutPlans => {
   return {
     small: normalizePlan(candidate.small, DEFAULT_PLANS.small),
     standard: normalizePlan(candidate.standard, DEFAULT_PLANS.standard),
+    business: normalizePlan(candidate.business, DEFAULT_PLANS.business),
     student: normalizePlan(candidate.student, DEFAULT_PLANS.student),
   };
 };
@@ -470,7 +485,7 @@ function App() {
   // 申し込みモーダル用state
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [signupEmail, setSignupEmail] = useState('');
-  const [selectedTier, setSelectedTier] = useState<'small' | 'standard'>('small');
+  const [selectedTier, setSelectedTier] = useState<'small' | 'standard' | 'business'>('small');
   const [signupLoading, setSignupLoading] = useState(false);
   const [signupError, setSignupError] = useState<string | null>(null);
   const [isStudentEmail, setIsStudentEmail] = useState(false);
@@ -487,10 +502,12 @@ function App() {
   const [enterpriseSubmitted, setEnterpriseSubmitted] = useState(false);
   const [enterpriseLoading, setEnterpriseLoading] = useState(false);
   const [enterpriseError, setEnterpriseError] = useState<string | null>(null);
+  const [showEnterpriseModal, setShowEnterpriseModal] = useState(false);
   const smallPlan = plans.small ?? DEFAULT_PLANS.small;
   const standardPlan = plans.standard ?? DEFAULT_PLANS.standard;
+  const businessPlan = plans.business ?? DEFAULT_PLANS.business;
   const studentPlan = plans.student ?? DEFAULT_PLANS.student;
-  const selectedPlan = selectedTier === 'standard' ? standardPlan : smallPlan;
+  const selectedPlan = selectedTier === 'business' ? businessPlan : selectedTier === 'standard' ? standardPlan : smallPlan;
   const selectedPrice = formatPrice(selectedPlan.price, selectedPlan.currency);
   const studentPrice = formatPrice(studentPlan.price, studentPlan.currency);
   const studentDomainsLabel = (studentPlan.eligibleDomains ?? DEFAULT_PLANS.student.eligibleDomains ?? []).join(' / ');
@@ -571,7 +588,7 @@ function App() {
     window.location.href = 'https://compass-demo.web.app/';
   };
 
-  const openSignupWithTier = (tier: 'small' | 'standard') => {
+  const openSignupWithTier = (tier: 'small' | 'standard' | 'business') => {
     setShowSignupModal(true);
     setSignupEmail('');
     setSignupError(null);
@@ -581,17 +598,11 @@ function App() {
     openSignupWithTier('small');
   };
 
-  const scrollToEnterpriseForm = () => {
-    document.getElementById('enterprise-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
   const handleEnterpriseInquiryClick = (closeSignupModal = false) => {
     if (closeSignupModal) {
       setShowSignupModal(false);
-      window.setTimeout(scrollToEnterpriseForm, 150);
-      return;
     }
-    scrollToEnterpriseForm();
+    setShowEnterpriseModal(true);
   };
 
   const handleSignupSubmit = async (e: React.FormEvent) => {
@@ -1322,7 +1333,7 @@ function App() {
               <TextReveal delay={0.2}>料金体系</TextReveal>
             </h2>
             <p className="text-sm sm:text-base lg:text-lg text-slate-300">
-              Small（〜5名）・Standard（〜15名）の定額制。15名を超える場合はEnterpriseをご案内します。
+              Small（〜5名）・Standard（〜15名）・Business（〜40名）の定額制。40名を超える場合はEnterpriseをご案内します。
             </p>
           </StickySection>
 
@@ -1333,7 +1344,7 @@ function App() {
           ) : null}
 
           <motion.div
-            className="grid gap-4 sm:gap-6 lg:grid-cols-2 max-w-5xl mx-auto"
+            className="grid gap-4 sm:gap-6 lg:grid-cols-3 max-w-6xl mx-auto"
             initial={isMobile ? undefined : { opacity: 0, y: 50 }}
             whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
             transition={isMobile ? undefined : { duration: 0.6 }}
@@ -1418,10 +1429,48 @@ function App() {
               </motion.button>
               </div>
             </div>
+
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 border border-white/50 shadow-xl flex flex-col">
+              <div className="text-center flex flex-col flex-grow">
+                <p className="text-sm sm:text-base text-[#64748b] mb-2 font-medium">Business（〜{businessPlan.maxMembers}名）</p>
+                <div className="flex items-end justify-center gap-1 mb-2">
+                  <span className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#1e3a5f]">
+                    {formatPrice(businessPlan.price, businessPlan.currency)}
+                  </span>
+                  <span className="text-[#64748b] mb-2 sm:mb-3 text-lg">/月</span>
+                </div>
+                <p className="text-xs sm:text-sm text-[#64748b] mb-6 sm:mb-10">
+                  {businessPlan.trialDays ? `${businessPlan.trialDays}日間無料トライアル` : 'すぐに利用開始'}
+                </p>
+              <ul className="text-left space-y-3 sm:space-y-4 mb-6 sm:mb-10">
+                {businessPlan.features.map((item, i) => (
+                  <motion.li
+                    key={i}
+                    className="flex items-start gap-2 sm:gap-3"
+                    initial={isMobile ? undefined : { opacity: 0, x: -20 }}
+                    whileInView={isMobile ? undefined : { opacity: 1, x: 0 }}
+                    transition={isMobile ? undefined : { delay: i * 0.08 }}
+                    viewport={isMobile ? undefined : { once: true }}
+                    >
+                      <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#00b4d8] flex-shrink-0 mt-0.5" />
+                    <span className="text-sm sm:text-base text-[#1e293b]">{item}</span>
+                  </motion.li>
+                ))}
+              </ul>
+              <motion.button
+                onClick={() => openSignupWithTier('business')}
+                className="w-full py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg bg-gradient-to-r from-[#1e3a5f] to-[#2a4a73] text-white shadow-lg shadow-slate-900/20 hover:shadow-xl transition-all"
+                whileHover={isMobile ? undefined : { scale: 1.02 }}
+                whileTap={isMobile ? undefined : { scale: 0.98 }}
+              >
+                {businessPlan.trialDays ? `${businessPlan.trialDays}日間無料で始める` : '今すぐ始める'}
+              </motion.button>
+              </div>
+            </div>
           </motion.div>
-          <div className="mt-6 mx-auto max-w-5xl rounded-2xl border border-white/20 bg-white/10 px-5 py-4 sm:px-6 sm:py-5 text-center">
+          <div className="mt-6 mx-auto max-w-6xl rounded-2xl border border-white/20 bg-white/10 px-5 py-4 sm:px-6 sm:py-5 text-center">
             <p className="text-sm sm:text-base text-slate-100">
-              15名を超えるチームは <strong className="text-white">Enterprise（個別見積）</strong> のご案内になります。
+              40名を超えるチームは <strong className="text-white">Enterprise（個別見積）</strong> のご案内になります。
             </p>
             <button
               type="button"
@@ -1441,119 +1490,74 @@ function App() {
       {/* ============================================ */}
       {/* ENTERPRISE SECTION */}
       {/* ============================================ */}
-      <section id="enterprise-form" className="py-16 sm:py-20 lg:py-24 bg-[#f8fafc] border-t border-slate-200">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-10">
-            <span className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#1e3a5f] bg-[#1e3a5f]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#1e3a5f]/20 mb-4">
-              Enterprise
-            </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1e3a5f] mb-3">
-              16名以上のチーム向け
-            </h2>
-            <p className="text-sm sm:text-base text-[#64748b] max-w-2xl mx-auto">
-              利用人数・運用体制に合わせて、導入設計とお見積りをご提案します。まずは下記フォームからご相談ください。
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
-              <h3 className="text-lg font-bold text-[#1e3a5f] mb-4">Enterpriseでできること</h3>
-              <ul className="space-y-3 text-sm text-[#334155]">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#00b4d8] flex-shrink-0 mt-0.5" />
-                  <span>16名以上の組織に合わせた運用設計</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#00b4d8] flex-shrink-0 mt-0.5" />
-                  <span>導入オンボーディング・定着支援</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#00b4d8] flex-shrink-0 mt-0.5" />
-                  <span>請求書払いなどの法人契約オプション</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#00b4d8] flex-shrink-0 mt-0.5" />
-                  <span>料金は利用規模に応じた個別見積</span>
-                </li>
-              </ul>
-            </div>
-
-            <form onSubmit={handleEnterpriseSubmit} className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 space-y-4">
-              <h3 className="text-lg font-bold text-[#1e3a5f]">Enterprise相談フォーム</h3>
-              <div className="grid sm:grid-cols-2 gap-3">
-                <input
-                  type="text"
-                  required
-                  placeholder="会社名"
-                  value={enterpriseForm.companyName}
-                  onChange={(e) => handleEnterpriseFieldChange('companyName', e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm"
-                />
-                <input
-                  type="text"
-                  required
-                  placeholder="担当者名"
-                  value={enterpriseForm.contactName}
-                  onChange={(e) => handleEnterpriseFieldChange('contactName', e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm"
-                />
-              </div>
-              <div className="grid sm:grid-cols-2 gap-3">
-                <input
-                  type="email"
-                  required
-                  placeholder="メールアドレス"
-                  value={enterpriseForm.email}
-                  onChange={(e) => handleEnterpriseFieldChange('email', e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm"
-                />
-                <input
-                  type="tel"
-                  placeholder="電話番号（任意）"
-                  value={enterpriseForm.phone}
-                  onChange={(e) => handleEnterpriseFieldChange('phone', e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm"
-                />
-              </div>
-              <input
-                type="number"
-                min={16}
-                required
-                placeholder="想定利用人数（16以上）"
-                value={enterpriseForm.teamSize}
-                onChange={(e) => handleEnterpriseFieldChange('teamSize', e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm"
-              />
-              <textarea
-                rows={4}
-                required
-                placeholder="相談内容（導入時期、運用課題など）"
-                value={enterpriseForm.message}
-                onChange={(e) => handleEnterpriseFieldChange('message', e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm resize-y"
-              />
+      {/* Enterprise Modal */}
+      <AnimatePresence>
+        {showEnterpriseModal && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <div className="absolute inset-0 bg-black/50" onClick={() => setShowEnterpriseModal(false)} />
+            <motion.div
+              className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl"
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            >
               <button
-                type="submit"
-                disabled={enterpriseLoading || enterpriseSubmitted}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1e3a5f] to-[#2a4a73] px-4 py-3 text-sm font-semibold text-white hover:opacity-95 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                type="button"
+                onClick={() => setShowEnterpriseModal(false)}
+                className="absolute right-4 top-4 z-10 rounded-full p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
               >
-                {enterpriseLoading ? '送信中...' : enterpriseSubmitted ? '送信済み' : '相談内容を送信する'}
-                {!enterpriseLoading && !enterpriseSubmitted && <ArrowRight size={14} />}
+                <X size={20} />
               </button>
-              {enterpriseSubmitted && (
-                <p className="text-xs text-emerald-700">
-                  送信完了しました。担当者より折り返しご連絡いたします。
-                </p>
-              )}
-              {enterpriseError && (
-                <p className="text-xs text-red-600">
-                  {enterpriseError}
-                </p>
-              )}
-            </form>
-          </div>
-        </div>
-      </section>
+              <div className="p-6 sm:p-8">
+                <div className="text-center mb-6">
+                  <span className="inline-flex items-center gap-2 text-xs font-medium text-[#1e3a5f] bg-[#1e3a5f]/10 px-3 py-1.5 rounded-full border border-[#1e3a5f]/20 mb-3">
+                    Enterprise
+                  </span>
+                  <h2 className="text-xl sm:text-2xl font-bold text-[#1e3a5f] mb-2">41名以上のチーム向け</h2>
+                  <p className="text-sm text-[#64748b]">利用人数・運用体制に合わせて、導入設計とお見積りをご提案します。</p>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 bg-[#f8fafc] p-4 mb-6">
+                  <h3 className="text-sm font-bold text-[#1e3a5f] mb-3">Enterpriseでできること</h3>
+                  <ul className="space-y-2 text-sm text-[#334155]">
+                    {['16名以上の組織に合わせた運用設計', '導入オンボーディング・定着支援', '請求書払いなどの法人契約オプション', '料金は利用規模に応じた個別見積'].map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-[#00b4d8] flex-shrink-0 mt-0.5" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <form onSubmit={handleEnterpriseSubmit} className="space-y-4">
+                  <h3 className="text-sm font-bold text-[#1e3a5f]">相談フォーム</h3>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <input type="text" required placeholder="会社名" value={enterpriseForm.companyName} onChange={(e) => handleEnterpriseFieldChange('companyName', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
+                    <input type="text" required placeholder="担当者名" value={enterpriseForm.contactName} onChange={(e) => handleEnterpriseFieldChange('contactName', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <input type="email" required placeholder="メールアドレス" value={enterpriseForm.email} onChange={(e) => handleEnterpriseFieldChange('email', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
+                    <input type="tel" placeholder="電話番号（任意）" value={enterpriseForm.phone} onChange={(e) => handleEnterpriseFieldChange('phone', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
+                  </div>
+                  <input type="number" min={16} required placeholder="想定利用人数（16以上）" value={enterpriseForm.teamSize} onChange={(e) => handleEnterpriseFieldChange('teamSize', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm" />
+                  <textarea rows={3} required placeholder="相談内容（導入時期、運用課題など）" value={enterpriseForm.message} onChange={(e) => handleEnterpriseFieldChange('message', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 outline-none transition text-sm resize-y" />
+                  <button type="submit" disabled={enterpriseLoading || enterpriseSubmitted} className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1e3a5f] to-[#2a4a73] px-4 py-3 text-sm font-semibold text-white hover:opacity-95 transition disabled:opacity-60 disabled:cursor-not-allowed">
+                    {enterpriseLoading ? '送信中...' : enterpriseSubmitted ? '送信済み' : '相談内容を送信する'}
+                    {!enterpriseLoading && !enterpriseSubmitted && <ArrowRight size={14} />}
+                  </button>
+                  {enterpriseSubmitted && <p className="text-xs text-emerald-700">送信完了しました。担当者より折り返しご連絡いたします。</p>}
+                  {enterpriseError && <p className="text-xs text-red-600">{enterpriseError}</p>}
+                </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ============================================ */}
       {/* FLOW SECTION */}
@@ -1663,7 +1667,7 @@ function App() {
               },
               {
                 q: '途中でプランを変更できますか？',
-                a: 'Small（〜5名）からStandard（〜15名）へのアップグレードはいつでも可能です。プロジェクトの規模に応じて柔軟に変更いただけます。',
+                a: 'Small（〜5名）→ Standard（〜15名）→ Business（〜40名）へのアップグレードはいつでも可能です。プロジェクトの規模に応じて柔軟に変更いただけます。',
               },
               {
                 q: 'データのセキュリティは大丈夫ですか？',
@@ -1835,6 +1839,7 @@ function App() {
                 { label: 'プライバシーポリシー', href: '/privacy' },
                 { label: '特定商取引法', href: '/legal' },
                 { label: 'ヘルプ', href: '/help' },
+                { label: 'アプリへログイン', href: 'https://app.compass.archi-prisma.co.jp/' },
               ].map((item) => (
                 <motion.a
                   key={item.label}
@@ -1924,36 +1929,49 @@ function App() {
                   <label className="block text-xs sm:text-sm font-medium text-[#1e3a5f] mb-1.5 sm:mb-2">
                     プランを選択
                   </label>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
                     <button
                       type="button"
                       onClick={() => setSelectedTier('small')}
-                      className={`p-3 rounded-xl border-2 text-left transition ${
+                      className={`p-2.5 sm:p-3 rounded-xl border-2 text-left transition ${
                         selectedTier === 'small'
                           ? 'border-[#00b4d8] bg-[#00b4d8]/5'
                           : 'border-slate-200 hover:border-slate-300'
                       }`}
                     >
-                      <p className="font-semibold text-sm text-[#1e3a5f]">Small</p>
-                      <p className="text-xs text-[#64748b]">〜{smallPlan.maxMembers}名</p>
-                      <p className="text-sm font-bold text-[#1e3a5f] mt-1">{formatPrice(smallPlan.price, smallPlan.currency)}/月</p>
+                      <p className="font-semibold text-xs sm:text-sm text-[#1e3a5f]">Small</p>
+                      <p className="text-[10px] sm:text-xs text-[#64748b]">〜{smallPlan.maxMembers}名</p>
+                      <p className="text-xs sm:text-sm font-bold text-[#1e3a5f] mt-1">{formatPrice(smallPlan.price, smallPlan.currency)}/月</p>
                     </button>
                     <button
                       type="button"
                       onClick={() => setSelectedTier('standard')}
-                      className={`p-3 rounded-xl border-2 text-left transition ${
+                      className={`p-2.5 sm:p-3 rounded-xl border-2 text-left transition ${
                         selectedTier === 'standard'
                           ? 'border-[#00b4d8] bg-[#00b4d8]/5'
                           : 'border-slate-200 hover:border-slate-300'
                       }`}
                     >
-                      <p className="font-semibold text-sm text-[#1e3a5f]">Standard</p>
-                      <p className="text-xs text-[#64748b]">〜{standardPlan.maxMembers}名</p>
-                      <p className="text-sm font-bold text-[#1e3a5f] mt-1">{formatPrice(standardPlan.price, standardPlan.currency)}/月</p>
+                      <p className="font-semibold text-xs sm:text-sm text-[#1e3a5f]">Standard</p>
+                      <p className="text-[10px] sm:text-xs text-[#64748b]">〜{standardPlan.maxMembers}名</p>
+                      <p className="text-xs sm:text-sm font-bold text-[#1e3a5f] mt-1">{formatPrice(standardPlan.price, standardPlan.currency)}/月</p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedTier('business')}
+                      className={`p-2.5 sm:p-3 rounded-xl border-2 text-left transition ${
+                        selectedTier === 'business'
+                          ? 'border-[#00b4d8] bg-[#00b4d8]/5'
+                          : 'border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      <p className="font-semibold text-xs sm:text-sm text-[#1e3a5f]">Business</p>
+                      <p className="text-[10px] sm:text-xs text-[#64748b]">〜{businessPlan.maxMembers}名</p>
+                      <p className="text-xs sm:text-sm font-bold text-[#1e3a5f] mt-1">{formatPrice(businessPlan.price, businessPlan.currency)}/月</p>
                     </button>
                   </div>
                   <p className="mt-2 text-xs text-[#64748b]">
-                    15名を超える場合は
+                    40名を超える場合は
                     {' '}
                     <button
                       type="button"
