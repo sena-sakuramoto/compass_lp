@@ -4,6 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "generate:github-history": "node scripts/generate-github-history.mjs",
+    "predev": "npm run generate:github-history",
+    "prebuild": "npm run generate:github-history",
+    "prepreview": "npm run generate:github-history",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -11,6 +15,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.57.1",
     "framer-motion": "^12.28.1",
     "lucide-react": "^0.562.0",
     "react": "^19.2.0",

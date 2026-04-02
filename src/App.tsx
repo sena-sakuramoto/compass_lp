@@ -17,6 +17,7 @@ import {
   VolumeX,
 } from 'lucide-react';
 import './index.css';
+import { latestProductUpdate, productUpdates } from './content/updates';
 
 const motion = framerMotion;
 const MOBILE_MOTION_PROPS = [
@@ -347,13 +348,12 @@ function DesktopStickySection({
     offset: ['start end', 'end start'],
   });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [60, 0, 0, -60]);
+  const y = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [28, 0, 0, -28]);
 
   return (
     <motion.div
       ref={ref}
-      style={{ opacity, y }}
+      style={{ y }}
       className={className}
     >
       {children}
@@ -511,6 +511,7 @@ function App() {
   const selectedPrice = formatPrice(selectedPlan.price, selectedPlan.currency);
   const studentPrice = formatPrice(studentPlan.price, studentPlan.currency);
   const studentDomainsLabel = (studentPlan.eligibleDomains ?? DEFAULT_PLANS.student.eligibleDomains ?? []).join(' / ');
+  const featuredUpdates = productUpdates.slice(0, 3);
 
   const toggleMute = () => {
     if (videoRef.current) {
@@ -702,6 +703,7 @@ function App() {
                 { label: '料金', href: '#pricing' },
                 { label: '導入', href: '#flow' },
                 { label: 'サークル', href: '#circle' },
+                { label: '更新情報', href: '/updates' },
               ].map((item, i) => (
                 <motion.a
                   key={item.href}
@@ -764,6 +766,7 @@ function App() {
                   { label: '料金', href: '#pricing' },
                   { label: '導入', href: '#flow' },
                   { label: 'サークル', href: '#circle' },
+                  { label: '更新情報', href: '/updates' },
                 ].map((item) => (
                   <a
                     key={item.label}
@@ -1762,15 +1765,147 @@ function App() {
                 </div>
               </div>
             </div>
-            <motion.a
-              href="/circle"
-              className="inline-flex items-center gap-2 text-sm sm:text-base text-[#7dd3fc] font-semibold hover:text-white transition group"
-              whileHover={{ x: 5 }}
-            >
+              <motion.a
+                href="https://ai-archi-circle.archi-prisma.co.jp/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm sm:text-base text-[#7dd3fc] font-semibold hover:text-white transition group"
+                whileHover={{ x: 5 }}
+              >
               サークルについて詳しく
               <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px] group-hover:translate-x-1 transition-transform" />
             </motion.a>
           </StickySection>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* UPDATES SECTION */}
+      {/* ============================================ */}
+      <section className="py-16 sm:py-20 lg:py-24 relative overflow-hidden bg-[#f8fbfd]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,180,216,0.10),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(30,58,95,0.08),transparent_40%)]" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between mb-8 sm:mb-10">
+            <div className="max-w-2xl">
+              <motion.span
+                className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#0369a1] bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#bae6fd] mb-4"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <Bell size={14} className="sm:w-4 sm:h-4" />
+                Update Log
+              </motion.span>
+              <motion.h2
+                className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1e3a5f]"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                Compassのアップデート情報
+              </motion.h2>
+              <motion.p
+                className="mt-4 text-sm sm:text-base lg:text-lg text-[#64748b] leading-relaxed"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.08 }}
+                viewport={{ once: true }}
+              >
+                機能追加、改善、不具合対応、メンテナンス予定をまとめて確認できます。
+                最新の変更点は専用ページに時系列で掲載します。
+              </motion.p>
+            </div>
+
+            <motion.a
+              href="/updates"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#1e3a5f]/10 bg-white px-5 py-3 text-sm sm:text-base font-semibold text-[#1e3a5f] shadow-sm hover:border-[#00b4d8]/30 hover:text-[#0077b6] transition"
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ x: 4 }}
+            >
+              すべての更新を見る
+              <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px]" />
+            </motion.a>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+            <motion.div
+              className="rounded-2xl sm:rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-[0_24px_60px_rgba(15,23,42,0.06)]"
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center rounded-full bg-[#e0f2fe] px-3 py-1 text-xs font-semibold text-[#0369a1]">
+                    {latestProductUpdate.category}
+                  </span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94a3b8]">
+                    {latestProductUpdate.version}
+                  </span>
+                </div>
+                <div className="inline-flex items-center gap-2 text-sm text-[#64748b]">
+                  <Calendar size={16} className="text-[#00b4d8]" />
+                  <time dateTime={latestProductUpdate.publishedAtIso}>{latestProductUpdate.publishedAt}</time>
+                </div>
+              </div>
+
+              <h3 className="mt-4 text-xl sm:text-2xl font-bold text-[#1e3a5f]">
+                {latestProductUpdate.title}
+              </h3>
+              <p className="mt-3 text-sm sm:text-base text-[#64748b] leading-relaxed">
+                {latestProductUpdate.summary}
+              </p>
+
+              <ul className="mt-5 space-y-3">
+                {latestProductUpdate.highlights.map((highlight) => (
+                  <li key={highlight} className="flex items-start gap-3 text-sm sm:text-base text-[#334155]">
+                    <CheckCircle2 size={18} className="text-[#00b4d8] mt-0.5 flex-shrink-0" />
+                    <span>{highlight}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href={`/updates/${latestProductUpdate.slug}`}
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#1e3a5f] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#16324f] transition"
+              >
+                最新記事を詳しく見る
+                <ArrowRight size={16} />
+              </a>
+            </motion.div>
+
+            <motion.div
+              className="rounded-2xl sm:rounded-3xl border border-slate-200 bg-[#1e3a5f] p-5 sm:p-7 text-white shadow-[0_24px_60px_rgba(15,23,42,0.12)]"
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08 }}
+              viewport={{ once: true }}
+            >
+              <p className="text-sm font-semibold text-cyan-200">このページで見られること</p>
+              <div className="mt-5 space-y-4">
+                {[
+                  '新機能の追加や操作改善',
+                  '料金・運用に関するお知らせ',
+                  'メンテナンスや重要な告知',
+                ].map((item) => (
+                  <div key={item} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                    <p className="text-sm sm:text-base text-slate-100">{item}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 border-t border-white/10 pt-5">
+                <p className="text-xs sm:text-sm text-slate-300">
+                  現在の公開件数
+                </p>
+                <p className="mt-1 text-3xl font-bold">
+                  {featuredUpdates.length}
+                  <span className="ml-2 text-sm font-medium text-cyan-200">items</span>
+                </p>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -1856,6 +1991,7 @@ function App() {
                 { label: 'プライバシーポリシー', href: '/privacy' },
                 { label: '特定商取引法', href: '/legal' },
                 { label: 'ヘルプ', href: '/help' },
+                { label: '更新情報', href: '/updates' },
                 { label: 'アプリへログイン', href: 'https://app.compass.archi-prisma.co.jp/' },
               ].map((item) => (
                 <motion.a

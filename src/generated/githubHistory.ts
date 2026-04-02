@@ -1,0 +1,137 @@
+export type GitHubHistoryCategory = 'お知らせ' | '改善' | '新機能';
+
+export type GitHubHistoryEntry = {
+  sha: string;
+  shortSha: string;
+  committedAt: string;
+  committedAtIso: string;
+  title: string;
+  summary: string;
+  category: GitHubHistoryCategory;
+  url: string;
+};
+
+export const githubHistory: GitHubHistoryEntry[] = [
+  {
+    "sha": "78df18d5746f92f9430565e4ac6ba415c81eb095",
+    "shortSha": "78df18d",
+    "committedAtIso": "2026-03-08T10:35:23+09:00",
+    "committedAt": "2026年3月8日",
+    "title": "改善: フィードバック基盤と管理者編集まわりを改善",
+    "summary": "feedback.ts: Firestoreからユーザー詳細・組織名を取得、スクリーンショット対応 tasks.ts: super_admin/adminロールのタスク編集権限チェックをバイパス gcal.ts: per、user O...",
+    "category": "新機能",
+    "url": "https://github.com/sena-sakuramoto/compass/commit/78df18d5746f92f9430565e4ac6ba415c81eb095"
+  },
+  {
+    "sha": "8221d6d85b98739572a577acd674ebb21066bee8",
+    "shortSha": "8221d6d",
+    "committedAtIso": "2026-03-03T20:09:32+09:00",
+    "committedAt": "2026年3月3日",
+    "title": "機能追加: フィードバック送信で自動スクリーンショット取得に対応",
+    "summary": "GitHub の commit 履歴から自動で取り込んだ機能追加です。",
+    "category": "新機能",
+    "url": "https://github.com/sena-sakuramoto/compass/commit/8221d6d85b98739572a577acd674ebb21066bee8"
+  },
+  {
+    "sha": "1011d617fdd5e1f7bf8081e04ef0803ae08cd3ae",
+    "shortSha": "1011d61",
+    "committedAtIso": "2026-03-03T13:56:56+09:00",
+    "committedAt": "2026年3月3日",
+    "title": "機能追加: モバイル用の新しいナビゲーションを導入",
+    "summary": "GitHub の commit 履歴から自動で取り込んだ機能追加です。",
+    "category": "新機能",
+    "url": "https://github.com/sena-sakuramoto/compass/commit/1011d617fdd5e1f7bf8081e04ef0803ae08cd3ae"
+  },
+  {
+    "sha": "85a20276541cd3c63f29010b5817a63172076204",
+    "shortSha": "85a2027",
+    "committedAtIso": "2026-03-02T19:56:00+09:00",
+    "committedAt": "2026年3月2日",
+    "title": "機能追加: カレンダー選択、Google アクセス改善、画像付きフィードバック導線を追加",
+    "summary": "GitHub の commit 履歴から自動で取り込んだ機能追加です。",
+    "category": "新機能",
+    "url": "https://github.com/sena-sakuramoto/compass/commit/85a20276541cd3c63f29010b5817a63172076204"
+  },
+  {
+    "sha": "3706bfd5afaa6142f575f7c8361fd6a0e08c6381",
+    "shortSha": "3706bfd",
+    "committedAtIso": "2026-03-01T00:05:44+09:00",
+    "committedAt": "2026年3月1日",
+    "title": "機能追加: ボール管理、AI工程生成、AI利用制限、カレンダー同期を追加",
+    "summary": "GitHub の commit 履歴から自動で取り込んだ機能追加です。",
+    "category": "新機能",
+    "url": "https://github.com/sena-sakuramoto/compass/commit/3706bfd5afaa6142f575f7c8361fd6a0e08c6381"
+  },
+  {
+    "sha": "5a4ff6a1d6c44c6e4f0277e5c37caa5ba0af4567",
+    "shortSha": "5a4ff6a",
+    "committedAtIso": "2026-02-26T13:45:18+09:00",
+    "committedAt": "2026年2月26日",
+    "title": "機能追加: MCP/GPT 操作の検証強化と一括取込・OAuth を改善",
+    "summary": "GitHub の commit 履歴から自動で取り込んだ機能追加です。",
+    "category": "新機能",
+    "url": "https://github.com/sena-sakuramoto/compass/commit/5a4ff6a1d6c44c6e4f0277e5c37caa5ba0af4567"
+  },
+  {
+    "sha": "0cedd4d05cb8c850f9a8fcb1d6814d69ac48cd0a",
+    "shortSha": "0cedd4d",
+    "committedAtIso": "2026-02-20T22:16:22+09:00",
+    "committedAt": "2026年2月20日",
+    "title": "機能追加: WebGPU ベースのローカル LLM 対応を追加",
+    "summary": "GitHub の commit 履歴から自動で取り込んだ機能追加です。",
+    "category": "新機能",
+    "url": "https://github.com/sena-sakuramoto/compass/commit/0cedd4d05cb8c850f9a8fcb1d6814d69ac48cd0a"
+  },
+  {
+    "sha": "34b9a83cdb7fe1a866afda61df569723660f470b",
+    "shortSha": "34b9a83",
+    "committedAtIso": "2026-02-20T21:57:17+09:00",
+    "committedAt": "2026年2月20日",
+    "title": "機能追加: 一括取込で Claude Sonnet を利用可能に",
+    "summary": "GitHub の commit 履歴から自動で取り込んだ機能追加です。",
+    "category": "新機能",
+    "url": "https://github.com/sena-sakuramoto/compass/commit/34b9a83cdb7fe1a866afda61df569723660f470b"
+  },
+  {
+    "sha": "42fddfce01d628c46848f4a5f8eeff0f02a0b369",
+    "shortSha": "42fddfc",
+    "committedAtIso": "2026-02-13T12:08:59+09:00",
+    "committedAt": "2026年2月13日",
+    "title": "機能追加: Google Drive / Chat 連携を追加",
+    "summary": "GitHub の commit 履歴から自動で取り込んだ機能追加です。",
+    "category": "新機能",
+    "url": "https://github.com/sena-sakuramoto/compass/commit/42fddfce01d628c46848f4a5f8eeff0f02a0b369"
+  },
+  {
+    "sha": "fc624616eec291e8a4ee1bf7cb88fa6664c907c1",
+    "shortSha": "fc62461",
+    "committedAtIso": "2026-01-26T15:56:22+09:00",
+    "committedAt": "2026年1月26日",
+    "title": "機能追加: Compass 単独サブスク向け Checkout API を追加",
+    "summary": "GitHub の commit 履歴から自動で取り込んだ機能追加です。",
+    "category": "新機能",
+    "url": "https://github.com/sena-sakuramoto/compass/commit/fc624616eec291e8a4ee1bf7cb88fa6664c907c1"
+  },
+  {
+    "sha": "19dea1d19e989fb171e17eba45becf56efa3da5c",
+    "shortSha": "19dea1d",
+    "committedAtIso": "2026-01-25T00:05:05+09:00",
+    "committedAt": "2026年1月25日",
+    "title": "機能追加: 打合せ機能を追加し、工程反映を改善",
+    "summary": "タスク作成時に「タスク」or「打合せ」種別を選択可能に 打合せの場合、複数の参加者を選択可能（participants フィールド追加） 工程作成時の即時反映を改善（onStageCreated/onStageIdResolved コ...",
+    "category": "新機能",
+    "url": "https://github.com/sena-sakuramoto/compass/commit/19dea1d19e989fb171e17eba45becf56efa3da5c"
+  },
+  {
+    "sha": "142c20c872bda4d98cf0e771c226e3960548d467",
+    "shortSha": "142c20c",
+    "committedAtIso": "2026-01-22T21:43:28+09:00",
+    "committedAt": "2026年1月22日",
+    "title": "改善: 請求・メンバー管理機能を強化",
+    "summary": "請求APIの機能拡張とエラーハンドリング改善 メンバー上限チェックの強化 ユーザー管理UIの改善 デモデプロイ手順ドキュメント追加",
+    "category": "新機能",
+    "url": "https://github.com/sena-sakuramoto/compass/commit/142c20c872bda4d98cf0e771c226e3960548d467"
+  }
+] as GitHubHistoryEntry[];
+
+export const githubRepositoryUrl = 'https://github.com/sena-sakuramoto/compass';
