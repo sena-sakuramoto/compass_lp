@@ -22,3 +22,85 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# >>> APDW-SECURITY-BASELINE-START >>>
+# Managed by D:/senaa_dev/.security/install-security.ps1 窶・do not edit between fences.
+# =============================================================
+# APDW Security Baseline .gitignore
+# Managed by D:/senaa_dev/.security/install-security.ps1
+# =============================================================
+
+# --- Environment files (NEVER commit raw .env) ---
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+!.env.*.example
+!.env.*.sample
+
+# --- Secret/credential files ---
+*.pem
+*.key
+*.p12
+*.pfx
+*_rsa
+*_rsa.pub
+*_ed25519
+*_ed25519.pub
+secrets.json
+secrets.yaml
+secrets.yml
+credentials.json
+service-account*.json
+*-service-account.json
+gcp-key.json
+firebase-adminsdk*.json
+
+# --- PII / customer data exports ---
+discord_links.*
+customer_*.csv
+customers_*.csv
+members_*.csv
+users_*.csv
+kaiin*.csv
+contacts_*.csv
+leads_*.csv
+*.pii.csv
+pii_*.csv
+*-export-*.csv
+*_export_*.csv
+
+# --- Local-only / temporary files ---
+tmp-*
+tmp_*
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+nul
+
+# --- IDE / editor ---
+.vscode/settings.local.json
+.idea/workspace.xml
+
+# --- Coverage / build artifacts ---
+.nyc_output/
+coverage/
+.cache/
+
+# --- Auth state ---
+.auth/
+**/playwright/.auth/
+**/e2e/.auth/
+
+# --- Local agent runtime ---
+.codex-runtime/
+.claude/worktrees/
+
+# --- Backup files ---
+*_backup
+*_bak
+*.bak
+*~
+# <<< APDW-SECURITY-BASELINE-END <<<
