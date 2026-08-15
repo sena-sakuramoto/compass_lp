@@ -97,7 +97,7 @@ export function AiConsultSection() {
                   data-ai-consult-topic={topic.id}
                   aria-pressed={topic.id === topicId}
                   onClick={() => handleTopicClick(topic.id)}
-                  className={`min-h-11 rounded-xl border px-4 py-2 text-left text-sm font-medium transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b4d8] focus-visible:ring-offset-2 ${topic.id === topicId
+                  className={`min-h-11 rounded-xl border px-4 py-2 text-left text-sm font-medium transition-colors motion-reduce:transition-none motion-reduce:duration-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b4d8] focus-visible:ring-offset-2 ${topic.id === topicId
                     ? 'border-[#00b4d8] bg-white text-[#1e3a5f] shadow-sm'
                     : 'border-slate-200 bg-slate-100 text-slate-700 hover:border-slate-300 hover:bg-white'
                   }`}

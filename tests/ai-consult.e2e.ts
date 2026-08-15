@@ -49,3 +49,108 @@ for (const viewport of VIEWPORTS) {
     });
   });
 }
+
+test('opens ChatGPT in a new tab, copies only the approved prompt, and records categorical analytics', async ({ context, page }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.route('https://www.googletagmanager.com/**', (route) => route.abort());
+  await page.goto('/');
+
+  await page.locator('[data-ai-consult-topic="excel"]').click();
+  const popupPromise = page.waitForEvent('popup');
+  await page.locator('[data-ai-provider="chatgpt"]').click();
+  const popup = await popupPromise;
+  await popup.waitForLoadState('domcontentloaded');
+
+  expect(new URL(popup.url()).hostname).toBe('chatgpt.com');
+  await expect(page.locator('[data-ai-consult-section]')).toBeVisible();
+  await expect(page).toHaveURL(/127\.0\.0\.1:4174/);
+
+  const clipboard = await page.evaluate(() => navigator.clipboard.readText());
+  expect(clipboard).toContain('Excel工程表からの移行');
+  expect(clipboard).toContain('https://compass.archi-prisma.co.jp/');
+
+  const analyticsEvents = await page.evaluate(() => window.dataLayer
+    .map((entry: unknown) => Array.from(entry as ArrayLike<unknown>))
+    .filter((entry) => entry[0] === 'event')
+    .map((entry) => ({ name: entry[1], params: entry[2] })));
+  expect(analyticsEvents).toEqual([
+    { name: 'ai_consult_open', params: { context: 'compass_lp' } },
+    { name: 'ai_consult_provider_click', params: { context: 'compass_lp', provider: 'chatgpt' } },
+  ]);
+  expect(JSON.stringify(analyticsEvents)).not.toMatch(/@|相談文|https:\/\/compass\.archi-prisma\.co\.jp/);
+  await popup.close();
+});
+
+test('opens Perplexity even when clipboard access is unavailable', async ({ browser }) => {
+  const clipboardDeniedContext = await browser.newContext();
+  const clipboardDeniedPage = await clipboardDeniedContext.newPage();
+  await clipboardDeniedPage.route('https://www.googletagmanager.com/**', (route) => route.abort());
+  await clipboardDeniedPage.goto('/');
+
+  const popupPromise = clipboardDeniedPage.waitForEvent('popup');
+  await clipboardDeniedPage.locator('[data-ai-provider="perplexity"]').click();
+  const popup = await popupPromise;
+  await expect(clipboardDeniedPage.locator('[data-ai-consult-status]')).toHaveText(
+    /相談文をコピー(しました。必要なら開いたAIへ貼り付けてください。|できませんでした。開いたAIで質問を入力してください。)/,
+  );
+  expect(new URL(popup.url()).hostname).toBe('www.perplexity.ai');
+  await popup.close();
+  await clipboardDeniedContext.close();
+});
+
+test('keeps signup and Enterprise modals above the static AI consultation section', async ({ page }) => {
+  await page.goto('/');
+  const consult = page.locator('[data-ai-consult-section]');
+  await page.locator('#pricing').getByRole('button', { name: '14日間無料で始める' }).first().click();
+  const signupModal = page.locator('div.fixed').filter({ has: page.locator('#signup-email') });
+  await expect(signupModal).toBeVisible();
+  await expect(signupModal).toHaveCSS('position', 'fixed');
+  await expect(consult).not.toHaveCSS('position', 'fixed');
+  await signupModal.getByRole('button').first().click();
+
+  await page.getByRole('button', { name: 'Enterpriseの詳細・相談フォームへ' }).click();
+  const enterpriseModal = page.locator('div.fixed').filter({
+    has: page.getByRole('heading', { name: '41名以上のチーム向け' }),
+  });
+  await expect(enterpriseModal).toBeVisible();
+  await expect(enterpriseModal).toHaveCSS('position', 'fixed');
+  await expect(consult).not.toHaveCSS('position', 'fixed');
+  await enterpriseModal.getByRole('button').first().click();
+});
+
+test('supports keyboard topic selection and provider tab traversal with one FAQPage payload', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('[data-ai-consult-topic="fit"]').focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('[data-ai-consult-topic="fit"]')).toHaveAttribute('aria-pressed', 'true');
+
+  await page.locator('[data-ai-consult-topic="onboarding"]').focus();
+  for (const providerId of ['chatgpt', 'gemini', 'claude', 'perplexity']) {
+    await page.keyboard.press('Tab');
+    await expect(page.locator(`[data-ai-provider="${providerId}"]`)).toBeFocused();
+  }
+
+  expect(await page.evaluate(() => Array.from(
+    document.querySelectorAll('script[type="application/ld+json"]'),
+  ).filter((script) => script.textContent?.includes('FAQPage')).length)).toBe(1);
+});
+
+test('removes topic transitions when reduced motion is requested', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  const duration = await page.locator('[data-ai-consult-topic]').first().evaluate(
+    (element) => getComputedStyle(element).transitionDuration,
+  );
+  expect(duration).toBe('0s');
+});
+
+test('keeps four static conversion links available without JavaScript', async ({ browser }) => {
+  const noJsContext = await browser.newContext({ javaScriptEnabled: false });
+  const noJsPage = await noJsContext.newPage();
+  await noJsPage.goto('/');
+  await expect(noJsPage.getByRole('link', { name: 'デモを試す' })).toBeVisible();
+  await expect(noJsPage.getByRole('link', { name: '14日間無料トライアルについて問い合わせる' })).toBeVisible();
+  await expect(noJsPage.getByRole('link', { name: '最新料金を確認する' })).toBeVisible();
+  await expect(noJsPage.getByRole('link', { name: 'その他の問い合わせ' })).toBeVisible();
+  await noJsContext.close();
+});

@@ -34,6 +34,18 @@ describe('COMPASS AI consultation contract', () => {
     );
   });
 
+  it.each([
+    'http://compass.archi-prisma.co.jp/',
+    'https://user:pass@compass.archi-prisma.co.jp/',
+    'https://compass.archi-prisma.co.jp:8443/',
+    'javascript:alert(1)',
+    'not a url',
+  ])('fails closed for unsafe URL input: %s', (rawUrl) => {
+    const prompt = buildCompassConsultPrompt('general', rawUrl);
+    expect(prompt).toContain(AI_CONSULT_CANONICAL_URL);
+    expect(prompt).not.toContain(rawUrl);
+  });
+
   it('builds a prompt without prices or sensitive URL data', () => {
     const prompt = buildCompassConsultPrompt(
       'excel',
