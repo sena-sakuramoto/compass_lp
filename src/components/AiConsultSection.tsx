@@ -81,7 +81,7 @@ export function AiConsultSection() {
             id="ai-consult-heading"
             className="mt-2 text-2xl font-bold tracking-tight text-[#1e3a5f] sm:text-3xl"
           >
-            COMPASSについて、まずは公開情報をもとに整理する
+            COMPASSについてAIに聞く
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
             気になるテーマを選び、普段使っているAIで相談文を開けます。トライアルやデモの代わりではなく、比較・検討の補助としてご利用ください。
@@ -102,7 +102,16 @@ export function AiConsultSection() {
                     : 'border-slate-200 bg-slate-100 text-slate-700 hover:border-slate-300 hover:bg-white'
                   }`}
                 >
-                  {topic.label}
+                  <span>{topic.label}</span>
+                  {topic.id === topicId && (
+                    <span
+                      data-ai-consult-selected-indicator
+                      aria-hidden="true"
+                      className="ml-2 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#00b4d8] text-xs text-white"
+                    >
+                      ✓
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
@@ -130,6 +139,7 @@ export function AiConsultSection() {
                       dangerouslySetInnerHTML={{ __html: providerIconSvg(provider.id) }}
                     />
                     <span>{provider.name}</span>
+                    <span data-ai-provider-external-icon aria-hidden="true" className="text-base leading-none">↗</span>
                     <span className="sr-only">を新しいタブで開く</span>
                   </a>
                 );
@@ -139,6 +149,9 @@ export function AiConsultSection() {
 
           <p className="mt-5 text-xs leading-relaxed text-slate-600">
             相談文と公開URLが外部AIへ渡ります。案件名・顧客名・個人名・非公開工程を入力しないでください。
+          </p>
+          <p className="mt-2 text-xs leading-relaxed text-slate-600">
+            LP側は、外部AIで続けた会話を受け取りません。
           </p>
           <p data-ai-consult-status aria-live="polite" className="mt-2 min-h-5 text-sm text-[#1e3a5f]">
             {status}

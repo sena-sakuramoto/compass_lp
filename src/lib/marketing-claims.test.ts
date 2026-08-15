@@ -8,6 +8,10 @@ const appSource = readFileSync(
   fileURLToPath(new URL('../App.tsx', import.meta.url)),
   'utf8',
 );
+const helpPageSource = readFileSync(
+  fileURLToPath(new URL('../pages/HelpPage.tsx', import.meta.url)),
+  'utf8',
+);
 const htmlSource = readFileSync(
   fileURLToPath(new URL('../../index.html', import.meta.url)),
   'utf8',
@@ -24,8 +28,18 @@ describe('public marketing claims', () => {
     '学習コストゼロ',
     'マニュアルも研修も不要',
     '翌日から自発的に入力してくれる',
+    'だから現場に定着する',
   ])('removes unsupported claim: %s', (claim) => {
     expect(appSource).not.toContain(claim);
+  });
+
+  it.each([
+    'クレジットカード不要',
+    '14日後に自動で課金',
+    'いつでもキャンセル可',
+    'いつでもキャンセル可能',
+  ])('removes unverified trial or billing claim: %s', (claim) => {
+    expect(`${appSource}\n${helpPageSource}`).not.toContain(claim);
   });
 
   it('removes unsupported offer and rating structured data', () => {

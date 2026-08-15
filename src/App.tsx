@@ -470,7 +470,6 @@ function App() {
   const businessPlan = plans.business ?? DEFAULT_PLANS.business;
   const studentPlan = plans.student ?? DEFAULT_PLANS.student;
   const selectedPlan = selectedTier === 'business' ? businessPlan : selectedTier === 'standard' ? standardPlan : smallPlan;
-  const selectedPrice = formatPrice(selectedPlan.price, selectedPlan.currency);
   const studentPrice = formatPrice(studentPlan.price, studentPlan.currency);
   const studentDomainsLabel = (studentPlan.eligibleDomains ?? DEFAULT_PLANS.student.eligibleDomains ?? []).join(' / ');
   const featuredUpdates = productUpdates.slice(0, 3);
@@ -903,11 +902,11 @@ function App() {
             >
               <span className="flex items-center gap-2">
                 <CheckCircle2 size={14} className="text-[#00b4d8] sm:w-4 sm:h-4" />
-                クレジットカード不要
+                申込前に契約条件を確認
               </span>
               <span className="flex items-center gap-2">
                 <CheckCircle2 size={14} className="text-[#00b4d8] sm:w-4 sm:h-4" />
-                いつでもキャンセル可
+                手続き・期限を申込前に確認
               </span>
             </motion.div>
           </div>
@@ -942,12 +941,10 @@ function App() {
               なぜCompassか
             </motion.span>
             <h2 className="text-xl sm:text-3xl lg:text-5xl font-bold text-[#1e3a5f] mb-4 sm:mb-6 px-2">
-              羅針盤のように、<span className="text-[#00b4d8]">進むべき道</span>を示す
+              工程と進捗を<span className="text-[#00b4d8]">同じ場所で共有</span>
             </h2>
             <p className="text-[#64748b] text-sm sm:text-base lg:text-lg max-w-2xl mx-auto px-2">
-              現在地と目的地が一目でわかるから、迷わない。
-              <br className="hidden sm:block" />
-              見ればわかる、触ればできる。だから<strong className="text-[#1e3a5f]">現場に定着する</strong>。
+              工程、担当、締切、進捗を同じ画面で確認できます。
             </p>
           </StickySection>
 
@@ -1533,7 +1530,7 @@ function App() {
               {
                 step: '02',
                 title: '14日トライアル',
-                description: '自分の組織・現場で実データを使って運用。14日後に自動で課金へ移行（いつでもキャンセル可）。',
+                description: '自分の組織・現場で実データを使って運用。申込前に契約条件と支払画面、継続しない場合の手続き・期限を確認してください。',
                 action: { label: 'トライアルを開始', icon: ArrowRight, onClick: handleTrialClick },
                 primary: true,
               },
@@ -1833,9 +1830,9 @@ function App() {
               transition={{ delay: 0.3 }}
               viewport={{ once: true }}
             >
-              14日間の無料トライアルで、現場の変化を体感してください。
+              14日間の無料トライアルについて、申込前に契約条件と支払画面を確認してください。
               <br />
-              クレジットカード不要。いつでもキャンセル可能。
+              継続しない場合の手続きと期限も申込前に確認できます。
             </motion.p>
             <motion.div
               className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
@@ -2054,10 +2051,7 @@ function App() {
                     ) : (
                       <div className="flex items-center gap-1.5 sm:gap-2">
                         <Clock size={14} className="sm:w-4 sm:h-4" />
-                        <span>
-                          <strong>{selectedPlan.trialDays ?? 0}日間無料トライアル</strong>
-                          {' '}- その後 {selectedPrice}/月
-                        </span>
+                        <span><strong>{selectedPlan.trialDays ?? 0}日間無料トライアル</strong> - 申込前に契約条件と支払画面を確認してください。</span>
                       </div>
                     )}
                   </motion.div>

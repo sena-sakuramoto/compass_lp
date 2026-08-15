@@ -15,9 +15,14 @@ for (const viewport of VIEWPORTS) {
 
       const consult = page.locator('[data-ai-consult-section]');
       await expect(consult).toHaveCount(1);
+      await expect(consult.getByRole('heading', { name: 'COMPASSについてAIに聞く' })).toBeVisible();
       await expect(page.locator('[data-ai-consult-topic]')).toHaveCount(5);
+      await expect(page.locator('[data-ai-consult-selected-indicator]')).toHaveCount(1);
+      await expect(page.locator('[data-ai-consult-selected-indicator]')).toBeVisible();
       await expect(page.locator('[data-ai-provider]')).toHaveCount(4);
       await expect(page.locator('[data-ai-provider-icon]')).toHaveCount(4);
+      await expect(page.locator('[data-ai-provider-external-icon]')).toHaveCount(4);
+      await expect(page.locator('[data-ai-provider-external-icon]').first()).toBeVisible();
       await expect(page.getByRole('button', { name: '14日間無料で試す' })).toBeVisible();
       await expect(page.getByRole('button', { name: 'デモを試す' }).first()).toBeVisible();
       await expect(page.getByRole('heading', { name: /すべての現場に、\s*Compassを。/ })).toBeVisible();
@@ -95,6 +100,11 @@ test('opens Perplexity after clipboard and legacy-copy failures', async ({ brows
     });
     document.execCommand = () => false;
   });
+  let perplexityTargetUrl = '';
+  await clipboardDeniedContext.route('https://www.perplexity.ai/**', (route) => {
+    perplexityTargetUrl = route.request().url();
+    return route.abort();
+  });
   const clipboardDeniedPage = await clipboardDeniedContext.newPage();
   await clipboardDeniedPage.route('https://www.googletagmanager.com/**', (route) => route.abort());
   await clipboardDeniedPage.goto('/');
@@ -102,10 +112,11 @@ test('opens Perplexity after clipboard and legacy-copy failures', async ({ brows
   const popupPromise = clipboardDeniedPage.waitForEvent('popup');
   await clipboardDeniedPage.locator('[data-ai-provider="perplexity"]').click();
   const popup = await popupPromise;
+  await expect.poll(() => perplexityTargetUrl).not.toBe('');
   await expect(clipboardDeniedPage.locator('[data-ai-consult-status]')).toHaveText(
     '相談文をコピーできませんでした。開いたAIで質問を入力してください。',
   );
-  expect(new URL(popup.url()).hostname).toBe('www.perplexity.ai');
+  expect(new URL(perplexityTargetUrl).hostname).toBe('www.perplexity.ai');
   await popup.close();
   await clipboardDeniedContext.close();
 });
@@ -157,6 +168,7 @@ test('supports keyboard topic selection and provider tab traversal with one FAQP
   await page.locator('[data-ai-consult-topic="fit"]').focus();
   await page.keyboard.press('Enter');
   await expect(page.locator('[data-ai-consult-topic="fit"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('[data-ai-consult-topic="fit"] [data-ai-consult-selected-indicator]')).toBeVisible();
 
   await page.locator('[data-ai-consult-topic="onboarding"]').focus();
   for (const providerId of ['chatgpt', 'gemini', 'claude', 'perplexity']) {

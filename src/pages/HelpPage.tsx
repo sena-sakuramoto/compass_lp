@@ -234,7 +234,7 @@ export function HelpPage() {
           <div className="space-y-4 text-sm text-slate-700">
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Q: 無料トライアル後、自動で課金されますか？</h3>
-              <p className="text-slate-600">A: トライアル終了前にメールでお知らせします。継続をご希望されない場合は、トライアル期間中にキャンセルいただければ課金は発生しません。</p>
+              <p className="text-slate-600">A: トライアル開始時に表示される契約条件と支払画面を確認してください。継続しない場合の手続きと期限は、申込前に確認できます。</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Q: スマートフォンからも使えますか？</h3>
