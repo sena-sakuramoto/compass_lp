@@ -52,16 +52,21 @@ for (const viewport of VIEWPORTS) {
 
 test('opens ChatGPT in a new tab, copies only the approved prompt, and records categorical analytics', async ({ context, page }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-  await page.route('https://www.googletagmanager.com/**', (route) => route.abort());
+  await context.route('https://www.googletagmanager.com/**', (route) => route.abort());
+  let chatGptTargetUrl = '';
+  await context.route('https://chatgpt.com/**', (route) => {
+    chatGptTargetUrl = route.request().url();
+    return route.abort();
+  });
   await page.goto('/');
 
   await page.locator('[data-ai-consult-topic="excel"]').click();
   const popupPromise = page.waitForEvent('popup');
   await page.locator('[data-ai-provider="chatgpt"]').click();
   const popup = await popupPromise;
-  await popup.waitForLoadState('domcontentloaded');
 
-  expect(new URL(popup.url()).hostname).toBe('chatgpt.com');
+  await expect.poll(() => chatGptTargetUrl).not.toBe('');
+  expect(new URL(chatGptTargetUrl).hostname).toBe('chatgpt.com');
   await expect(page.locator('[data-ai-consult-section]')).toBeVisible();
   await expect(page).toHaveURL(/127\.0\.0\.1:4174/);
 
@@ -81,8 +86,15 @@ test('opens ChatGPT in a new tab, copies only the approved prompt, and records c
   await popup.close();
 });
 
-test('opens Perplexity even when clipboard access is unavailable', async ({ browser }) => {
+test('opens Perplexity after clipboard and legacy-copy failures', async ({ browser }) => {
   const clipboardDeniedContext = await browser.newContext();
+  await clipboardDeniedContext.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: () => Promise.reject(new Error('clipboard denied')) },
+    });
+    document.execCommand = () => false;
+  });
   const clipboardDeniedPage = await clipboardDeniedContext.newPage();
   await clipboardDeniedPage.route('https://www.googletagmanager.com/**', (route) => route.abort());
   await clipboardDeniedPage.goto('/');
@@ -91,7 +103,7 @@ test('opens Perplexity even when clipboard access is unavailable', async ({ brow
   await clipboardDeniedPage.locator('[data-ai-provider="perplexity"]').click();
   const popup = await popupPromise;
   await expect(clipboardDeniedPage.locator('[data-ai-consult-status]')).toHaveText(
-    /相談文をコピー(しました。必要なら開いたAIへ貼り付けてください。|できませんでした。開いたAIで質問を入力してください。)/,
+    '相談文をコピーできませんでした。開いたAIで質問を入力してください。',
   );
   expect(new URL(popup.url()).hostname).toBe('www.perplexity.ai');
   await popup.close();
@@ -106,6 +118,17 @@ test('keeps signup and Enterprise modals above the static AI consultation sectio
   await expect(signupModal).toBeVisible();
   await expect(signupModal).toHaveCSS('position', 'fixed');
   await expect(consult).not.toHaveCSS('position', 'fixed');
+  const signupStacking = await signupModal.evaluate((modal) => {
+    const consult = document.querySelector('[data-ai-consult-section]');
+    const topElement = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
+    return {
+      modalZIndex: Number.parseInt(getComputedStyle(modal).zIndex, 10) || 0,
+      consultZIndex: consult ? Number.parseInt(getComputedStyle(consult).zIndex, 10) || 0 : 0,
+      interceptsPointer: modal.contains(topElement),
+    };
+  });
+  expect(signupStacking.modalZIndex).toBeGreaterThan(signupStacking.consultZIndex);
+  expect(signupStacking.interceptsPointer).toBe(true);
   await signupModal.getByRole('button').first().click();
 
   await page.getByRole('button', { name: 'Enterpriseの詳細・相談フォームへ' }).click();
@@ -115,6 +138,17 @@ test('keeps signup and Enterprise modals above the static AI consultation sectio
   await expect(enterpriseModal).toBeVisible();
   await expect(enterpriseModal).toHaveCSS('position', 'fixed');
   await expect(consult).not.toHaveCSS('position', 'fixed');
+  const enterpriseStacking = await enterpriseModal.evaluate((modal) => {
+    const consult = document.querySelector('[data-ai-consult-section]');
+    const topElement = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
+    return {
+      modalZIndex: Number.parseInt(getComputedStyle(modal).zIndex, 10) || 0,
+      consultZIndex: consult ? Number.parseInt(getComputedStyle(consult).zIndex, 10) || 0 : 0,
+      interceptsPointer: modal.contains(topElement),
+    };
+  });
+  expect(enterpriseStacking.modalZIndex).toBeGreaterThan(enterpriseStacking.consultZIndex);
+  expect(enterpriseStacking.interceptsPointer).toBe(true);
   await enterpriseModal.getByRole('button').first().click();
 });
 
