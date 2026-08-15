@@ -1,0 +1,1 @@
+import{c as o}from"./createLucideIcon-C3hYENMu.js";const c=[["path",{d:"M12 6v6h4",key:"135r8i"}],["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}]],s=o("clock-3",c),a=[],r="https://github.com/sena-sakuramoto/compass";export{s as C,a,r as g};
