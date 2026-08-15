@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import './index.css';
 import { latestProductUpdate, productUpdates } from './content/updates';
+import { buildCompassFaqStructuredData, COMPASS_FAQ } from './content/faq';
 import { AiConsultSection } from './components/AiConsultSection';
 
 const motion = framerMotion;
@@ -291,46 +292,6 @@ function TextReveal({
       delay={delay}
     />
   );
-}
-
-// ============================================
-// ANIMATED COUNTER
-// ============================================
-function AnimatedCounter({
-  value,
-  duration = 2
-}: {
-  value: number;
-  duration?: number;
-}) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
-  const [displayValue, setDisplayValue] = useState(0);
-
-  useEffect(() => {
-    if (!isInView) return;
-
-    let startTime: number;
-    let animationFrame: number;
-
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
-
-      // Easing function for smooth deceleration
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      setDisplayValue(Math.floor(easeOut * value));
-
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate);
-      }
-    };
-
-    animationFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [isInView, value, duration]);
-
-  return <span ref={ref}>{displayValue}</span>;
 }
 
 // ============================================
@@ -671,6 +632,12 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white text-[#1e293b] overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(buildCompassFaqStructuredData()),
+        }}
+      />
       {/* Progress bar */}
       {!isMobile && <DesktopProgressBar />}
 
@@ -960,54 +927,6 @@ function App() {
         </motion.div>
       </section>
 
-
-      {/* ============================================ */}
-      {/* STATS - RESULTS */}
-      {/* ============================================ */}
-      <section className="py-12 sm:py-16 lg:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <StickySection className="text-center mb-8 sm:mb-12 lg:mb-16">
-            <motion.span
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#00b4d8]/20 mb-4 sm:mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              導入効果
-            </motion.span>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-[#1e3a5f]">
-              数字で見る<span className="text-[#00b4d8]">Compass</span>
-            </h2>
-          </StickySection>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-            {[
-              { value: 30, unit: '%', label: '工数削減', sub: '平均' },
-              { value: 85, unit: '%', label: '情報共有の改善', sub: '利用者調査' },
-              { value: 2, unit: '時間', label: '週あたりの会議削減', sub: '平均' },
-              { value: 98, unit: '%', label: '継続利用率', sub: 'トライアル後' },
-            ].map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                className="text-center p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl bg-[#f8fafc] border border-slate-100"
-                initial={isMobile ? undefined : { opacity: 0, y: 40, scale: 0.95 }}
-                whileInView={isMobile ? undefined : { opacity: 1, y: 0, scale: 1 }}
-                transition={isMobile ? undefined : { delay: i * 0.15, duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
-                viewport={isMobile ? undefined : { once: true, margin: '-50px' }}
-                whileHover={isMobile ? undefined : { y: -8, boxShadow: '0 20px 40px -12px rgba(0, 180, 216, 0.15)' }}
-              >
-                <div className="flex items-end justify-center gap-0.5 sm:gap-1 mb-1 sm:mb-2">
-                  <span className="text-3xl sm:text-4xl lg:text-6xl font-extrabold text-[#1e3a5f]">
-                    <AnimatedCounter value={stat.value} duration={2} />
-                  </span>
-                  <span className="text-lg sm:text-xl lg:text-2xl font-bold text-[#00b4d8] mb-1 sm:mb-2">{stat.unit}</span>
-                </div>
-                <p className="text-xs sm:text-sm lg:text-base text-[#1e3a5f] font-semibold mb-0.5 sm:mb-1">{stat.label}</p>
-                <p className="text-xs sm:text-sm text-[#64748b]">{stat.sub}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ============================================ */}
       {/* WHY COMPASS - DIFFERENTIATOR */}
       {/* ============================================ */}
@@ -1075,11 +994,11 @@ function App() {
                 <h3 className="text-base sm:text-lg font-bold text-cyan-100 mb-4 sm:mb-6">Compassなら</h3>
                 <ul className="space-y-3 sm:space-y-4">
                   {[
-                    '開いた瞬間、何をすべきかわかる',
-                    'ボタンは最小限、迷う要素がない',
-                    '説明なしで誰でも使い始められる',
-                    '60代の職人さんも初日から活用',
-                    'スマホで3タップ、進捗報告完了',
+                    '必要な操作を画面内で確認できる',
+                    '工程、担当、締切を同じ場所で扱える',
+                    'デモで主要操作を登録前に確認できる',
+                    'スマートフォンのブラウザから工程を確認できる',
+                    '進捗更新をタスク単位で記録できる',
                   ].map((item, i) => (
                     <motion.li
                       key={i}
@@ -1102,16 +1021,16 @@ function App() {
           <div className="mt-10 sm:mt-12 lg:mt-16 grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             {[
               {
-                title: '3秒で理解できるUI',
-                description: '画面を開いた瞬間「これを押せばいい」がわかる。考える時間ゼロの直感設計。',
+                title: '迷いにくい画面設計',
+                description: '工程、担当、締切、進捗を同じ画面で確認できるよう、主要操作をまとめています。',
               },
               {
-                title: '学習コストゼロ',
-                description: 'マニュアルも研修も不要。LINEが使えれば、Compassも使える。それくらいシンプル。',
+                title: '導入前にデモで確認',
+                description: '登録前にサンプルデータで操作し、現場の手順に合うか確認できます。',
               },
               {
-                title: '現場で本当に使われる',
-                description: '「また新しいツール？」と言っていた職人さんが、翌日から自発的に入力してくれる。',
+                title: '現場と設計室で共有',
+                description: 'ブラウザから同じ工程とタスクを確認し、更新内容を共有できます。',
               },
             ].map((item, i) => (
               <motion.div
@@ -1675,32 +1594,7 @@ function App() {
           </StickySection>
 
           <div className="space-y-3 sm:space-y-4">
-            {[
-              {
-                q: '導入にどれくらい時間がかかりますか？',
-                a: 'アカウント作成後、すぐにご利用いただけます。既存のExcelデータがある場合も、インポート機能で簡単に移行できます。多くのお客様は1日で基本的な運用を開始されています。',
-              },
-              {
-                q: 'ITに詳しくないスタッフでも使えますか？',
-                a: 'はい、建築・施工現場の方が直感的に使えるよう設計しています。LINEやExcelが使える方であれば問題なくお使いいただけます。導入時のサポートも行っています。',
-              },
-              {
-                q: 'スマートフォンからも使えますか？',
-                a: 'はい、iOS/Androidのブラウザから利用可能です。現場からの進捗報告や、外出先での確認に便利です。',
-              },
-              {
-                q: '途中でプランを変更できますか？',
-                a: 'Small（〜5名）→ Standard（〜15名）→ Business（〜40名）へのアップグレードはいつでも可能です。プロジェクトの規模に応じて柔軟に変更いただけます。',
-              },
-              {
-                q: 'データのセキュリティは大丈夫ですか？',
-                a: 'すべての通信はSSL暗号化されており、データは国内のセキュアなサーバーで管理しています。定期的なバックアップも実施しています。',
-              },
-              {
-                q: '無料トライアル後、自動で課金されますか？',
-                a: 'トライアル終了前にメールでお知らせします。継続をご希望されない場合は、トライアル期間中にキャンセルいただければ課金は発生しません。',
-              },
-            ].map((faq, i) => (
+            {COMPASS_FAQ.map((faq, i) => (
               <motion.details
                 key={i}
                 className="group bg-white rounded-xl sm:rounded-2xl border border-slate-100 shadow-sm"
@@ -1710,11 +1604,11 @@ function App() {
                 viewport={{ once: true }}
               >
                 <summary className="flex items-center justify-between p-4 sm:p-6 cursor-pointer list-none">
-                  <span className="font-semibold text-sm sm:text-base text-[#1e3a5f] pr-3 sm:pr-4">{faq.q}</span>
+                  <span className="font-semibold text-sm sm:text-base text-[#1e3a5f] pr-3 sm:pr-4">{faq.question}</span>
                   <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-[#64748b] flex-shrink-0 transition-transform group-open:rotate-180" />
                 </summary>
                 <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-sm sm:text-base text-[#64748b] leading-relaxed">
-                  {faq.a}
+                  {faq.answer}
                 </div>
               </motion.details>
             ))}
