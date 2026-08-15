@@ -54,7 +54,7 @@ class ErrorBoundary extends Component<
   }
 }
 
-function Loading() {
+export function Loading() {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', fontFamily: 'sans-serif' }}>
       <p style={{ color: '#64748b', fontSize: 14 }}>読み込み中...</p>

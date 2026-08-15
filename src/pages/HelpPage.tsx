@@ -1,6 +1,6 @@
 // ヘルプページ
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import {
   HelpCircle,
   Users,
@@ -17,36 +17,52 @@ import {
   Mail,
 } from 'lucide-react';
 
+type HelpSectionProps = {
+  id: string;
+  title: string;
+  icon: typeof HelpCircle;
+  children: ReactNode;
+  expandedSection: string | null;
+  onToggle: (section: string) => void;
+};
+
+function HelpSection({
+  id,
+  title,
+  icon: Icon,
+  children,
+  expandedSection,
+  onToggle,
+}: HelpSectionProps) {
+  const isExpanded = expandedSection === id;
+  return (
+    <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+      <button
+        onClick={() => onToggle(id)}
+        className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition"
+      >
+        <div className="flex items-center gap-3">
+          <div className="rounded-lg bg-teal-100 p-2">
+            <Icon className="h-5 w-5 text-teal-600" />
+          </div>
+          <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
+        </div>
+        {isExpanded ? (
+          <ChevronDown className="h-5 w-5 text-slate-400" />
+        ) : (
+          <ChevronRight className="h-5 w-5 text-slate-400" />
+        )}
+      </button>
+      {isExpanded && <div className="p-6 pt-0 border-t border-slate-100">{children}</div>}
+    </div>
+  );
+}
+
 export function HelpPage() {
   const [expandedSection, setExpandedSection] = useState<string | null>('getting-started');
 
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? null : section);
-  };
-
-  const Section = ({ id, title, icon: Icon, children }: any) => {
-    const isExpanded = expandedSection === id;
-    return (
-      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-        <button
-          onClick={() => toggleSection(id)}
-          className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition"
-        >
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-teal-100 p-2">
-              <Icon className="h-5 w-5 text-teal-600" />
-            </div>
-            <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-          </div>
-          {isExpanded ? (
-            <ChevronDown className="h-5 w-5 text-slate-400" />
-          ) : (
-            <ChevronRight className="h-5 w-5 text-slate-400" />
-          )}
-        </button>
-        {isExpanded && <div className="p-6 pt-0 border-t border-slate-100">{children}</div>}
-      </div>
-    );
   };
 
   return (
@@ -60,7 +76,7 @@ export function HelpPage() {
           <p className="text-teal-100">はじめての方でも迷わない、使い方ガイドです。</p>
         </div>
 
-        <Section id="getting-started" title="Compassの使い方" icon={HelpCircle}>
+        <HelpSection id="getting-started" title="Compassの使い方" icon={HelpCircle} expandedSection={expandedSection} onToggle={toggleSection}>
           <div className="space-y-4 text-slate-700">
             <div>
               <h3 className="font-semibold text-slate-900 mb-2">Compassとは？</h3>
@@ -87,9 +103,9 @@ export function HelpPage() {
               </ol>
             </div>
           </div>
-        </Section>
+        </HelpSection>
 
-        <Section id="filters" title="ビュー構成とフィルター" icon={ListFilter}>
+        <HelpSection id="filters" title="ビュー構成とフィルター" icon={ListFilter} expandedSection={expandedSection} onToggle={toggleSection}>
           <div className="space-y-4 text-slate-700">
             <p className="text-sm">フィルターと検索はサイドバー内にまとめています。ページを切り替えても設定が保たれます。</p>
             <div>
@@ -100,9 +116,9 @@ export function HelpPage() {
               </ul>
             </div>
           </div>
-        </Section>
+        </HelpSection>
 
-        <Section id="schedule" title="工程表（ガントチャート）の仕様" icon={CalendarDays}>
+        <HelpSection id="schedule" title="工程表（ガントチャート）の仕様" icon={CalendarDays} expandedSection={expandedSection} onToggle={toggleSection}>
           <div className="space-y-4 text-slate-700">
             <p className="text-sm">工程表は作業エリアに集中できるよう、操作は上部ツールバーに集約しています。</p>
             <div>
@@ -114,9 +130,9 @@ export function HelpPage() {
               </ul>
             </div>
           </div>
-        </Section>
+        </HelpSection>
 
-        <Section id="workload" title="リソース分析" icon={BarChart3}>
+        <HelpSection id="workload" title="リソース分析" icon={BarChart3} expandedSection={expandedSection} onToggle={toggleSection}>
           <div className="space-y-4 text-slate-700">
             <p className="text-sm">リソース分析は、担当者別・プロジェクト別の工数と稼ぎを同じ期間で見られるページです。</p>
             <div>
@@ -127,9 +143,9 @@ export function HelpPage() {
               </ul>
             </div>
           </div>
-        </Section>
+        </HelpSection>
 
-        <Section id="danger" title="危険タスクの自動アラート" icon={AlertTriangle}>
+        <HelpSection id="danger" title="危険タスクの自動アラート" icon={AlertTriangle} expandedSection={expandedSection} onToggle={toggleSection}>
           <div className="space-y-4 text-slate-700">
             <p className="text-sm">期限が近いタスクや期限切れのタスクを自動でまとめて表示します。</p>
             <ul className="space-y-2 text-sm">
@@ -137,9 +153,9 @@ export function HelpPage() {
               <li className="flex items-start gap-2"><span className="text-teal-600 mt-1">•</span><span>今日締切のタスクだけをまとめて把握でき、期限を過ぎたものは赤バッジで強調されます。</span></li>
             </ul>
           </div>
-        </Section>
+        </HelpSection>
 
-        <Section id="member-guest" title="メンバーと協力者" icon={Users}>
+        <HelpSection id="member-guest" title="メンバーと協力者" icon={Users} expandedSection={expandedSection} onToggle={toggleSection}>
           <div className="space-y-4">
             <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
               <div className="flex items-start gap-2 mb-2">
@@ -167,9 +183,9 @@ export function HelpPage() {
               </div>
             </div>
           </div>
-        </Section>
+        </HelpSection>
 
-        <Section id="roles" title="役職と権限" icon={Shield}>
+        <HelpSection id="roles" title="役職と権限" icon={Shield} expandedSection={expandedSection} onToggle={toggleSection}>
           <div className="space-y-4">
             <p className="text-sm text-slate-700 mb-4">役職によってできることが変わります。</p>
             <div className="space-y-3">
@@ -193,9 +209,9 @@ export function HelpPage() {
               </div>
             </div>
           </div>
-        </Section>
+        </HelpSection>
 
-        <Section id="data-safety" title="データの安全性とバックアップ" icon={Database}>
+        <HelpSection id="data-safety" title="データの安全性とバックアップ" icon={Database} expandedSection={expandedSection} onToggle={toggleSection}>
           <div className="space-y-4">
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex gap-3">
               <Database className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
@@ -212,9 +228,9 @@ export function HelpPage() {
               </ul>
             </div>
           </div>
-        </Section>
+        </HelpSection>
 
-        <Section id="faq" title="よくある質問" icon={HelpCircle}>
+        <HelpSection id="faq" title="よくある質問" icon={HelpCircle} expandedSection={expandedSection} onToggle={toggleSection}>
           <div className="space-y-4 text-sm text-slate-700">
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Q: 無料トライアル後、自動で課金されますか？</h3>
@@ -229,7 +245,7 @@ export function HelpPage() {
               <p className="text-slate-600">A: 席数はいつでも追加・削減が可能です。</p>
             </div>
           </div>
-        </Section>
+        </HelpSection>
 
         {/* 法務情報・お問い合わせ */}
         <div className="bg-white rounded-lg border border-slate-200 p-6">

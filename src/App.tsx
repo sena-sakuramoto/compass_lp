@@ -43,7 +43,7 @@ function stripMotionProps(props: Record<string, unknown>) {
 
 function createMobileMotionElement(tag: string) {
   return ({ children, ...props }: Record<string, unknown>) => {
-    return createElement(tag, stripMotionProps(props), children as any);
+    return createElement(tag, stripMotionProps(props), children as ReactNode);
   };
 }
 
@@ -623,8 +623,10 @@ function App() {
       }
 
       setEnterpriseSubmitted(true);
-    } catch (err: any) {
-      setEnterpriseError(err.message || '送信に失敗しました。時間をおいて再度お試しください。');
+    } catch (err) {
+      setEnterpriseError(err instanceof Error
+        ? err.message
+        : '送信に失敗しました。時間をおいて再度お試しください。');
     } finally {
       setEnterpriseLoading(false);
     }
