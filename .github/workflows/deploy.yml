@@ -32,7 +32,9 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        # The generated history is committed. CI cannot clone the private
+        # Compass source repository used by the local prebuild generator.
+        run: npx tsc -b && npx vite build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
