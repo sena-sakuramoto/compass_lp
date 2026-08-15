@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import './index.css';
 import { latestProductUpdate, productUpdates } from './content/updates';
+import { AiConsultSection } from './components/AiConsultSection';
 
 const motion = framerMotion;
 const MOBILE_MOTION_PROPS = [
@@ -1315,6 +1316,8 @@ function App() {
           </div>
         </div>
       </section>
+
+      <AiConsultSection />
 
       {/* ============================================ */}
       {/* PRICING SECTION */}
