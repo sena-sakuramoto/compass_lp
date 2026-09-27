@@ -13,13 +13,12 @@ import {
   Menu,
   X,
   ChevronDown,
-  Volume2,
-  VolumeX,
 } from 'lucide-react';
 import './index.css';
 import { latestProductUpdate, productUpdates } from './content/updates';
 import { buildCompassFaqStructuredData, COMPASS_FAQ } from './content/faq';
 import { AiConsultSection } from './components/AiConsultSection';
+import { HeroVideo } from './components/HeroVideo';
 
 const motion = framerMotion;
 const MOBILE_MOTION_PROPS = [
@@ -440,9 +439,6 @@ function App() {
   const motion = isMobile ? mobileMotion : framerMotion;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   // 申し込みモーダル用state
   const [showSignupModal, setShowSignupModal] = useState(false);
@@ -474,12 +470,6 @@ function App() {
   const studentDomainsLabel = (studentPlan.eligibleDomains ?? DEFAULT_PLANS.student.eligibleDomains ?? []).join(' / ');
   const featuredUpdates = productUpdates.slice(0, 3);
 
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-      setIsMuted(videoRef.current.muted);
-    }
-  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -526,25 +516,6 @@ function App() {
     const lower = signupEmail.toLowerCase();
     setIsStudentEmail(domains.some(d => lower.endsWith(d)));
   }, [signupEmail, studentPlan.eligibleDomains]);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video || !isMobile) return;
-
-    video.muted = true;
-    setIsMuted(true);
-
-    const tryAutoplay = async () => {
-      try {
-        await video.play();
-        setIsVideoPlaying(true);
-      } catch {
-        setIsVideoPlaying(false);
-      }
-    };
-
-    void tryAutoplay();
-  }, [isMobile]);
 
   const handleDemoClick = () => {
     window.location.href = 'https://compass-demo.web.app/';
@@ -791,53 +762,7 @@ function App() {
             {!isMobile && <div className="absolute -inset-4 bg-gradient-to-r from-[#00b4d8]/20 via-[#0077b6]/20 to-[#1e3a5f]/20 rounded-3xl blur-2xl" />}
 
             {/* Video */}
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/50 bg-white">
-              <video
-                ref={videoRef}
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload={isMobile ? 'metadata' : 'auto'}
-                poster={isMobile ? '/dashboard.png' : undefined}
-                className="w-full h-auto"
-                controlsList="nodownload"
-                onContextMenu={(e) => e.preventDefault()}
-                onPlay={() => setIsVideoPlaying(true)}
-                onPause={() => setIsVideoPlaying(false)}
-              >
-                <source src="/compass-intro.mp4" type="video/mp4" />
-              </video>
-
-              {/* Mobile play fallback when autoplay is blocked */}
-              {isMobile && !isVideoPlaying && (
-                <button
-                  type="button"
-                  onClick={async () => {
-                    if (!videoRef.current) return;
-                    try {
-                      await videoRef.current.play();
-                      setIsVideoPlaying(true);
-                    } catch {
-                      setIsVideoPlaying(false);
-                    }
-                  }}
-                  className="absolute inset-0 m-auto h-12 w-28 rounded-full bg-[#1e3a5f]/80 text-white text-sm font-semibold backdrop-blur-sm hover:bg-[#1e3a5f] transition-colors"
-                >
-                  再生
-                </button>
-              )}
-
-              {/* Mute toggle button */}
-              <motion.button
-                onClick={toggleMute}
-                className={`absolute bottom-4 right-4 p-3 rounded-full bg-[#1e3a5f]/80 text-white hover:bg-[#1e3a5f] transition-colors ${isMobile ? '' : 'backdrop-blur-sm'}`}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-              </motion.button>
-            </div>
+            <HeroVideo isMobile={isMobile} src="/compass-intro-v12.mp4" poster="/compass-intro-v12-poster.jpg" />
           </motion.div>
 
           {/* Text Content - Centered */}
