@@ -187,7 +187,7 @@ export function HeroVideo({ isMobile, src, poster }: HeroVideoProps) {
   const narration = mode === 'narration';
 
   return (
-    <div className="group relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/50 bg-[#04090f]">
+    <div className="group relative rounded-[4px] overflow-hidden border border-[var(--lp-ink)] bg-[#04090f]">
       <video
         ref={videoRef}
         autoPlay
@@ -223,7 +223,7 @@ export function HeroVideo({ isMobile, src, poster }: HeroVideoProps) {
           type="button"
           onClick={togglePlay}
           aria-label="再生"
-          className="absolute inset-0 m-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#1e3a5f]/85 text-white shadow-lg hover:bg-[#1e3a5f] transition-colors"
+          className="absolute inset-0 m-auto flex h-14 w-14 items-center justify-center rounded-[4px] bg-[var(--lp-ink)]/85 text-white hover:bg-[var(--lp-ink)] transition-colors"
         >
           <Play size={22} className="ml-0.5" />
         </button>
@@ -235,7 +235,7 @@ export function HeroVideo({ isMobile, src, poster }: HeroVideoProps) {
           type="button"
           onClick={startNarration}
           aria-label={watchedOnce ? 'もう一度ナレーション付きで見る' : 'ナレーション付きで見る'}
-          className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 flex items-center gap-2 rounded-full bg-white/95 px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-bold text-[#1e3a5f] shadow-lg ring-1 ring-black/5 transition hover:bg-white hover:shadow-xl active:scale-95"
+          className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 flex items-center gap-2 rounded-[4px] bg-white px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-bold text-[var(--lp-ink)] transition hover:bg-[var(--lp-paper)] active:scale-95"
         >
           {watchedOnce ? <RotateCcw size={16} /> : <Volume2 size={17} />}
           <span>{watchedOnce ? 'もう一度ナレーション付きで見る' : 'ナレーション付きで見る'}</span>
@@ -268,7 +268,7 @@ export function HeroVideo({ isMobile, src, poster }: HeroVideoProps) {
             className="group/seek relative mb-2 h-4 cursor-pointer touch-none"
           >
             <div className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-white/25 transition-all group-hover/seek:h-1.5" />
-            <div className="absolute left-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-[#00b4d8] transition-all group-hover/seek:h-1.5" style={{ width: `${progress}%` }} />
+            <div className="absolute left-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-[var(--lp-accent)] transition-all group-hover/seek:h-1.5" style={{ width: `${progress}%` }} />
             <div className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow" style={{ left: `${progress}%` }} />
           </div>
 
@@ -288,7 +288,7 @@ export function HeroVideo({ isMobile, src, poster }: HeroVideoProps) {
               value={muted ? 0 : volume}
               onChange={(e) => changeVolume(Number(e.target.value))}
               aria-label="音量"
-              className="hero-volume h-1 w-20 sm:w-28 cursor-pointer accent-[#00b4d8]"
+              className="hero-volume h-1 w-20 sm:w-28 cursor-pointer accent-[var(--lp-accent)]"
             />
 
             <span className="ml-1 text-[11px] sm:text-xs tabular-nums text-white/80">

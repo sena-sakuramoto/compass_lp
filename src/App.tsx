@@ -1,26 +1,19 @@
-import { Component, type ErrorInfo, type ReactNode, useState, useEffect, useRef, createElement } from 'react';
-import { motion as framerMotion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from 'framer-motion';
+import { Component, type ErrorInfo, type ReactNode, useState, useEffect, createElement } from 'react';
+import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 import {
   CheckCircle2,
-  Users,
-  Calendar,
-  BarChart3,
   ArrowRight,
-  Play,
   Clock,
-  Bell,
-  FileSpreadsheet,
   Menu,
   X,
-  ChevronDown,
 } from 'lucide-react';
 import './index.css';
-import { latestProductUpdate, productUpdates } from './content/updates';
+import { productUpdates } from './content/updates';
 import { buildCompassFaqStructuredData, COMPASS_FAQ } from './content/faq';
 import { AiConsultSection } from './components/AiConsultSection';
 import { HeroVideo } from './components/HeroVideo';
+import { ConceptVideo, FeatureClip, SectionHead } from './components/LpParts';
 
-const motion = framerMotion;
 const MOBILE_MOTION_PROPS = [
   'initial',
   'animate',
@@ -230,148 +223,51 @@ function useIsMobile(breakpoint = 768) {
 }
 
 // ============================================
-// ANIMATED TEXT REVEAL
+// LP の中身（主張は検証済みの内容だけにする：src/lib/marketing-claims.test.ts）
 // ============================================
-function DesktopTextReveal({
-  children,
-  className = '',
-  delay = 0
-}: {
-  children: string;
-  className?: string;
-  delay?: number;
-}) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-50px' });
+const NAV_ITEMS = [
+  { label: '機能', href: '#features' },
+  { label: 'これから', href: '#vision' },
+  { label: '料金', href: '#pricing' },
+  { label: '導入', href: '#flow' },
+  { label: 'サークル', href: '#circle' },
+  { label: '更新情報', href: '/updates' },
+];
 
-  const words = children.split(' ');
+const PAIN_ROWS = [
+  { title: '情報がバラバラ', problem: 'Excel、ホワイトボード、LINE…複数ツールに分散し、最新情報がどれか分からない。', answer: '工程、担当、締切、進捗を同じ画面で確認できる。' },
+  { title: '進捗が見えない', problem: '誰が何をやっているか把握できない。確認のための会議や電話が増える一方。', answer: '進捗更新をタスク単位で記録でき、同じ工程をブラウザから共有できる。' },
+  { title: '遅延に気づけない', problem: '締切が迫っても気づかず後手に。問題が大きくなってから発覚する。', answer: '締切前や進捗変更時に通知が届く。' },
+  { title: '使いこなせるか不安', problem: '設定項目が多くて挫折し、結局Excelに戻ってしまう。', answer: '登録前にデモで主要操作を確認でき、既存のExcelデータも取り込める。' },
+  { title: '現場で見られない', problem: '事務所に戻らないと、最新の工程が分からない。', answer: 'スマートフォンのブラウザから工程を確認できる。' },
+];
 
-  return (
-    <span ref={ref} className={className}>
-      {words.map((word, i) => (
-        <span key={i} className="inline-block overflow-hidden">
-          <motion.span
-            className="inline-block"
-            initial={{ y: '100%', opacity: 0 }}
-            animate={isInView ? { y: 0, opacity: 1 } : { y: '100%', opacity: 0 }}
-            transition={{
-              duration: 0.5,
-              delay: delay + i * 0.05,
-              ease: [0.33, 1, 0.68, 1],
-            }}
-          >
-            {word}
-          </motion.span>
-          {i < words.length - 1 && '\u00A0'}
-        </span>
-      ))}
-    </span>
-  );
-}
+const FEATURE_CLIPS = [
+  { no: '02.1', name: 'ガントチャート', title: 'ドラッグで、工程が組める。', text: '工程のバーをつかんで動かすだけで、日程を組み替えられます。担当と進捗も同じ表で見えます。', src: '/screens/gantt.mp4', poster: '/screens/gantt.jpg' },
+  { no: '02.2', name: '依存関係', title: '順番を、線でつなぐ。', text: '前後の工程を線で結び、作業の順番を表の上で確かめられます。', src: '/screens/deps.mp4', poster: '/screens/deps.jpg' },
+  { no: '02.3', name: 'リソース分析', title: '遅れと負荷を、先に見る。', text: 'メンバーごとの稼働と負荷をグラフで確認でき、偏りに早く気づけます。', src: '/screens/workload.mp4', poster: '/screens/workload.jpg' },
+  { no: '02.4', name: 'AI取り込み', title: '貼るだけで、工程はAIが。', text: '工程のメモやExcel・PDFを貼ると、AIが工程とタスクに分けて取り込みます。', src: '/screens/ai-import.mp4', poster: '/screens/ai-import.jpg' },
+  { no: '02.5', name: 'プロジェクト一覧', title: '全案件を、ひと目で。', text: '進行中の案件の進捗率・期限・予算を、カードで並べて見られます。', src: '/screens/projects.mp4', poster: '/screens/projects.jpg' },
+];
 
-function TextReveal({
-  children,
-  className = '',
-  delay = 0
-}: {
-  children: string;
-  className?: string;
-  delay?: number;
-}) {
-  const isMobile = useIsMobile();
+const MORE_FEATURES = [
+  { title: 'チーム招待', text: '現場も設計も、必要なメンバーを招待。プロジェクトごとの権限管理も。' },
+  { title: 'カレンダー連携', text: 'Googleカレンダーと同期し、予定を見える化。' },
+  { title: '通知・リマインド', text: '締切前や進捗変更時に通知。重要な変更を見逃さない。' },
+  { title: 'Excel連携', text: '既存のExcelデータをインポートし、従来の工程表から移行。' },
+];
 
-  if (isMobile) {
-    return <span className={className}>{children}</span>;
-  }
+const PLAN_COLUMNS = [
+  { tier: 'small', label: 'Small' },
+  { tier: 'standard', label: 'Standard' },
+  { tier: 'business', label: 'Business' },
+] as const;
 
-  return (
-    <DesktopTextReveal
-      children={children}
-      className={className}
-      delay={delay}
-    />
-  );
-}
-
-// ============================================
-// SCROLL PROGRESS SECTION
-// ============================================
-function DesktopStickySection({
-  children,
-  className = ''
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start'],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [28, 0, 0, -28]);
-
-  return (
-    <motion.div
-      ref={ref}
-      style={{ y }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function StickySection({
-  children,
-  className = ''
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  const isMobile = useIsMobile();
-
-  if (isMobile) {
-    return <div className={className}>{children}</div>;
-  }
-
-  return (
-    <DesktopStickySection className={className}>
-      {children}
-    </DesktopStickySection>
-  );
-}
-
-function DesktopProgressBar() {
-  const { scrollYProgress } = useScroll();
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-
-  return (
-    <motion.div
-      className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#00b4d8] to-[#0077b6] origin-left z-[100]"
-      style={{ scaleX: smoothProgress }}
-    />
-  );
-}
-
-function DesktopHeroBlobs() {
-  const { scrollYProgress } = useScroll();
-  const blobY1 = useTransform(scrollYProgress, [0, 1], [0, 150]);
-  const blobY2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-
-  return (
-    <>
-      <motion.div
-        className="absolute top-20 left-0 w-[600px] h-[600px] bg-[#00b4d8]/5 rounded-full blur-[100px]"
-        style={{ y: blobY1 }}
-      />
-      <motion.div
-        className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#1e3a5f]/5 rounded-full blur-[100px]"
-        style={{ y: blobY2 }}
-      />
-    </>
-  );
-}
+const VISION_POINTS = [
+  '一言で、関係する仕事が同時に動く',
+  '返事待ちを、忘れずに追いかける',
+  '判断と証拠が、会社の知識になる',
+];
 
 // ============================================
 // MAIN APP COMPONENT
@@ -469,6 +365,7 @@ function App() {
   const studentPrice = formatPrice(studentPlan.price, studentPlan.currency);
   const studentDomainsLabel = (studentPlan.eligibleDomains ?? DEFAULT_PLANS.student.eligibleDomains ?? []).join(' / ');
   const featuredUpdates = productUpdates.slice(0, 3);
+  const plansByTier = { small: smallPlan, standard: standardPlan, business: businessPlan } as const;
 
 
   useEffect(() => {
@@ -603,559 +500,216 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-[#1e293b] overflow-x-hidden">
+    <div className="min-h-screen bg-white text-[var(--lp-ink)] overflow-x-hidden">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(buildCompassFaqStructuredData()),
         }}
       />
-      {/* Progress bar */}
-      {!isMobile && <DesktopProgressBar />}
-
       {/* ============================================ */}
       {/* HEADER */}
       {/* ============================================ */}
-      <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow,border-color] duration-500 ${
-          scrolled
-            ? `${isMobile ? 'bg-white' : 'bg-white/90 backdrop-blur-xl'} shadow-sm border-b border-slate-100`
-            : 'bg-transparent'
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 bg-white transition-[border-color] duration-300 border-b ${
+          scrolled ? 'border-[var(--lp-rule)]' : 'border-transparent'
         }`}
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
-            <motion.div
-              className="flex items-center"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <img src="/compass-logo.png" alt="Compass" className="h-6 sm:h-7 md:h-8 w-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
-            </motion.div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            <a href="/" className="flex items-center" aria-label="Compass トップ">
+              <img src="/compass-logo.png" alt="Compass" className="h-6 sm:h-7 w-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
+            </a>
 
-            <nav className="hidden md:flex items-center gap-1">
-              {[
-                { label: '機能', href: '#features' },
-                { label: '料金', href: '#pricing' },
-                { label: '導入', href: '#flow' },
-                { label: 'サークル', href: '#circle' },
-                { label: '更新情報', href: '/updates' },
-              ].map((item, i) => (
-                <motion.a
-                  key={item.href}
-                  href={item.href}
-                  className="px-4 py-2 text-sm font-medium text-[#64748b] hover:text-[#1e3a5f] transition-colors rounded-lg hover:bg-slate-50"
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + i * 0.05 }}
-                >
+            <nav className="hidden md:flex items-center gap-6 text-sm text-[var(--lp-sub)]">
+              {NAV_ITEMS.map((item) => (
+                <a key={item.href} href={item.href} className="hover:text-[var(--lp-ink)] transition-colors">
                   {item.label}
-                </motion.a>
+                </a>
               ))}
             </nav>
 
-            <motion.div
-              className="hidden md:flex items-center gap-3"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <button
-                onClick={handleDemoClick}
-                className="px-4 py-2 text-sm font-medium text-[#64748b] hover:text-[#1e3a5f] transition-colors"
-              >
+            <div className="hidden md:flex items-center gap-4">
+              <button onClick={handleDemoClick} className="text-sm text-[var(--lp-ink)] hover:text-[var(--lp-accent-ink)] transition-colors">
                 デモを試す
               </button>
-              <motion.button
+              <button
                 onClick={handleTrialClick}
-                className="px-5 py-2.5 text-sm font-semibold rounded-full bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white shadow-md shadow-cyan-500/20 hover:shadow-lg hover:shadow-cyan-500/30 transition-all"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                className="rounded-[4px] bg-[var(--lp-accent)] px-4 py-2 text-sm font-bold text-white hover:bg-[var(--lp-accent-ink)] transition-colors"
               >
-                <span className="flex items-center gap-2">
-                  無料で始める
-                  <ArrowRight size={16} />
-                </span>
-              </motion.button>
-            </motion.div>
+                無料で始める
+              </button>
+            </div>
 
             <button
-              className="md:hidden p-1.5 sm:p-2 rounded-lg hover:bg-slate-100 transition"
+              className="md:hidden p-2 -mr-2 text-[var(--lp-ink)]"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? 'メニューを閉じる' : 'メニューを開く'}
             >
-              {mobileMenuOpen ? <X size={20} className="text-[#1e3a5f] sm:w-6 sm:h-6" /> : <Menu size={20} className="text-[#1e3a5f] sm:w-6 sm:h-6" />}
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
 
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              className="md:hidden bg-white border-t border-slate-100"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-            >
-              <div className="px-6 py-6 space-y-4">
-                {[
-                  { label: '機能', href: '#features' },
-                  { label: '料金', href: '#pricing' },
-                  { label: '導入', href: '#flow' },
-                  { label: 'サークル', href: '#circle' },
-                  { label: '更新情報', href: '/updates' },
-                ].map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block py-2 text-[#1e293b] font-medium"
-                  >
-                    {item.label}
-                  </a>
-                ))}
-                <div className="pt-4 space-y-3">
-                  <button onClick={() => { handleDemoClick(); setMobileMenuOpen(false); }} className="w-full py-3 text-[#1e3a5f] font-medium border border-slate-200 rounded-xl">
-                    デモを試す
-                  </button>
-                  <button onClick={() => { handleTrialClick(); setMobileMenuOpen(false); }} className="w-full py-3 bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white font-semibold rounded-xl">
-                    無料で始める
-                  </button>
-                </div>
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-[var(--lp-rule)] bg-white">
+            <div className="px-4 py-4">
+              {NAV_ITEMS.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block border-b border-[var(--lp-rule)] py-3 text-[var(--lp-ink)]"
+                >
+                  {item.label}
+                </a>
+              ))}
+              <div className="pt-4 grid grid-cols-2 gap-3">
+                <button onClick={() => { handleDemoClick(); setMobileMenuOpen(false); }} className="rounded-[4px] border border-[var(--lp-ink)] py-3 text-sm font-bold text-[var(--lp-ink)]">
+                  デモを試す
+                </button>
+                <button onClick={() => { handleTrialClick(); setMobileMenuOpen(false); }} className="rounded-[4px] bg-[var(--lp-accent)] py-3 text-sm font-bold text-white">
+                  無料で始める
+                </button>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.header>
-
-      {/* ============================================ */}
-      {/* HERO SECTION */}
-      {/* ============================================ */}
-      <section className="relative min-h-[100dvh] flex items-center pt-20 overflow-hidden bg-gradient-to-b from-white via-[#f8fafc] to-white">
-        {/* Background decorations with parallax */}
-        <div className="absolute inset-0 overflow-hidden">
-          {isMobile ? (
-            <>
-              <div className="absolute top-20 left-0 w-[300px] h-[300px] bg-[#00b4d8]/3 rounded-full" />
-              <div className="absolute bottom-0 right-0 w-[250px] h-[250px] bg-[#1e3a5f]/3 rounded-full" />
-            </>
-          ) : (
-            <DesktopHeroBlobs />
-          )}
-        </div>
-
-        {/* Grid pattern */}
-        {!isMobile && <div className="absolute inset-0 bg-[linear-gradient(rgba(30,58,95,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(30,58,95,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />}
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-20 lg:pt-32 pb-8">
-          {/* Hero Visual - Video (Top) */}
-          <motion.div
-            className="relative max-w-5xl mx-auto mb-8 sm:mb-12"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            {/* Glow effect behind (desktop only — blur is GPU-heavy on mobile) */}
-            {!isMobile && <div className="absolute -inset-4 bg-gradient-to-r from-[#00b4d8]/20 via-[#0077b6]/20 to-[#1e3a5f]/20 rounded-3xl blur-2xl" />}
-
-            {/* Video */}
-            <HeroVideo isMobile={isMobile} src="/compass-intro-v12.mp4" poster="/compass-intro-v12-poster.jpg" />
-          </motion.div>
-
-          {/* Text Content - Centered */}
-          <div className="text-center max-w-4xl mx-auto">
-            {/* Main copy */}
-            <motion.h1
-              className="text-2xl sm:text-4xl lg:text-6xl font-extrabold leading-[1.2] sm:leading-[1.1] mb-4 sm:mb-6 tracking-tight text-[#1e3a5f]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-            >
-              <span className="block sm:inline">すべての現場に、</span>
-              <span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent">Compass</span>を。
-            </motion.h1>
-
-            <motion.p
-              className="text-base sm:text-lg lg:text-xl text-[#64748b] mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto px-2 sm:px-0"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
-            >
-              今どこにいて、次に何をすべきかが一目でわかる。
-              <br className="hidden sm:block" />
-              だから現場が迷わず、プロジェクトが前に進む。
-            </motion.p>
-
-            {/* CTAs */}
-            <motion.div
-              className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-4 sm:mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.9 }}
-            >
-              <motion.button
-                onClick={handleTrialClick}
-                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/30 transition-all"
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <span className="flex items-center justify-center gap-2">
-                  14日間無料で試す
-                  <ArrowRight size={18} className="sm:w-5 sm:h-5" />
-                </span>
-              </motion.button>
-
-              <motion.button
-                onClick={handleDemoClick}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg bg-white text-[#1e3a5f] border border-slate-200 hover:border-[#00b4d8]/50 hover:shadow-lg transition-all"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Play size={18} className="text-[#00b4d8] sm:w-5 sm:h-5" />
-                デモを試す
-              </motion.button>
-            </motion.div>
-
-            <motion.div
-              className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs sm:text-sm text-[#64748b]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 1 }}
-            >
-              <span className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-[#00b4d8] sm:w-4 sm:h-4" />
-                申込前に契約条件を確認
-              </span>
-              <span className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-[#00b4d8] sm:w-4 sm:h-4" />
-                手続き・期限を申込前に確認
-              </span>
-            </motion.div>
+            </div>
           </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <div className="w-6 h-10 rounded-full border-2 border-[#1e3a5f]/20 flex items-start justify-center p-2">
-            <motion.div
-              className="w-1.5 h-1.5 bg-[#1e3a5f]/40 rounded-full"
-              animate={{ y: [0, 12, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            />
-          </div>
-        </motion.div>
-      </section>
+        )}
+      </header>
 
       {/* ============================================ */}
-      {/* WHY COMPASS - DIFFERENTIATOR */}
+      {/* HERO */}
       {/* ============================================ */}
-      <section className="py-16 sm:py-24 lg:py-32 relative overflow-hidden bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <StickySection className="text-center mb-8 sm:mb-12 lg:mb-16">
-            <motion.span
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#00b4d8]/20 mb-4 sm:mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              なぜCompassか
-            </motion.span>
-            <h2 className="text-xl sm:text-3xl lg:text-5xl font-bold text-[#1e3a5f] mb-4 sm:mb-6 px-2">
-              工程と進捗を<span className="text-[#00b4d8]">同じ場所で共有</span>
-            </h2>
-            <p className="text-[#64748b] text-sm sm:text-base lg:text-lg max-w-2xl mx-auto px-2">
-              工程、担当、締切、進捗を同じ画面で確認できます。
-            </p>
-          </StickySection>
-
-          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
-            {/* Comparison */}
-            <motion.div
-              initial={isMobile ? undefined : { opacity: 0, x: -50 }}
-              whileInView={isMobile ? undefined : { opacity: 1, x: 0 }}
-              transition={isMobile ? undefined : { duration: 0.6 }}
-              viewport={isMobile ? undefined : { once: true }}
-            >
-              <div className="bg-[#f8fafc] rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 border border-slate-100">
-                <h3 className="text-base sm:text-lg font-bold text-[#64748b] mb-4 sm:mb-6">他ツールでよくある悩み</h3>
-                <ul className="space-y-3 sm:space-y-4">
-                  {[
-                    '画面が複雑で何をすればいいかわからない',
-                    '設定項目が多すぎて挫折する',
-                    '使い方の説明に時間がかかる',
-                    'ベテラン社員が使ってくれない',
-                    '結局Excelに戻ってしまう',
-                  ].map((item, i) => (
-                    <motion.li
-                      key={i}
-                      className="flex items-start gap-2 sm:gap-3 text-sm sm:text-base text-[#64748b]"
-                      initial={isMobile ? undefined : { opacity: 0, x: -20 }}
-                      whileInView={isMobile ? undefined : { opacity: 1, x: 0 }}
-                      transition={isMobile ? undefined : { delay: 0.3 + i * 0.1, duration: 0.4 }}
-                      viewport={isMobile ? undefined : { once: true }}
-                    >
-                      <X className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 flex-shrink-0 mt-0.5" />
-                      {item}
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-
-            {/* Compass advantages */}
-            <motion.div
-              initial={isMobile ? undefined : { opacity: 0, x: 50 }}
-              whileInView={isMobile ? undefined : { opacity: 1, x: 0 }}
-              transition={isMobile ? undefined : { duration: 0.6 }}
-              viewport={isMobile ? undefined : { once: true }}
-            >
-              <div className="bg-gradient-to-br from-[#00b4d8] to-[#0077b6] rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 text-white">
-                <h3 className="text-base sm:text-lg font-bold text-cyan-100 mb-4 sm:mb-6">Compassなら</h3>
-                <ul className="space-y-3 sm:space-y-4">
-                  {[
-                    '必要な操作を画面内で確認できる',
-                    '工程、担当、締切を同じ場所で扱える',
-                    'デモで主要操作を登録前に確認できる',
-                    'スマートフォンのブラウザから工程を確認できる',
-                    '進捗更新をタスク単位で記録できる',
-                  ].map((item, i) => (
-                    <motion.li
-                      key={i}
-                      className="flex items-start gap-2 sm:gap-3 text-sm sm:text-base"
-                      initial={isMobile ? undefined : { opacity: 0, x: 20 }}
-                      whileInView={isMobile ? undefined : { opacity: 1, x: 0 }}
-                      transition={isMobile ? undefined : { delay: 0.3 + i * 0.1, duration: 0.4 }}
-                      viewport={isMobile ? undefined : { once: true }}
-                    >
-                      <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-200 flex-shrink-0 mt-0.5" />
-                      {item}
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Key differentiators */}
-          <div className="mt-10 sm:mt-12 lg:mt-16 grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+      <section className="pt-20 sm:pt-24 pb-14 sm:pb-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <HeroVideo isMobile={isMobile} src="/compass-intro-v12.mp4" poster="/compass-intro-v12-poster.jpg" />
+          {/* 表題欄 */}
+          <dl className="grid grid-cols-2 lg:grid-cols-4 border-l border-[var(--lp-ink)]">
             {[
-              {
-                title: '迷いにくい画面設計',
-                description: '工程、担当、締切、進捗を同じ画面で確認できるよう、主要操作をまとめています。',
-              },
-              {
-                title: '導入前にデモで確認',
-                description: '登録前にサンプルデータで操作し、現場の手順に合うか確認できます。',
-              },
-              {
-                title: '現場と設計室で共有',
-                description: 'ブラウザから同じ工程とタスクを確認し、更新内容を共有できます。',
-              },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                className="text-center p-4 sm:p-6"
-                initial={isMobile ? undefined : { opacity: 0, y: 30 }}
-                whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
-                transition={isMobile ? undefined : { delay: i * 0.1 }}
-                viewport={isMobile ? undefined : { once: true }}
-              >
-                <h4 className="text-lg sm:text-xl font-bold text-[#1e3a5f] mb-2 sm:mb-3">{item.title}</h4>
-                <p className="text-sm sm:text-base text-[#64748b]">{item.description}</p>
-              </motion.div>
+              { k: '対象', v: '建築・施工のチーム' },
+              { k: '使う場所', v: 'パソコンとスマホのブラウザ' },
+              { k: '料金', v: `月${formatPrice(smallPlan.price, smallPlan.currency)}から（〜${smallPlan.maxMembers}名）` },
+              { k: '試用', v: smallPlan.trialDays ? `${smallPlan.trialDays}日間無料` : 'デモで操作を確認' },
+            ].map((row) => (
+              <div key={row.k} className="border-r border-b border-[var(--lp-ink)] px-3 py-3 sm:px-4 sm:py-4">
+                <dt className="f-mono text-[11px] tracking-[0.15em] text-[var(--lp-sub)]">{row.k}</dt>
+                <dd className="mt-1 text-sm sm:text-base font-bold text-[var(--lp-ink)]">{row.v}</dd>
+              </div>
             ))}
-          </div>
-        </div>
-      </section>
+          </dl>
 
-      {/* ============================================ */}
-      {/* PAIN POINTS SECTION */}
-      {/* ============================================ */}
-      <section className="py-16 sm:py-24 lg:py-32 relative overflow-hidden bg-[#f8fafc]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <StickySection className="text-center mb-10 sm:mb-16 lg:mb-20">
-            <motion.span
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#1e3a5f] bg-[#1e3a5f]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#1e3a5f]/20 mb-4 sm:mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              よくある課題
-            </motion.span>
-            <h2 className="text-2xl sm:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6 text-[#1e3a5f]">
-              <TextReveal>こんな課題、</TextReveal>
+          <div className="mt-8 sm:mt-12 grid gap-6 lg:grid-cols-12 lg:gap-8">
+            <h1 className="f-display lg:col-span-7 text-[34px] leading-[1.18] sm:text-5xl lg:text-[64px] font-black tracking-tight text-[var(--lp-ink)]">
+              すべての現場に、
               <br />
-              <TextReveal delay={0.2}>ありませんか？</TextReveal>
-            </h2>
-          </StickySection>
-
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-            {[
-              {
-                icon: FileSpreadsheet,
-                title: '情報がバラバラ',
-                description: 'Excel、ホワイトボード、LINE...複数ツールに分散し、最新情報がどれか分からない。',
-                color: '#1e3a5f',
-              },
-              {
-                icon: Users,
-                title: '進捗が見えない',
-                description: '誰が何をやっているか把握できない。確認のための会議や電話が増える一方。',
-                color: '#1e3a5f',
-              },
-              {
-                icon: Clock,
-                title: '遅延に気づけない',
-                description: '締切が迫っても気づかず後手に。問題が大きくなってから発覚する。',
-                color: '#1e3a5f',
-              },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={isMobile ? undefined : { opacity: 0, y: 50 }}
-                whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
-                transition={isMobile ? undefined : { delay: i * 0.15, duration: 0.6 }}
-                viewport={isMobile ? undefined : { once: true, margin: '-100px' }}
-              >
-                <motion.div
-                  className="h-full bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 border border-slate-100 shadow-sm"
-                  whileHover={isMobile ? undefined : { y: -4, boxShadow: '0 12px 40px rgba(30, 58, 95, 0.08)' }}
-                  transition={isMobile ? undefined : { duration: 0.3 }}
+              <span className="text-[var(--lp-accent)]">Compass</span>を。
+            </h1>
+            <div className="lg:col-span-5 lg:pt-3">
+              <p className="text-base sm:text-lg leading-relaxed text-[var(--lp-sub)]">
+                今どこにいて、次に何をすべきかが一目でわかる。
+                <br className="hidden sm:block" />
+                だから現場が迷わず、プロジェクトが前に進む。
+              </p>
+              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <button
+                  onClick={handleTrialClick}
+                  className="rounded-[4px] bg-[var(--lp-accent)] px-5 py-3.5 text-base font-bold text-white hover:bg-[var(--lp-accent-ink)] transition-colors"
                 >
-                  <div
-                    className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-lg sm:rounded-xl flex items-center justify-center mb-4 sm:mb-6"
-                    style={{ backgroundColor: `${item.color}15` }}
-                  >
-                    <item.icon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" style={{ color: item.color }} />
-                  </div>
-                  <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-[#1e3a5f]">{item.title}</h3>
-                  <p className="text-sm sm:text-base text-[#64748b] leading-relaxed">{item.description}</p>
-                </motion.div>
-              </motion.div>
+                  14日間無料で試す →
+                </button>
+                <button
+                  onClick={handleDemoClick}
+                  className="rounded-[4px] border border-[var(--lp-ink)] px-5 py-3.5 text-base font-bold text-[var(--lp-ink)] hover:bg-[var(--lp-paper)] transition-colors"
+                >
+                  デモを試す
+                </button>
+              </div>
+              <p className="mt-3 text-xs text-[var(--lp-sub)]">
+                申込前に契約条件を確認 ／ 手続き・期限を申込前に確認
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* 01 課題と答え */}
+      {/* ============================================ */}
+      <section id="why" className="bg-[var(--lp-paper)] py-14 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <SectionHead
+            no="01 — 課題"
+            title={<>散らばる工程を、<br />一本の表に。</>}
+            lead="Excel、ホワイトボード、LINE。工程の情報が散らばるほど、確認の電話と会議が増えていきます。"
+          />
+
+          <div className="mt-8 sm:mt-10 border-t border-[var(--lp-ink)]">
+            <div className="hidden sm:grid grid-cols-12 border-b border-[var(--lp-rule)] py-2 f-mono text-[11px] tracking-[0.15em] text-[var(--lp-sub)]">
+              <p className="col-span-3">よくある状態</p>
+              <p className="col-span-4">困ること</p>
+              <p className="col-span-5">Compass では</p>
+            </div>
+            {PAIN_ROWS.map((row) => (
+              <div key={row.title} className="grid grid-cols-1 gap-1 border-b border-[var(--lp-rule)] py-4 sm:grid-cols-12 sm:gap-4 sm:py-5">
+                <p className="sm:col-span-3 font-bold text-[var(--lp-ink)]">{row.title}</p>
+                <p className="sm:col-span-4 text-sm text-[var(--lp-sub)] leading-relaxed">{row.problem}</p>
+                <p className="sm:col-span-5 text-sm sm:text-base text-[var(--lp-ink)] leading-relaxed">
+                  <span aria-hidden className="mr-2 inline-block h-2 w-2 translate-y-[-2px] bg-[var(--lp-accent)]" />
+                  {row.answer}
+                </p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* ============================================ */}
-      {/* FEATURES SECTION */}
+      {/* 02 機能 */}
       {/* ============================================ */}
-      <section id="features" className="py-16 sm:py-24 lg:py-32 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <StickySection className="text-center mb-10 sm:mb-16 lg:mb-20">
-            <motion.span
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#00b4d8]/20 mb-4 sm:mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              主な機能
-            </motion.span>
-            <h2 className="text-2xl sm:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6 text-[#1e3a5f]">
-              <TextReveal>Compassで</TextReveal>
-              <br />
-              <span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent">できること</span>
-            </h2>
-            <p className="text-sm sm:text-base lg:text-lg text-[#64748b] max-w-2xl mx-auto px-2">
-              プロジェクトの全体像を把握し、日々の進捗を確実に回すための機能を完備
-            </p>
-          </StickySection>
+      <section id="features" className="py-14 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <SectionHead
+            no="02 — 機能"
+            title={<>画面は、<br />見ればわかる。</>}
+            lead="ここに映っているのは、Compass の実際の画面の録画です（データはデモ用のものです）。"
+          />
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {[
-              { icon: BarChart3, title: 'ガントチャート', description: '工程を視覚的に管理。依存関係や進捗状況が一目でわかり、計画の見直しも簡単。', color: '#00b4d8' },
-              { icon: CheckCircle2, title: 'タスク管理', description: '担当・締切・進捗を一元化。ステータス管理で抜け漏れなく、確実に完了へ。', color: '#00b4d8' },
-              { icon: Users, title: 'チーム招待', description: '現場も設計も、必要なメンバーを簡単招待。プロジェクトごとの権限管理も。', color: '#00b4d8' },
-              { icon: Calendar, title: 'カレンダー連携', description: 'Googleカレンダーと同期し、予定を見える化。リマインダーで締切を逃さない。', color: '#00b4d8' },
-              { icon: Bell, title: '通知・リマインド', description: '締切前や進捗変更時に自動通知。重要な変更を見逃さず、素早く対応。', color: '#00b4d8' },
-              { icon: FileSpreadsheet, title: 'Excel連携', description: '既存のExcelデータをインポート。従来の工程表からスムーズに移行。', color: '#00b4d8' },
-            ].map((feature, i) => (
-              <motion.div
-                key={i}
-                initial={isMobile ? undefined : { opacity: 0, y: 30 }}
-                whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
-                transition={isMobile ? undefined : { delay: i * 0.1, duration: 0.5 }}
-                viewport={isMobile ? undefined : { once: true, margin: '-50px' }}
-              >
-                <motion.div
-                  className="h-full bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 border border-slate-100 shadow-sm"
-                  whileHover={isMobile ? undefined : { y: -4, boxShadow: '0 12px 40px rgba(30, 58, 95, 0.08)' }}
-                  transition={isMobile ? undefined : { duration: 0.3 }}
-                >
-                  <div
-                    className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-lg sm:rounded-xl flex items-center justify-center mb-4 sm:mb-6"
-                    style={{ backgroundColor: `${feature.color}15` }}
-                  >
-                    <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" style={{ color: feature.color }} />
-                  </div>
-                  <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-[#1e3a5f]">{feature.title}</h3>
-                  <p className="text-sm sm:text-base text-[#64748b] leading-relaxed">{feature.description}</p>
-                </motion.div>
-              </motion.div>
+          {/* 主役：ガントチャート */}
+          <div className="mt-8 sm:mt-10 grid gap-5 lg:grid-cols-12 lg:gap-8 items-start">
+            <div className="lg:col-span-4">
+              <p className="f-mono text-xs text-[var(--lp-sub)]">{FEATURE_CLIPS[0].no} ／ {FEATURE_CLIPS[0].name}</p>
+              <h3 className="f-display mt-2 text-2xl sm:text-3xl font-black leading-snug text-[var(--lp-ink)]">{FEATURE_CLIPS[0].title}</h3>
+              <p className="mt-3 text-sm sm:text-base leading-relaxed text-[var(--lp-sub)]">{FEATURE_CLIPS[0].text}</p>
+            </div>
+            <div className="lg:col-span-8">
+              <FeatureClip src={FEATURE_CLIPS[0].src} poster={FEATURE_CLIPS[0].poster} label={FEATURE_CLIPS[0].name} />
+            </div>
+          </div>
+
+          {/* 残り4つ */}
+          <div className="mt-10 sm:mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2">
+            {FEATURE_CLIPS.slice(1).map((f) => (
+              <div key={f.no}>
+                <FeatureClip src={f.src} poster={f.poster} label={f.name} />
+                <p className="mt-4 f-mono text-xs text-[var(--lp-sub)]">{f.no} ／ {f.name}</p>
+                <h3 className="f-display mt-1 text-xl sm:text-2xl font-black text-[var(--lp-ink)]">{f.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--lp-sub)]">{f.text}</p>
+              </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* ============================================ */}
-      {/* SCREENSHOT GALLERY */}
-      {/* ============================================ */}
-      <section className="py-16 sm:py-24 lg:py-32 relative overflow-hidden bg-[#f8fafc]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <StickySection className="text-center mb-8 sm:mb-12 lg:mb-16">
-            <motion.span
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#00b4d8]/20 mb-4 sm:mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              画面イメージ
-            </motion.span>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-[#1e3a5f]">
-              <span className="text-[#00b4d8]">実際の画面</span>をご覧ください
-            </h2>
-          </StickySection>
-
-          <div className="space-y-10 sm:space-y-12 lg:space-y-16">
-            {[
-              {
-                title: 'ガントチャート',
-                description: '工程の全体像を視覚化。依存関係・進捗・遅延が一目でわかる。',
-                image: '/gantt.png',
-              },
-              {
-                title: 'プロジェクト一覧',
-                description: '進行中のプロジェクトを一目で把握。進捗率・期限・予算がカードで見える。',
-                image: '/project-list.png',
-              },
-              {
-                title: 'リソース分析',
-                description: 'メンバーの稼働状況をリアルタイムで確認。負荷の偏りを防ぐ。',
-                image: '/dashboard.png',
-              },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                className={`flex flex-col ${i % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-4 sm:gap-6 lg:gap-16 items-center`}
-                initial={isMobile ? undefined : { opacity: 0, y: 60, scale: 0.98 }}
-                whileInView={isMobile ? undefined : { opacity: 1, y: 0, scale: 1 }}
-                transition={isMobile ? undefined : { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] }}
-                viewport={isMobile ? undefined : { once: true, margin: '-100px' }}
-              >
-                <div className="lg:w-1/3 text-center lg:text-left">
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#1e3a5f] mb-2 sm:mb-4">{item.title}</h3>
-                  <p className="text-sm sm:text-base lg:text-lg text-[#64748b]">{item.description}</p>
+          {/* ほかにも */}
+          <div className="mt-12 sm:mt-16 border-t border-[var(--lp-ink)]">
+            <p className="py-2 f-mono text-[11px] tracking-[0.15em] text-[var(--lp-sub)]">ほかにも</p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 border-l border-[var(--lp-rule)]">
+              {MORE_FEATURES.map((f) => (
+                <div key={f.title} className="border-r border-b border-t border-[var(--lp-rule)] p-4 -mt-px">
+                  <p className="font-bold text-[var(--lp-ink)]">{f.title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-[var(--lp-sub)]">{f.text}</p>
                 </div>
-                <motion.div
-                  className="w-full lg:w-2/3"
-                  whileHover={isMobile ? undefined : { scale: 1.02 }}
-                  transition={isMobile ? undefined : { duration: 0.4 }}
-                >
-                  <div className="rounded-xl sm:rounded-2xl overflow-hidden shadow-xl border border-slate-200 hover:shadow-2xl transition-shadow duration-300">
-                    <img src={item.image} alt={item.title} className="w-full h-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
-                  </div>
-                </motion.div>
-              </motion.div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -1163,181 +717,182 @@ function App() {
       <AiConsultSection />
 
       {/* ============================================ */}
-      {/* PRICING SECTION */}
+      {/* 03 これからの Compass（構想・開発中） */}
       {/* ============================================ */}
-      <section id="pricing" className="py-16 sm:py-24 lg:py-32 relative overflow-hidden bg-gradient-to-br from-[#1e3a5f] via-[#2a4a73] to-[#1e3a5f]">
-        {!isMobile && <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />}
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <StickySection className="text-center mb-8 sm:mb-12 lg:mb-16">
-            <motion.span
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/20 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#00b4d8]/30 mb-4 sm:mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              料金プラン
-            </motion.span>
-            <h2 className="text-2xl sm:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6 text-white">
-              <TextReveal>シンプルな</TextReveal>
-              <br />
-              <TextReveal delay={0.2}>料金体系</TextReveal>
-            </h2>
-            <p className="text-sm sm:text-base lg:text-lg text-slate-300">
-              Small（〜5名）・Standard（〜15名）・Business（〜40名）の定額制。40名を超える場合はEnterpriseをご案内します。
-            </p>
-          </StickySection>
-
-          {planError ? (
-            <div className="mx-auto mb-8 max-w-3xl rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-700">
-              {planError}
+      <section id="vision" className="bg-[var(--lp-ink)] py-14 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <SectionHead
+            dark
+            no="03 — これからの Compass（構想・開発中）"
+            title={<>話せば、<br />仕事が始まる。</>}
+            lead="図面を1か所変えたら、関係する仕事を一言で動かす。返事待ちは忘れずに追いかけ、終わった仕事は証拠と一緒に会社の知識になる。いま開発を進めている Compass の姿です。"
+          />
+          <div className="mt-8 sm:mt-10 grid gap-6 lg:grid-cols-12 lg:gap-8 items-start">
+            <ol className="lg:col-span-4 border-t border-white/25">
+              {VISION_POINTS.map((p, i) => (
+                <li key={p} className="flex gap-4 border-b border-white/25 py-4">
+                  <span className="f-mono text-xs text-white/50 pt-1">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="text-base sm:text-lg font-bold text-white leading-snug">{p}</span>
+                </li>
+              ))}
+            </ol>
+            <div className="lg:col-span-8">
+              <ConceptVideo src="/compass-os-concept.mp4" poster="/compass-os-concept-poster.jpg" />
+              <p className="mt-3 text-xs text-white/60">※開発中の機能を含むイメージです。実際の提供内容・時期は変わる場合があります。</p>
             </div>
-          ) : null}
-
-          <motion.div
-            className="grid gap-4 sm:gap-6 lg:grid-cols-3 max-w-6xl mx-auto"
-            initial={isMobile ? undefined : { opacity: 0, y: 50 }}
-            whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
-            transition={isMobile ? undefined : { duration: 0.6 }}
-            viewport={isMobile ? undefined : { once: true }}
-          >
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 relative overflow-hidden shadow-2xl flex flex-col">
-              {!isMobile && <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#00b4d8]/10 to-[#0077b6]/10 rounded-full blur-3xl" />}
-
-              <div className="relative text-center flex flex-col flex-grow">
-                <p className="text-sm sm:text-base text-[#64748b] mb-2 font-medium">Small（〜{smallPlan.maxMembers}名）</p>
-                <div className="flex items-end justify-center gap-1 mb-2">
-                  <span className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#1e3a5f]">
-                    {formatPrice(smallPlan.price, smallPlan.currency)}
-                  </span>
-                  <span className="text-[#64748b] mb-2 sm:mb-3 text-lg">/月</span>
-                </div>
-                <p className="text-xs sm:text-sm text-[#64748b] mb-6 sm:mb-10">
-                  {smallPlan.trialDays ? `${smallPlan.trialDays}日間無料トライアル` : 'すぐに利用開始'}
-                </p>
-
-                <ul className="text-left space-y-3 sm:space-y-4 mb-6 sm:mb-10">
-                  {smallPlan.features.map((item, i) => (
-                    <motion.li
-                      key={i}
-                      className="flex items-start gap-2 sm:gap-3"
-                      initial={isMobile ? undefined : { opacity: 0, x: -20 }}
-                      whileInView={isMobile ? undefined : { opacity: 1, x: 0 }}
-                      transition={isMobile ? undefined : { delay: i * 0.08 }}
-                      viewport={isMobile ? undefined : { once: true }}
-                    >
-                      <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#00b4d8] flex-shrink-0 mt-0.5" />
-                      <span className="text-sm sm:text-base text-[#1e293b]">{item}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-
-                <motion.button
-                  onClick={() => openSignupWithTier('small')}
-                  className="w-full py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/30 transition-all"
-                  whileHover={isMobile ? undefined : { scale: 1.02 }}
-                  whileTap={isMobile ? undefined : { scale: 0.98 }}
-                >
-                  {smallPlan.trialDays ? `${smallPlan.trialDays}日間無料で始める` : '今すぐ始める'}
-                </motion.button>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 border border-white/50 shadow-xl flex flex-col">
-              <div className="text-center flex flex-col flex-grow">
-                <p className="text-sm sm:text-base text-[#64748b] mb-2 font-medium">Standard（〜{standardPlan.maxMembers}名）</p>
-                <div className="flex items-end justify-center gap-1 mb-2">
-                  <span className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#1e3a5f]">
-                    {formatPrice(standardPlan.price, standardPlan.currency)}
-                  </span>
-                  <span className="text-[#64748b] mb-2 sm:mb-3 text-lg">/月</span>
-                </div>
-                <p className="text-xs sm:text-sm text-[#64748b] mb-6 sm:mb-10">
-                  {standardPlan.trialDays ? `${standardPlan.trialDays}日間無料トライアル` : 'すぐに利用開始'}
-                </p>
-              <ul className="text-left space-y-3 sm:space-y-4 mb-6 sm:mb-10">
-                {standardPlan.features.map((item, i) => (
-                  <motion.li
-                    key={i}
-                    className="flex items-start gap-2 sm:gap-3"
-                    initial={isMobile ? undefined : { opacity: 0, x: -20 }}
-                    whileInView={isMobile ? undefined : { opacity: 1, x: 0 }}
-                    transition={isMobile ? undefined : { delay: i * 0.08 }}
-                    viewport={isMobile ? undefined : { once: true }}
-                    >
-                      <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#00b4d8] flex-shrink-0 mt-0.5" />
-                    <span className="text-sm sm:text-base text-[#1e293b]">{item}</span>
-                  </motion.li>
-                ))}
-              </ul>
-              <motion.button
-                onClick={() => openSignupWithTier('standard')}
-                className="w-full py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg bg-gradient-to-r from-[#1e3a5f] to-[#2a4a73] text-white shadow-lg shadow-slate-900/20 hover:shadow-xl transition-all"
-                whileHover={isMobile ? undefined : { scale: 1.02 }}
-                whileTap={isMobile ? undefined : { scale: 0.98 }}
-              >
-                {standardPlan.trialDays ? `${standardPlan.trialDays}日間無料で始める` : '今すぐ始める'}
-              </motion.button>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 border border-white/50 shadow-xl flex flex-col">
-              <div className="text-center flex flex-col flex-grow">
-                <p className="text-sm sm:text-base text-[#64748b] mb-2 font-medium">Business（〜{businessPlan.maxMembers}名）</p>
-                <div className="flex items-end justify-center gap-1 mb-2">
-                  <span className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#1e3a5f]">
-                    {formatPrice(businessPlan.price, businessPlan.currency)}
-                  </span>
-                  <span className="text-[#64748b] mb-2 sm:mb-3 text-lg">/月</span>
-                </div>
-                <p className="text-xs sm:text-sm text-[#64748b] mb-6 sm:mb-10">
-                  {businessPlan.trialDays ? `${businessPlan.trialDays}日間無料トライアル` : 'すぐに利用開始'}
-                </p>
-              <ul className="text-left space-y-3 sm:space-y-4 mb-6 sm:mb-10">
-                {businessPlan.features.map((item, i) => (
-                  <motion.li
-                    key={i}
-                    className="flex items-start gap-2 sm:gap-3"
-                    initial={isMobile ? undefined : { opacity: 0, x: -20 }}
-                    whileInView={isMobile ? undefined : { opacity: 1, x: 0 }}
-                    transition={isMobile ? undefined : { delay: i * 0.08 }}
-                    viewport={isMobile ? undefined : { once: true }}
-                    >
-                      <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#00b4d8] flex-shrink-0 mt-0.5" />
-                    <span className="text-sm sm:text-base text-[#1e293b]">{item}</span>
-                  </motion.li>
-                ))}
-              </ul>
-              <motion.button
-                onClick={() => openSignupWithTier('business')}
-                className="w-full py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg bg-gradient-to-r from-[#1e3a5f] to-[#2a4a73] text-white shadow-lg shadow-slate-900/20 hover:shadow-xl transition-all"
-                whileHover={isMobile ? undefined : { scale: 1.02 }}
-                whileTap={isMobile ? undefined : { scale: 0.98 }}
-              >
-                {businessPlan.trialDays ? `${businessPlan.trialDays}日間無料で始める` : '今すぐ始める'}
-              </motion.button>
-              </div>
-            </div>
-          </motion.div>
-          <div className="mt-6 mx-auto max-w-6xl rounded-2xl border border-white/20 bg-white/10 px-5 py-4 sm:px-6 sm:py-5 text-center">
-            <p className="text-sm sm:text-base text-slate-100">
-              40名を超えるチームは <strong className="text-white">Enterprise（個別見積）</strong> のご案内になります。
-            </p>
-            <button
-              type="button"
-              onClick={() => handleEnterpriseInquiryClick(false)}
-              className="mt-3 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[#1e3a5f] hover:bg-slate-100 transition"
-            >
-              Enterpriseの詳細・相談フォームへ
-              <ArrowRight size={14} />
-            </button>
           </div>
-          <p className="mt-6 text-center text-xs sm:text-sm text-slate-300">
-            学生プラン（{studentPrice}/月）は対象ドメイン: {studentDomainsLabel}
-          </p>
         </div>
       </section>
 
       {/* ============================================ */}
-      {/* ENTERPRISE SECTION */}
+      {/* 04 料金 */}
+      {/* ============================================ */}
+      <section id="pricing" className="py-14 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <SectionHead
+            no="04 — 料金"
+            title={<>人数で決まる、<br />定額制。</>}
+            lead="Small（〜5名）・Standard（〜15名）・Business（〜40名）の定額制。40名を超える場合はEnterpriseをご案内します。"
+          />
+
+          {planError ? (
+            <p className="mt-6 border-l-2 border-amber-500 bg-amber-50 px-4 py-3 text-sm text-amber-800">{planError}</p>
+          ) : null}
+
+          <div className="mt-8 sm:mt-10 hidden md:block">
+            <table className="w-full border-collapse text-left">
+              <thead>
+                <tr className="border-y border-[var(--lp-ink)]">
+                  <th className="w-[22%] py-3 pr-4 f-mono text-[11px] font-medium tracking-[0.15em] text-[var(--lp-sub)]">プラン</th>
+                  {PLAN_COLUMNS.map((c) => (
+                    <th key={c.tier} className="border-l border-[var(--lp-rule)] px-5 py-3">
+                      <span className="f-mono text-xs tracking-[0.15em] text-[var(--lp-sub)]">{c.label}</span>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="text-[var(--lp-ink)]">
+                <tr className="border-b border-[var(--lp-rule)]">
+                  <th className="py-4 pr-4 text-sm font-bold">人数</th>
+                  {PLAN_COLUMNS.map((c) => (
+                    <td key={c.tier} className="border-l border-[var(--lp-rule)] px-5 py-4 font-bold">〜{plansByTier[c.tier].maxMembers}名</td>
+                  ))}
+                </tr>
+                <tr className="border-b border-[var(--lp-rule)]">
+                  <th className="py-4 pr-4 text-sm font-bold">月額</th>
+                  {PLAN_COLUMNS.map((c) => (
+                    <td key={c.tier} className="border-l border-[var(--lp-rule)] px-5 py-4">
+                      <span className="f-mono text-[34px] font-semibold tracking-tight">{formatPrice(plansByTier[c.tier].price, plansByTier[c.tier].currency)}</span>
+                      <span className="ml-1 text-sm text-[var(--lp-sub)]">/月</span>
+                    </td>
+                  ))}
+                </tr>
+                <tr className="border-b border-[var(--lp-rule)]">
+                  <th className="py-4 pr-4 text-sm font-bold">無料トライアル</th>
+                  {PLAN_COLUMNS.map((c) => (
+                    <td key={c.tier} className="border-l border-[var(--lp-rule)] px-5 py-4 text-sm">
+                      {plansByTier[c.tier].trialDays ? `${plansByTier[c.tier].trialDays}日間` : 'すぐに利用開始'}
+                    </td>
+                  ))}
+                </tr>
+                <tr className="border-b border-[var(--lp-rule)] align-top">
+                  <th className="py-4 pr-4 text-sm font-bold">含まれるもの</th>
+                  {PLAN_COLUMNS.map((c) => (
+                    <td key={c.tier} className="border-l border-[var(--lp-rule)] px-5 py-4">
+                      <ul className="space-y-1.5 text-sm">
+                        {plansByTier[c.tier].features.map((item) => (
+                          <li key={item} className="flex gap-2">
+                            <span aria-hidden className="mt-[7px] inline-block h-1.5 w-1.5 shrink-0 bg-[var(--lp-accent)]" />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </td>
+                  ))}
+                </tr>
+                <tr className="border-b border-[var(--lp-ink)]">
+                  <th className="py-4 pr-4" />
+                  {PLAN_COLUMNS.map((c) => (
+                    <td key={c.tier} className="border-l border-[var(--lp-rule)] px-5 py-4">
+                      <button
+                        onClick={() => openSignupWithTier(c.tier)}
+                        className={`w-full whitespace-nowrap rounded-[4px] px-4 py-3 text-sm font-bold transition-colors ${
+                          c.tier === 'small'
+                            ? 'bg-[var(--lp-accent)] text-white hover:bg-[var(--lp-accent-ink)]'
+                            : 'border border-[var(--lp-ink)] text-[var(--lp-ink)] hover:bg-[var(--lp-paper)]'
+                        }`}
+                      >
+                        {plansByTier[c.tier].trialDays ? `${plansByTier[c.tier].trialDays}日間無料で始める` : '今すぐ始める'}
+                      </button>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-8 sm:mt-10 grid gap-0 md:hidden border-t border-l border-[var(--lp-ink)]">
+            {([
+              { tier: 'small', label: 'Small', plan: smallPlan },
+              { tier: 'standard', label: 'Standard', plan: standardPlan },
+              { tier: 'business', label: 'Business', plan: businessPlan },
+            ] as const).map(({ tier, label, plan }) => (
+              <div key={tier} className="flex flex-col border-r border-b border-[var(--lp-ink)] p-5 sm:p-6">
+                <p className="f-mono text-xs tracking-[0.15em] text-[var(--lp-sub)]">{label}</p>
+                <p className="mt-1 font-bold text-[var(--lp-ink)]">〜{plan.maxMembers}名</p>
+                <p className="mt-5 flex items-baseline gap-1 text-[var(--lp-ink)]">
+                  <span className="f-mono text-4xl sm:text-[42px] font-semibold tracking-tight">{formatPrice(plan.price, plan.currency)}</span>
+                  <span className="text-sm text-[var(--lp-sub)]">/月</span>
+                </p>
+                <p className="mt-1 text-xs text-[var(--lp-sub)]">
+                  {plan.trialDays ? `${plan.trialDays}日間無料トライアル` : 'すぐに利用開始'}
+                </p>
+                <ul className="mt-5 space-y-2 border-t border-[var(--lp-rule)] pt-4 text-sm text-[var(--lp-ink)] flex-grow">
+                  {plan.features.map((item) => (
+                    <li key={item} className="flex gap-2">
+                      <span aria-hidden className="mt-[7px] inline-block h-1.5 w-1.5 shrink-0 bg-[var(--lp-accent)]" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => openSignupWithTier(tier)}
+                  className={`mt-6 rounded-[4px] px-4 py-3 text-sm font-bold transition-colors ${
+                    tier === 'small'
+                      ? 'bg-[var(--lp-accent)] text-white hover:bg-[var(--lp-accent-ink)]'
+                      : 'border border-[var(--lp-ink)] text-[var(--lp-ink)] hover:bg-[var(--lp-paper)]'
+                  }`}
+                >
+                  {plan.trialDays ? `${plan.trialDays}日間無料で始める` : '今すぐ始める'}
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid border-l border-[var(--lp-ink)] md:border-l-0 md:grid-cols-3">
+            <div className="md:col-span-2 border-r border-b border-[var(--lp-ink)] p-5 sm:p-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm sm:text-base text-[var(--lp-ink)]">
+                40名を超えるチームは <strong>Enterprise（個別見積）</strong> のご案内になります。
+              </p>
+              <button
+                type="button"
+                onClick={() => handleEnterpriseInquiryClick(false)}
+                className="shrink-0 text-sm font-bold text-[var(--lp-accent-ink)] hover:underline"
+              >
+                Enterpriseの詳細・相談フォームへ →
+              </button>
+            </div>
+            <div className="border-r border-b border-[var(--lp-ink)] p-5 sm:p-6">
+              <p className="text-sm text-[var(--lp-ink)]">
+                学生プラン（{studentPrice}/月）は対象ドメイン: {studentDomainsLabel}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* ENTERPRISE MODAL */}
       {/* ============================================ */}
       {/* Enterprise Modal */}
       <AnimatePresence>
@@ -1426,368 +981,145 @@ function App() {
       </AnimatePresence>
 
       {/* ============================================ */}
-      {/* FLOW SECTION */}
+      {/* 05 導入の流れ */}
       {/* ============================================ */}
-      <section id="flow" className="py-16 sm:py-24 lg:py-32 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <StickySection className="text-center mb-10 sm:mb-16 lg:mb-20">
-            <motion.span
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#00b4d8] bg-[#00b4d8]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#00b4d8]/20 mb-4 sm:mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              導入の流れ
-            </motion.span>
-            <h2 className="text-2xl sm:text-4xl lg:text-6xl font-bold text-[#1e3a5f] flex items-end justify-center gap-1 sm:gap-2 flex-wrap">
-              <span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent">2ステップ</span>
-              <span>で始められる</span>
-            </h2>
-          </StickySection>
-
-          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-4xl mx-auto">
-            {[
-              {
-                step: '01',
-                title: 'デモで操作確認',
-                description: 'アカウント登録なしで、すぐに触れます。データは保存されないので、安心して試せます。',
-                action: { label: 'デモを試す', icon: Play, onClick: handleDemoClick },
-                primary: false,
-              },
-              {
-                step: '02',
-                title: '14日トライアル',
-                description: '自分の組織・現場で実データを使って運用。申込前に契約条件と支払画面、継続しない場合の手続き・期限を確認してください。',
-                action: { label: 'トライアルを開始', icon: ArrowRight, onClick: handleTrialClick },
-                primary: true,
-              },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={isMobile ? undefined : { opacity: 0, x: i === 0 ? -50 : 50 }}
-                whileInView={isMobile ? undefined : { opacity: 1, x: 0 }}
-                transition={isMobile ? undefined : { duration: 0.6, delay: i * 0.2 }}
-                viewport={isMobile ? undefined : { once: true }}
-              >
-                <motion.div
-                  className={`h-full rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-8 ${
-                    item.primary
-                      ? 'bg-gradient-to-br from-[#00b4d8] to-[#0077b6] text-white'
-                      : 'bg-white border border-slate-200 shadow-sm'
-                  }`}
-                  whileHover={isMobile ? undefined : { y: -4, boxShadow: item.primary ? '0 20px 50px rgba(0, 180, 216, 0.3)' : '0 12px 40px rgba(30, 58, 95, 0.08)' }}
-                  transition={isMobile ? undefined : { duration: 0.3 }}
-                >
-                  <div className={`text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 ${item.primary ? 'text-white/30' : 'text-slate-100'}`}>
-                    {item.step}
-                  </div>
-                  <h3 className={`text-xl sm:text-2xl font-bold mb-3 sm:mb-4 ${item.primary ? 'text-white' : 'text-[#1e3a5f]'}`}>{item.title}</h3>
-                  <p className={`mb-6 sm:mb-8 text-sm sm:text-base leading-relaxed ${item.primary ? 'text-cyan-100' : 'text-[#64748b]'}`}>
-                    {item.description}
-                  </p>
-                  <button
-                    onClick={item.action.onClick}
-                    className={`inline-flex items-center gap-2 text-sm sm:text-base font-semibold transition group ${
-                      item.primary ? 'text-white hover:text-cyan-100' : 'text-[#00b4d8] hover:text-[#0096b8]'
-                    }`}
-                  >
-                    <item.action.icon size={16} className="sm:w-[18px] sm:h-[18px]" />
-                    {item.action.label}
-                    <ArrowRight size={14} className="sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </motion.div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================ */}
-      {/* FAQ SECTION */}
-      {/* ============================================ */}
-      <section className="py-16 sm:py-24 lg:py-32 relative overflow-hidden bg-[#f8fafc]">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <StickySection className="text-center mb-8 sm:mb-12 lg:mb-16">
-            <motion.span
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#1e3a5f] bg-[#1e3a5f]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#1e3a5f]/20 mb-4 sm:mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              よくある質問
-            </motion.span>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-[#1e3a5f]">
-              FAQ
-            </h2>
-          </StickySection>
-
-          <div className="space-y-3 sm:space-y-4">
-            {COMPASS_FAQ.map((faq, i) => (
-              <motion.details
-                key={i}
-                className="group bg-white rounded-xl sm:rounded-2xl border border-slate-100 shadow-sm"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                viewport={{ once: true }}
-              >
-                <summary className="flex items-center justify-between p-4 sm:p-6 cursor-pointer list-none">
-                  <span className="font-semibold text-sm sm:text-base text-[#1e3a5f] pr-3 sm:pr-4">{faq.question}</span>
-                  <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-[#64748b] flex-shrink-0 transition-transform group-open:rotate-180" />
-                </summary>
-                <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-sm sm:text-base text-[#64748b] leading-relaxed">
-                  {faq.answer}
-                </div>
-              </motion.details>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================ */}
-      {/* CIRCLE SECTION */}
-      {/* ============================================ */}
-      <section id="circle" className="py-12 sm:py-16 lg:py-24 relative overflow-hidden bg-gradient-to-br from-[#10233a] via-[#1e3a5f] to-[#162a45]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(0,180,216,0.18),transparent_40%),radial-gradient(circle_at_80%_70%,rgba(59,130,246,0.12),transparent_45%)]" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <StickySection className="max-w-3xl mx-auto text-center">
-            <motion.span
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#7dd3fc] bg-[#00b4d8]/15 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#00b4d8]/40 mb-4 sm:mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              もっと学びたい方へ
-            </motion.span>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 text-white">
-              AI×建築サークル
-            </h2>
-            <p className="text-sm sm:text-base lg:text-lg text-slate-200 mb-6 sm:mb-8 leading-relaxed px-2">
-              建築業界に特化したAI活用を学ぶ会員制コミュニティ。
-              <br className="hidden sm:block" />
-              ChatGPT・画像生成AI・業務自動化など、実践的な勉強会やセミナーを毎月開催。
-              <br className="hidden sm:block" />
-              メンバー同士の情報交換や、最新AI事例の共有も活発です。
-            </p>
-            <div className="bg-white/95 rounded-lg sm:rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 text-left max-w-lg mx-auto shadow-xl">
-              <p className="text-xs sm:text-sm font-semibold text-[#1e3a5f] mb-3 sm:mb-4">サークル会員特典</p>
-              <ul className="space-y-2 text-xs sm:text-sm text-[#64748b] mb-3 sm:mb-4">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 size={14} className="text-[#00b4d8] flex-shrink-0 sm:w-4 sm:h-4" />
-                  <span><strong className="text-[#1e3a5f]">Compass 3名分</strong>が無料で付属</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 size={14} className="text-[#00b4d8] flex-shrink-0 sm:w-4 sm:h-4" />
-                  <span>Smallプラン相当の機能を無料で利用可能</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 size={14} className="text-[#00b4d8] flex-shrink-0 sm:w-4 sm:h-4" />
-                  <span>AI学習コンテンツ・勉強会すべて利用可</span>
-                </li>
-              </ul>
-              <div className="border-t border-slate-200 pt-3 sm:pt-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs sm:text-sm text-[#64748b]">月額料金</p>
-                  <p className="text-lg sm:text-xl font-bold text-[#1e3a5f]">¥5,000<span className="text-xs sm:text-sm font-normal text-[#64748b]">/月</span></p>
-                </div>
-              </div>
-            </div>
-              <motion.a
-                href="https://ai-archi-circle.archi-prisma.co.jp/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm sm:text-base text-[#7dd3fc] font-semibold hover:text-white transition group"
-                whileHover={{ x: 5 }}
-              >
-              サークルについて詳しく
-              <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px] group-hover:translate-x-1 transition-transform" />
-            </motion.a>
-          </StickySection>
-        </div>
-      </section>
-
-      {/* ============================================ */}
-      {/* UPDATES SECTION */}
-      {/* ============================================ */}
-      <section className="py-16 sm:py-20 lg:py-24 relative overflow-hidden bg-[#f8fbfd]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,180,216,0.10),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(30,58,95,0.08),transparent_40%)]" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between mb-8 sm:mb-10">
-            <div className="max-w-2xl">
-              <motion.span
-                className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#0369a1] bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#bae6fd] mb-4"
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
-                <Bell size={14} className="sm:w-4 sm:h-4" />
-                Update Log
-              </motion.span>
-              <motion.h2
-                className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1e3a5f]"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
-                Compassのアップデート情報
-              </motion.h2>
-              <motion.p
-                className="mt-4 text-sm sm:text-base lg:text-lg text-[#64748b] leading-relaxed"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.08 }}
-                viewport={{ once: true }}
-              >
-                機能追加、改善、不具合対応、メンテナンス予定をまとめて確認できます。
-                最新の変更点は専用ページに時系列で掲載します。
-              </motion.p>
-            </div>
-
-            <motion.a
-              href="/updates"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#1e3a5f]/10 bg-white px-5 py-3 text-sm sm:text-base font-semibold text-[#1e3a5f] shadow-sm hover:border-[#00b4d8]/30 hover:text-[#0077b6] transition"
-              initial={{ opacity: 0, x: 24 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              whileHover={{ x: 4 }}
-            >
-              すべての更新を見る
-              <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px]" />
-            </motion.a>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-            <motion.div
-              className="rounded-2xl sm:rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 shadow-[0_24px_60px_rgba(15,23,42,0.06)]"
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center rounded-full bg-[#e0f2fe] px-3 py-1 text-xs font-semibold text-[#0369a1]">
-                    {latestProductUpdate.category}
-                  </span>
-                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94a3b8]">
-                    {latestProductUpdate.version}
-                  </span>
-                </div>
-                <div className="inline-flex items-center gap-2 text-sm text-[#64748b]">
-                  <Calendar size={16} className="text-[#00b4d8]" />
-                  <time dateTime={latestProductUpdate.publishedAtIso}>{latestProductUpdate.publishedAt}</time>
-                </div>
-              </div>
-
-              <h3 className="mt-4 text-xl sm:text-2xl font-bold text-[#1e3a5f]">
-                {latestProductUpdate.title}
-              </h3>
-              <p className="mt-3 text-sm sm:text-base text-[#64748b] leading-relaxed">
-                {latestProductUpdate.summary}
+      <section id="flow" className="bg-[var(--lp-paper)] py-14 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <SectionHead no="05 — 導入" title={<>2ステップで、<br />始められる。</>} />
+          <div className="mt-8 sm:mt-10 grid md:grid-cols-2 border-t border-l border-[var(--lp-ink)]">
+            <div className="border-r border-b border-[var(--lp-ink)] p-5 sm:p-7 bg-white">
+              <p className="f-mono text-xs text-[var(--lp-sub)]">STEP 01</p>
+              <h3 className="f-display mt-2 text-2xl font-black text-[var(--lp-ink)]">デモで操作確認</h3>
+              <p className="mt-3 text-sm sm:text-base leading-relaxed text-[var(--lp-sub)]">
+                アカウント登録なしで、すぐに触れます。データは保存されないので、安心して試せます。
               </p>
-
-              <ul className="mt-5 space-y-3">
-                {latestProductUpdate.highlights.map((highlight) => (
-                  <li key={highlight} className="flex items-start gap-3 text-sm sm:text-base text-[#334155]">
-                    <CheckCircle2 size={18} className="text-[#00b4d8] mt-0.5 flex-shrink-0" />
-                    <span>{highlight}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <a
-                href={`/updates/${latestProductUpdate.slug}`}
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#1e3a5f] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#16324f] transition"
-              >
-                最新記事を詳しく見る
-                <ArrowRight size={16} />
-              </a>
-            </motion.div>
-
-            <motion.div
-              className="rounded-2xl sm:rounded-3xl border border-slate-200 bg-[#1e3a5f] p-5 sm:p-7 text-white shadow-[0_24px_60px_rgba(15,23,42,0.12)]"
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.08 }}
-              viewport={{ once: true }}
-            >
-              <p className="text-sm font-semibold text-cyan-200">このページで見られること</p>
-              <div className="mt-5 space-y-4">
-                {[
-                  '新機能の追加や操作改善',
-                  '料金・運用に関するお知らせ',
-                  'メンテナンスや重要な告知',
-                ].map((item) => (
-                  <div key={item} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                    <p className="text-sm sm:text-base text-slate-100">{item}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-6 border-t border-white/10 pt-5">
-                <p className="text-xs sm:text-sm text-slate-300">
-                  現在の公開件数
-                </p>
-                <p className="mt-1 text-3xl font-bold">
-                  {featuredUpdates.length}
-                  <span className="ml-2 text-sm font-medium text-cyan-200">items</span>
-                </p>
-              </div>
-            </motion.div>
+              <button onClick={handleDemoClick} className="mt-5 rounded-[4px] border border-[var(--lp-ink)] px-5 py-3 text-sm font-bold text-[var(--lp-ink)] hover:bg-[var(--lp-paper)] transition-colors">
+                デモを試す →
+              </button>
+            </div>
+            <div className="border-r border-b border-[var(--lp-ink)] p-5 sm:p-7 bg-white">
+              <p className="f-mono text-xs text-[var(--lp-sub)]">STEP 02</p>
+              <h3 className="f-display mt-2 text-2xl font-black text-[var(--lp-ink)]">14日トライアル</h3>
+              <p className="mt-3 text-sm sm:text-base leading-relaxed text-[var(--lp-sub)]">
+                自分の組織・現場で実データを使って運用。申込前に契約条件と支払画面、継続しない場合の手続き・期限を確認してください。
+              </p>
+              <button onClick={handleTrialClick} className="mt-5 rounded-[4px] bg-[var(--lp-accent)] px-5 py-3 text-sm font-bold text-white hover:bg-[var(--lp-accent-ink)] transition-colors">
+                トライアルを開始 →
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ============================================ */}
-      {/* FINAL CTA SECTION */}
+      {/* 06 FAQ */}
       {/* ============================================ */}
-      <section className="py-16 sm:py-24 lg:py-32 relative overflow-hidden bg-gradient-to-br from-[#0e2338] via-[#16324f] to-[#102a44]">
-        {!isMobile && <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:72px_72px]" />}
+      <section id="faq" className="py-14 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 grid gap-8 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <div className="lg:sticky lg:top-24 border-t border-[var(--lp-ink)] pt-5">
+              <p className="f-mono text-xs tracking-[0.2em] text-[var(--lp-sub)]">06 — 質問</p>
+              <h2 className="f-display mt-3 text-[28px] sm:text-4xl font-black text-[var(--lp-ink)]">よくある質問</h2>
+            </div>
+          </div>
+          <div className="lg:col-span-8 border-t border-[var(--lp-ink)]">
+            {COMPASS_FAQ.map((faq) => (
+              <details key={faq.question} className="group border-b border-[var(--lp-rule)]">
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 py-4 sm:py-5">
+                  <span className="font-bold text-[var(--lp-ink)]">{faq.question}</span>
+                  <span aria-hidden className="f-mono text-lg leading-none text-[var(--lp-sub)] transition-transform group-open:rotate-45">+</span>
+                </summary>
+                <p className="pb-5 text-sm sm:text-base leading-relaxed text-[var(--lp-sub)]">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="text-center rounded-2xl sm:rounded-3xl border border-white/15 bg-[#0b2238]/70 px-5 sm:px-10 lg:px-14 py-10 sm:py-14 lg:py-16 shadow-[0_24px_80px_rgba(2,12,27,0.45)]">
-            <motion.h2
-              className="text-2xl sm:text-4xl lg:text-6xl font-bold mb-6 sm:mb-8 text-white"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <TextReveal>迷わない現場へ。</TextReveal>
-              <br />
-              <span className="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] bg-clip-text text-transparent">Compassを始めよう</span>
-            </motion.h2>
-            <motion.p
-              className="text-sm sm:text-base lg:text-lg text-slate-100 font-medium mb-8 sm:mb-12 max-w-2xl mx-auto px-2 leading-relaxed"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              viewport={{ once: true }}
-            >
+      {/* ============================================ */}
+      {/* 07 サークル */}
+      {/* ============================================ */}
+      <section id="circle" className="bg-[var(--lp-paper)] py-14 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <SectionHead
+            no="07 — もっと学びたい方へ"
+            title="AI×建築サークル"
+            lead="建築業界に特化したAI活用を学ぶ会員制コミュニティ。ChatGPT・画像生成AI・業務自動化など、実践的な勉強会やセミナーを毎月開催。メンバー同士の情報交換や、最新AI事例の共有も活発です。"
+          />
+          <div className="mt-8 grid border-t border-l border-[var(--lp-ink)] md:grid-cols-4">
+            {[
+              { k: '会員特典', v: 'Compass 3名分が無料で付属' },
+              { k: '機能', v: 'Smallプラン相当の機能を無料で利用可能' },
+              { k: '学び', v: 'AI学習コンテンツ・勉強会すべて利用可' },
+              { k: '月額料金', v: '¥5,000/月' },
+            ].map((row) => (
+              <div key={row.k} className="border-r border-b border-[var(--lp-ink)] bg-white p-4 sm:p-5">
+                <p className="f-mono text-[11px] tracking-[0.15em] text-[var(--lp-sub)]">{row.k}</p>
+                <p className="mt-1 font-bold text-[var(--lp-ink)]">{row.v}</p>
+              </div>
+            ))}
+          </div>
+          <a
+            href="https://ai-archi-circle.archi-prisma.co.jp/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-block text-sm sm:text-base font-bold text-[var(--lp-accent-ink)] hover:underline"
+          >
+            サークルについて詳しく →
+          </a>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* 08 更新情報 */}
+      {/* ============================================ */}
+      <section id="updates" className="py-14 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <SectionHead
+            no="08 — 更新情報"
+            title="Compassのアップデート情報"
+            lead="機能追加、改善、不具合対応、メンテナンス予定をまとめて確認できます。最新の変更点は専用ページに時系列で掲載します。"
+          />
+          <ul className="mt-8 border-t border-[var(--lp-ink)]">
+            {featuredUpdates.map((u) => (
+              <li key={u.slug} className="border-b border-[var(--lp-rule)]">
+                <a href={`/updates/${u.slug}`} className="grid gap-1 py-4 sm:grid-cols-12 sm:gap-4 hover:bg-[var(--lp-paper)] transition-colors">
+                  <time dateTime={u.publishedAtIso} className="sm:col-span-2 f-mono text-sm text-[var(--lp-sub)]">{u.publishedAt}</time>
+                  <span className="sm:col-span-2 text-sm text-[var(--lp-sub)]">{u.category}</span>
+                  <span className="sm:col-span-8 font-bold text-[var(--lp-ink)]">{u.title}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a href="/updates" className="mt-5 inline-block text-sm sm:text-base font-bold text-[var(--lp-accent-ink)] hover:underline">
+            すべての更新を見る →
+          </a>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* FINAL CTA */}
+      {/* ============================================ */}
+      <section className="border-t border-[var(--lp-ink)] py-14 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 grid gap-8 lg:grid-cols-12 items-end">
+          <h2 className="f-display lg:col-span-7 text-[34px] leading-[1.2] sm:text-5xl lg:text-6xl font-black text-[var(--lp-ink)]">
+            迷わない現場へ。
+            <br />
+            <span className="text-[var(--lp-accent)]">Compassを始めよう</span>
+          </h2>
+          <div className="lg:col-span-5">
+            <p className="text-sm sm:text-base leading-relaxed text-[var(--lp-sub)]">
               14日間の無料トライアルについて、申込前に契約条件と支払画面を確認してください。
-              <br />
               継続しない場合の手続きと期限も申込前に確認できます。
-            </motion.p>
-            <motion.div
-              className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              viewport={{ once: true }}
-            >
-              <motion.button
-                onClick={handleTrialClick}
-                className="w-full sm:w-auto px-6 sm:px-10 py-4 sm:py-5 rounded-xl font-semibold text-base sm:text-lg bg-gradient-to-r from-[#00b4d8] to-[#0096b8] text-white shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/30 transition-all"
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <span className="flex items-center justify-center gap-2">
-                  無料トライアルを開始
-                  <ArrowRight size={18} className="sm:w-5 sm:h-5" />
-                </span>
-              </motion.button>
-
-              <motion.button
-                onClick={handleDemoClick}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-10 py-4 sm:py-5 rounded-xl font-semibold text-base sm:text-lg bg-white/10 text-white border border-white/35 hover:bg-white/20 hover:border-white/50 hover:shadow-lg transition-all"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Play size={18} className="text-cyan-200 sm:w-5 sm:h-5" />
+            </p>
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <button onClick={handleTrialClick} className="whitespace-nowrap rounded-[4px] bg-[var(--lp-accent)] px-5 py-3.5 text-base font-bold text-white hover:bg-[var(--lp-accent-ink)] transition-colors">
+                無料トライアルを開始 →
+              </button>
+              <button onClick={handleDemoClick} className="whitespace-nowrap rounded-[4px] border border-[var(--lp-ink)] px-5 py-3.5 text-base font-bold text-[var(--lp-ink)] hover:bg-[var(--lp-paper)] transition-colors">
                 まずはデモを試す
-              </motion.button>
-            </motion.div>
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -1795,18 +1127,11 @@ function App() {
       {/* ============================================ */}
       {/* FOOTER */}
       {/* ============================================ */}
-      <footer className="py-10 sm:py-12 lg:py-16 border-t border-slate-100 bg-[#f8fafc]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            className="flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8 mb-8 sm:mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <div className="flex items-center">
-              <img src="/compass-logo.png" alt="Compass" className="h-6 sm:h-8 w-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
-            </div>
-            <nav className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-[#64748b]">
+      <footer className="border-t border-[var(--lp-rule)] bg-[var(--lp-paper)] py-10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <img src="/compass-logo.png" alt="Compass" className="h-6 w-auto self-start" draggable="false" onContextMenu={(e) => e.preventDefault()} />
+            <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-[var(--lp-sub)]">
               {[
                 { label: '利用規約', href: '/terms' },
                 { label: 'プライバシーポリシー', href: '/privacy' },
@@ -1815,25 +1140,18 @@ function App() {
                 { label: '更新情報', href: '/updates' },
                 { label: 'アプリへログイン', href: 'https://app.compass.archi-prisma.co.jp/' },
               ].map((item) => (
-                <motion.a
-                  key={item.label}
-                  href={item.href}
-                  className="hover:text-[#1e3a5f] transition"
-                  whileHover={{ y: -2 }}
-                >
+                <a key={item.label} href={item.href} className="hover:text-[var(--lp-ink)] transition-colors">
                   {item.label}
-                </motion.a>
+                </a>
               ))}
             </nav>
-          </motion.div>
-          <div className="border-t border-slate-200 pt-6 sm:pt-8 flex flex-col items-center gap-3 sm:gap-4">
-            <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-[#64748b]">
+          </div>
+          <div className="mt-8 flex flex-col gap-3 border-t border-[var(--lp-rule)] pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3 text-xs text-[var(--lp-sub)]">
               <span>Developed by</span>
-              <img src="/archiprisma_dev logo.png" alt="ARCHI-PRISMA" className="h-8 sm:h-10 lg:h-12 w-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
+              <img src="/archiprisma_dev logo.png" alt="ARCHI-PRISMA" className="h-8 w-auto" draggable="false" onContextMenu={(e) => e.preventDefault()} />
             </div>
-            <p className="text-xs sm:text-sm text-[#94a3b8]">
-              © {new Date().getFullYear()} APDW Inc. All rights reserved.
-            </p>
+            <p className="text-xs text-[var(--lp-sub)]">© {new Date().getFullYear()} APDW Inc. All rights reserved.</p>
           </div>
         </div>
       </footer>

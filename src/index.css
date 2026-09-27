@@ -22,13 +22,25 @@
   --color-text-light: #94a3b8;
 }
 
+/* LP：図面の表題欄。白い紙＋細い罫線＋差し色1色 */
+:root {
+  --lp-ink: #11233a;
+  --lp-sub: #5a6675;
+  --lp-rule: #d6dbe1;
+  --lp-paper: #f6f5f1;
+  --lp-accent: #0a8aa8;
+  --lp-accent-ink: #07708a;
+}
+.f-display { font-family: 'Zen Kaku Gothic New', 'IBM Plex Sans JP', sans-serif; font-feature-settings: 'palt'; }
+.f-mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', 'Noto Sans JP', system-ui, -apple-system, sans-serif;
+  font-family: 'IBM Plex Sans JP', 'Hiragino Sans', 'Yu Gothic', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: var(--color-bg-white);

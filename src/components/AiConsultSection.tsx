@@ -72,14 +72,14 @@ export function AiConsultSection() {
     <section
       data-ai-consult-section
       aria-labelledby="ai-consult-heading"
-      className="border-y border-slate-200 bg-white py-12 sm:py-16 lg:py-20"
+      className="bg-white py-14 sm:py-20"
     >
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm sm:p-8">
-          <p className="text-sm font-semibold text-[#1e3a5f]">公開情報でAIに相談</p>
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="border-t border-[var(--lp-ink)] pt-5 sm:pt-6">
+          <p className="f-mono text-xs tracking-[0.2em] text-[var(--lp-sub)]">公開情報でAIに相談</p>
           <h2
             id="ai-consult-heading"
-            className="mt-2 text-2xl font-bold tracking-tight text-[#1e3a5f] sm:text-3xl"
+            className="f-display mt-3 text-[28px] font-black tracking-tight text-[var(--lp-ink)] sm:text-4xl"
           >
             COMPASSについてAIに聞く
           </h2>
@@ -97,9 +97,9 @@ export function AiConsultSection() {
                   data-ai-consult-topic={topic.id}
                   aria-pressed={topic.id === topicId}
                   onClick={() => handleTopicClick(topic.id)}
-                  className={`min-h-11 rounded-xl border px-4 py-2 text-left text-sm font-medium transition-colors motion-reduce:transition-none motion-reduce:duration-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b4d8] focus-visible:ring-offset-2 ${topic.id === topicId
-                    ? 'border-[#00b4d8] bg-white text-[#1e3a5f] shadow-sm'
-                    : 'border-slate-200 bg-slate-100 text-slate-700 hover:border-slate-300 hover:bg-white'
+                  className={`min-h-11 rounded-[4px] border px-4 py-2 text-left text-sm font-medium transition-colors motion-reduce:transition-none motion-reduce:duration-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b4d8] focus-visible:ring-offset-2 ${topic.id === topicId
+                    ? 'border-[var(--lp-accent)] bg-white text-[var(--lp-ink)]'
+                    : 'border-[var(--lp-rule)] bg-white text-[var(--lp-sub)] hover:border-[var(--lp-ink)]'
                   }`}
                 >
                   <span>{topic.label}</span>
@@ -107,7 +107,7 @@ export function AiConsultSection() {
                     <span
                       data-ai-consult-selected-indicator
                       aria-hidden="true"
-                      className="ml-2 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#00b4d8] text-xs text-white"
+                      className="ml-2 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-[2px] bg-[var(--lp-accent)] text-xs text-white"
                     >
                       ✓
                     </span>
@@ -131,7 +131,7 @@ export function AiConsultSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => handleProviderClick(provider.id, target.prompt)}
-                    className="min-h-11 flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-[#1e3a5f] transition-colors motion-reduce:transition-none hover:border-[#00b4d8] hover:bg-[#00b4d8]/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b4d8] focus-visible:ring-offset-2"
+                    className="min-h-11 flex items-center justify-center gap-2 rounded-[4px] border border-[var(--lp-rule)] bg-white px-3 py-2 text-sm font-semibold text-[var(--lp-ink)] transition-colors motion-reduce:transition-none hover:border-[var(--lp-ink)] hover:bg-[var(--lp-paper)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b4d8] focus-visible:ring-offset-2"
                   >
                     <span
                       aria-hidden="true"
