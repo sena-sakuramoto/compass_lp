@@ -205,6 +205,8 @@ export function HeroVideo({ isMobile, src, poster }: HeroVideoProps) {
         onPause={() => setPlaying(false)}
         onTimeUpdate={(e) => {
           setTime(e.currentTarget.currentTime);
+          // 見えない間にブラウザが止めて再開したときは play が届かないことがあるので、時間が進んでいれば再生中とみなす
+          setPlaying(!e.currentTarget.paused);
           if (Number.isFinite(e.currentTarget.duration)) setDuration(e.currentTarget.duration);
         }}
         onDurationChange={(e) => {
