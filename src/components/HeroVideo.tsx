@@ -64,12 +64,25 @@ export function HeroVideo({ isMobile, src, poster }: HeroVideoProps) {
 
   useEffect(() => () => stopFade(), []);
 
-  // スマホは自動再生が止められることがあるので、読み込み後に消音で再生を試す
+  // 消音の自動再生を確実に始める。
+  // React は muted を属性として書かないので、iPhone の Safari 向けに属性を直接付ける。
+  // 読み込み前に呼んだ play() は失敗することがあるので、再生できる状態になった時点でもう一度試す。
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
     video.muted = true;
-    video.play().catch(() => setPlaying(!video.paused));
+    video.setAttribute('muted', '');
+    const tryPlay = () => {
+      if (!video.paused || !video.muted) return;
+      video.play().catch(() => setPlaying(!video.paused));
+    };
+    tryPlay();
+    video.addEventListener('canplay', tryPlay);
+    video.addEventListener('loadeddata', tryPlay);
+    return () => {
+      video.removeEventListener('canplay', tryPlay);
+      video.removeEventListener('loadeddata', tryPlay);
+    };
   }, [isMobile]);
 
   const startNarration = async () => {
