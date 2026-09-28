@@ -2,6 +2,32 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 // LP の共通部品。見た目は「図面の表題欄」：白い紙に細い罫線、節に図面番号、差し色は1色。
 
+// 「、」「。」の後と「（」の前でしか折り返さない（語の途中で切れた見出しは読みにくい）
+export function Phrase({ text }: { text: string }) {
+  const parts = text.split(/(?<=[、。])|(?=（)/);
+  return (
+    <>
+      {parts.map((part, i) => (
+        <span key={i} className="inline-block">
+          {part}
+        </span>
+      ))}
+    </>
+  );
+}
+
+// 節の札。「01 — 課題」を、番号（差し色）と名前（太字）に分けて見せる
+export function SectionLabel({ no, dark = false }: { no: string; dark?: boolean }) {
+  const [num, ...rest] = no.split(' — ');
+  const name = rest.join(' — ');
+  return (
+    <p className="flex items-baseline gap-3">
+      <span className={`f-mono text-sm font-semibold ${dark ? 'text-[#5fd0e6]' : 'text-[var(--lp-accent-ink)]'}`}>{num}</span>
+      {name && <span className={`text-sm font-bold tracking-wide ${dark ? 'text-white' : 'text-[var(--lp-ink)]'}`}>{name}</span>}
+    </p>
+  );
+}
+
 export function SectionHead({
   no,
   title,
@@ -18,7 +44,7 @@ export function SectionHead({
   return (
     <div className={`grid gap-4 border-t pt-5 sm:pt-6 lg:grid-cols-12 lg:gap-8 ${dark ? 'border-white/25' : 'border-[var(--lp-ink)]'}`}>
       <div className="lg:col-span-7">
-        <p className={`f-mono text-xs tracking-[0.2em] ${dark ? 'text-white/60' : 'text-[var(--lp-sub)]'}`}>{no}</p>
+        <SectionLabel no={no} dark={dark} />
         <h2 className={`f-display mt-3 text-[28px] leading-[1.25] sm:text-4xl lg:text-[44px] font-black tracking-tight ${dark ? 'text-white' : 'text-[var(--lp-ink)]'}`}>
           {title}
         </h2>
