@@ -12,7 +12,7 @@ import { productUpdates } from './content/updates';
 import { buildCompassFaqStructuredData, COMPASS_FAQ } from './content/faq';
 import { AiConsultSection } from './components/AiConsultSection';
 import { HeroVideo } from './components/HeroVideo';
-import { ConceptVideo, FeatureClip, SectionHead } from './components/LpParts';
+import { ConceptVideo, FeatureClip, Phrase, SectionHead, SectionLabel } from './components/LpParts';
 
 const MOBILE_MOTION_PROPS = [
   'initial',
@@ -500,7 +500,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-[var(--lp-ink)] overflow-x-hidden">
+    <div className="lp min-h-screen bg-white text-[var(--lp-ink)] overflow-x-hidden">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -593,7 +593,7 @@ function App() {
             ].map((row) => (
               <div key={row.k} className="border-r border-b border-[var(--lp-ink)] px-3 py-3 sm:px-4 sm:py-4">
                 <dt className="f-mono text-[11px] tracking-[0.15em] text-[var(--lp-sub)]">{row.k}</dt>
-                <dd className="mt-1 text-sm sm:text-base font-bold text-[var(--lp-ink)]">{row.v}</dd>
+                <dd className="mt-1 text-sm sm:text-base font-bold text-[var(--lp-ink)]"><Phrase text={row.v} /></dd>
               </div>
             ))}
           </dl>
@@ -678,8 +678,8 @@ function App() {
           {/* 主役：ガントチャート */}
           <div className="mt-8 sm:mt-10 grid gap-5 lg:grid-cols-12 lg:gap-8 items-start">
             <div className="lg:col-span-4">
-              <p className="f-mono text-xs text-[var(--lp-sub)]">{FEATURE_CLIPS[0].no} ／ {FEATURE_CLIPS[0].name}</p>
-              <h3 className="f-display mt-2 text-2xl sm:text-3xl font-black leading-snug text-[var(--lp-ink)]">{FEATURE_CLIPS[0].title}</h3>
+              <SectionLabel no={`${FEATURE_CLIPS[0].no} — ${FEATURE_CLIPS[0].name}`} />
+              <h3 className="f-display mt-2 text-2xl sm:text-3xl font-black leading-snug text-[var(--lp-ink)]"><Phrase text={FEATURE_CLIPS[0].title} /></h3>
               <p className="mt-3 text-sm sm:text-base leading-relaxed text-[var(--lp-sub)]">{FEATURE_CLIPS[0].text}</p>
             </div>
             <div className="lg:col-span-8">
@@ -692,8 +692,8 @@ function App() {
             {FEATURE_CLIPS.slice(1).map((f) => (
               <div key={f.no}>
                 <FeatureClip src={f.src} poster={f.poster} label={f.name} />
-                <p className="mt-4 f-mono text-xs text-[var(--lp-sub)]">{f.no} ／ {f.name}</p>
-                <h3 className="f-display mt-1 text-xl sm:text-2xl font-black text-[var(--lp-ink)]">{f.title}</h3>
+                <div className="mt-4"><SectionLabel no={`${f.no} — ${f.name}`} /></div>
+                <h3 className="f-display mt-1 text-xl sm:text-2xl font-black text-[var(--lp-ink)]"><Phrase text={f.title} /></h3>
                 <p className="mt-2 text-sm leading-relaxed text-[var(--lp-sub)]">{f.text}</p>
               </div>
             ))}
@@ -988,7 +988,7 @@ function App() {
           <SectionHead no="05 — 導入" title={<>2ステップで、<br />始められる。</>} />
           <div className="mt-8 sm:mt-10 grid md:grid-cols-2 border-t border-l border-[var(--lp-ink)]">
             <div className="border-r border-b border-[var(--lp-ink)] p-5 sm:p-7 bg-white">
-              <p className="f-mono text-xs text-[var(--lp-sub)]">STEP 01</p>
+              <SectionLabel no="STEP 01" />
               <h3 className="f-display mt-2 text-2xl font-black text-[var(--lp-ink)]">デモで操作確認</h3>
               <p className="mt-3 text-sm sm:text-base leading-relaxed text-[var(--lp-sub)]">
                 アカウント登録なしで、すぐに触れます。データは保存されないので、安心して試せます。
@@ -998,7 +998,7 @@ function App() {
               </button>
             </div>
             <div className="border-r border-b border-[var(--lp-ink)] p-5 sm:p-7 bg-white">
-              <p className="f-mono text-xs text-[var(--lp-sub)]">STEP 02</p>
+              <SectionLabel no="STEP 02" />
               <h3 className="f-display mt-2 text-2xl font-black text-[var(--lp-ink)]">14日トライアル</h3>
               <p className="mt-3 text-sm sm:text-base leading-relaxed text-[var(--lp-sub)]">
                 自分の組織・現場で実データを使って運用。申込前に契約条件と支払画面、継続しない場合の手続き・期限を確認してください。
@@ -1018,7 +1018,7 @@ function App() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 grid gap-8 lg:grid-cols-12">
           <div className="lg:col-span-4">
             <div className="lg:sticky lg:top-24 border-t border-[var(--lp-ink)] pt-5">
-              <p className="f-mono text-xs tracking-[0.2em] text-[var(--lp-sub)]">06 — 質問</p>
+              <SectionLabel no="06 — 質問" />
               <h2 className="f-display mt-3 text-[28px] sm:text-4xl font-black text-[var(--lp-ink)]">よくある質問</h2>
             </div>
           </div>

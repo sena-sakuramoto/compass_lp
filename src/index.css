@@ -33,6 +33,9 @@
 }
 .f-display { font-family: 'Zen Kaku Gothic New', 'IBM Plex Sans JP', sans-serif; font-feature-settings: 'palt'; }
 .f-mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+/* 改行：見出しは行の長さをそろえ、本文は語の途中で切らない（auto-phrase は対応ブラウザだけで効く） */
+.lp h1, .lp h2, .lp h3 { word-break: auto-phrase; text-wrap: balance; line-break: strict; }
+.lp p, .lp li, .lp dd, .lp td, .lp summary span { word-break: auto-phrase; text-wrap: pretty; line-break: strict; }
 
 html {
   scroll-behavior: smooth;
