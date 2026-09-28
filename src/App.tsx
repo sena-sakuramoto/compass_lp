@@ -644,20 +644,23 @@ function App() {
             lead="Excel、ホワイトボード、LINE。工程の情報が散らばるほど、確認の電話と会議が増えていきます。"
           />
 
-          <div className="mt-8 sm:mt-10 border-t border-[var(--lp-ink)]">
-            <div className="hidden sm:grid grid-cols-12 border-b border-[var(--lp-rule)] py-2 f-mono text-[11px] tracking-[0.15em] text-[var(--lp-sub)]">
-              <p className="col-span-3">よくある状態</p>
-              <p className="col-span-4">困ること</p>
-              <p className="col-span-5">Compass では</p>
+          <div className="mt-8 sm:mt-10 border-t-2 border-[var(--lp-ink)]">
+            <div className="hidden md:grid grid-cols-12 gap-6 border-b border-[var(--lp-ink)] py-3 text-sm font-bold">
+              <p className="col-span-5 text-[var(--lp-sub)]">よくある状態</p>
+              <p className="col-span-1" />
+              <p className="col-span-6 text-[var(--lp-accent-ink)]">Compass では</p>
             </div>
             {PAIN_ROWS.map((row) => (
-              <div key={row.title} className="grid grid-cols-1 gap-1 border-b border-[var(--lp-rule)] py-4 sm:grid-cols-12 sm:gap-4 sm:py-5">
-                <p className="sm:col-span-3 font-bold text-[var(--lp-ink)]">{row.title}</p>
-                <p className="sm:col-span-4 text-sm text-[var(--lp-sub)] leading-relaxed">{row.problem}</p>
-                <p className="sm:col-span-5 text-sm sm:text-base text-[var(--lp-ink)] leading-relaxed">
-                  <span aria-hidden className="mr-2 inline-block h-2 w-2 translate-y-[-2px] bg-[var(--lp-accent)]" />
-                  {row.answer}
-                </p>
+              <div key={row.title} className="grid grid-cols-1 gap-3 border-b border-[var(--lp-rule)] py-5 sm:py-6 md:grid-cols-12 md:gap-6 md:items-center">
+                <div className="md:col-span-5">
+                  <p className="text-lg sm:text-xl font-bold text-[var(--lp-ink)]">{row.title}</p>
+                  <p className="mt-1 text-sm sm:text-[15px] leading-relaxed text-[#3f4a57]">{row.problem}</p>
+                </div>
+                <p aria-hidden className="hidden md:block md:col-span-1 text-center f-mono text-2xl text-[var(--lp-accent)]">→</p>
+                <div className="md:col-span-6 border-l-4 border-[var(--lp-accent)] bg-white px-4 py-3 sm:px-5 sm:py-4">
+                  <p className="md:hidden text-xs font-bold text-[var(--lp-accent-ink)]">Compass では</p>
+                  <p className="text-base sm:text-lg font-bold leading-relaxed text-[var(--lp-ink)]">{row.answer}</p>
+                </div>
               </div>
             ))}
           </div>
