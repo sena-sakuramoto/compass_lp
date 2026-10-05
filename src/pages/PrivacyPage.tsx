@@ -1,6 +1,7 @@
 // プライバシーポリシーページ
 
 import { Shield, Database, Mail, Globe, Lock, Eye, Trash2, AlertCircle } from 'lucide-react';
+import { FOREIGN_COUNTRY_NOTICES, LP_ANALYTICS, PRIVACY_PROCESSORS } from '../content/privacyProcessors';
 
 export function PrivacyPage() {
   return (
@@ -13,7 +14,7 @@ export function PrivacyPage() {
             <h1 className="text-3xl font-bold">プライバシーポリシー</h1>
           </div>
           <p className="text-slate-300">個人情報の取り扱いについて</p>
-          <p className="text-sm text-slate-400 mt-2">最終更新日: 2026年1月26日</p>
+          <p className="text-sm text-slate-400 mt-2">最終更新日: 2026年10月5日</p>
         </div>
 
         {/* 前文 */}
@@ -91,14 +92,56 @@ export function PrivacyPage() {
           <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h4 className="font-semibold text-blue-900 mb-2">業務委託先への提供</h4>
             <p className="text-sm text-blue-800">当社は、利用目的の達成に必要な範囲内において、個人情報の取り扱いの全部または一部を委託する場合があります。その場合、委託先との間で個人情報の取り扱いに関する契約を締結し、適切な監督を行います。</p>
-            <div className="mt-3 text-sm text-blue-800">
-              <p className="font-medium mb-1">主な委託先サービス:</p>
-              <ul className="space-y-1">
-                <li>• Google Cloud Platform（インフラ、データベース）</li>
-                <li>• Firebase（認証、ホスティング）</li>
-                <li>• Stripe（決済処理）</li>
-              </ul>
+          </div>
+
+          <div className="mt-6">
+            <h4 className="font-semibold text-slate-900 mb-2">委託先の一覧</h4>
+            <p className="text-sm text-slate-600 mb-3">本サービスが個人情報の取り扱いを委託している事業者と、渡るデータ、データを扱う地域は次のとおりです。</p>
+            <div className="overflow-x-auto rounded-lg border border-slate-200">
+              <table className="min-w-[44rem] w-full divide-y divide-slate-200 text-sm">
+                <thead className="bg-slate-50">
+                  <tr>
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-slate-700">委託先</th>
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-slate-700">用途</th>
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-slate-700">渡るデータ</th>
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-slate-700">所在地域</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200 bg-white align-top">
+                  {PRIVACY_PROCESSORS.map((processor) => (
+                    <tr key={processor.service}>
+                      <td className="px-4 py-3">
+                        <p className="font-medium text-slate-900">{processor.service}</p>
+                        <p className="text-xs text-slate-500 mt-0.5">{processor.company}</p>
+                      </td>
+                      <td className="px-4 py-3 text-slate-700">{processor.purpose}</td>
+                      <td className="px-4 py-3 text-slate-700">{processor.data}</td>
+                      <td className="px-4 py-3 text-slate-700">{processor.region}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
+          </div>
+
+          <div className="mt-6 bg-slate-50 rounded-lg p-4">
+            <h4 className="font-semibold text-slate-900 mb-2">外国にある第三者への提供について</h4>
+            <p className="text-sm text-slate-700 leading-relaxed">
+              上の委託先のうち、当社を除く事業者は外国に本拠を置く事業者であり、個人情報の保護に関する法律第28条に定める「外国にある第三者」への提供にあたる場合があります。
+              当社は、各事業者の利用規約およびデータの取り扱いに関する条項に基づき、利用目的の達成に必要な範囲でのみ個人情報の取り扱いを委託しています。
+              また、モジオコのデータは当社が管理し、台湾にある Google Cloud のデータセンターに保存しています。
+            </p>
+            <div className="mt-3 space-y-2 text-sm text-slate-700">
+              {FOREIGN_COUNTRY_NOTICES.map((notice) => (
+                <p key={notice.country}>
+                  <span className="font-semibold">{notice.country}:</span> {notice.system}
+                </p>
+              ))}
+            </div>
+            <p className="text-sm text-slate-600 mt-3 leading-relaxed">
+              各国の制度の詳細は、個人情報保護委員会の「外国における個人情報の保護に関する制度等の調査」をご参照ください。
+              委託先が講じている措置など、さらに詳しい情報をご希望の場合は、第10条のお問い合わせ窓口までご連絡ください。
+            </p>
           </div>
         </PolicySection>
 
@@ -167,7 +210,13 @@ export function PrivacyPage() {
             </div>
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
               <h4 className="font-semibold text-amber-900 mb-1">分析Cookie</h4>
-              <p className="text-sm text-amber-800">サービスの利用状況を分析し、改善に役立てます。Google Analyticsを使用しています。</p>
+              <p className="text-sm text-amber-800">
+                本サービス（Compass のアプリ）では、分析Cookieを使用していません。
+                本サービスの紹介サイト（compass.archi-prisma.co.jp）では、アクセス状況を把握するために{LP_ANALYTICS.service}（{LP_ANALYTICS.company}、所在地域: {LP_ANALYTICS.region}）を使用しています。
+                {LP_ANALYTICS.service}はCookieを使って閲覧の状況を集めます。氏名やメールアドレスは集めません。収集を止めたい場合は、
+                <a href={LP_ANALYTICS.optOutUrl} target="_blank" rel="noopener noreferrer" className="underline">Google アナリティクス オプトアウト アドオン</a>
+                をご利用ください。
+              </p>
             </div>
           </div>
           <p className="text-sm text-slate-600 mt-4">ブラウザの設定によりCookieを無効にすることができますが、一部の機能が制限される場合があります。</p>
