@@ -25,7 +25,7 @@ export function TermsPage() {
             <h1 className="text-3xl font-bold">利用規約</h1>
           </div>
           <p className="text-indigo-200">Compassサービス利用規約</p>
-          <p className="text-sm text-indigo-300 mt-2">最終更新日: 2026年1月26日</p>
+          <p className="text-sm text-indigo-300 mt-2">最終更新日: 2026年11月16日</p>
         </div>
 
         {/* 前文 */}
@@ -197,19 +197,19 @@ export function TermsPage() {
             </li>
             <li className="flex items-start gap-3">
               <span className="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium flex-shrink-0 mt-0.5">2</span>
-              <span>当社は、以下の場合に事前通知なく本サービスの全部または一部を中断することができます。
+              <span>当社は、計画的なシステムの保守・点検・更新に伴い本サービスの全部または一部を中断する場合、原則として3営業日前までに、登録されたメールアドレスへ通知します。ただし、以下の場合は事前通知なく中断することができます。
                 <ul className="mt-2 ml-4 space-y-1 text-sm">
-                  <li>• システムの保守・点検・更新を行う場合</li>
+                  <li>• 緊急の保守・点検・更新が必要な場合</li>
                   <li>• 天災、停電、通信障害、サイバー攻撃等により提供が困難な場合</li>
                   <li>• 第三者サービス（Google、Stripe等）の障害・仕様変更による場合</li>
                   <li>• セキュリティ上の緊急対応が必要な場合</li>
-                  <li>• その他、当社が必要と判断した場合</li>
+                  <li>• その他、緊急に中断する必要がある場合</li>
                 </ul>
               </span>
             </li>
             <li className="flex items-start gap-3">
               <span className="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium flex-shrink-0 mt-0.5">3</span>
-              <span>当社は、1ヶ月前の通知をもって、本サービスの全部または一部を終了することができます。</span>
+              <span>当社は、本サービスの全部を終了する場合、終了の90日前までに登録されたメールアドレスへ通知します。終了までの間、ユーザーはすべてのデータをExcel・JSON形式で書き出すことができます。本サービスの一部（個別の機能）を終了する場合は、1ヶ月前までに通知します。</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium flex-shrink-0 mt-0.5">4</span>
@@ -269,7 +269,7 @@ export function TermsPage() {
             </li>
             <li className="flex items-start gap-3">
               <span className="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium flex-shrink-0 mt-0.5">3</span>
-              <span>契約解除後、ユーザーのデータは30日間保持された後、完全に削除されます。</span>
+              <span>契約が終了すると、当社は登録されたメールアドレスへデータの書き出し期限と削除の日をお知らせします。そのお知らせの日から30日間は、閲覧のみでログインし、Excel・JSON形式でデータを書き出すことができます。ユーザーのデータはそのお知らせの日から60日後に削除し、削除の7日前にも改めてお知らせします。バックアップに残るデータは、その保持期間の満了とともに消去します。ご希望に応じて削除証明書を発行します。ただし、法令により保存が必要な請求の記録は、法定の保存期間にわたり保存します。</span>
             </li>
           </ol>
         </TermsSection>
